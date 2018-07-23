@@ -32,9 +32,15 @@ El flujo de trabajo sería el siguiente:
 
   `git checkout -b agencies_endpoint`
   
-- Realizar modificaciones y commitear. Los commits deben tener un texto descriptivo en inglés y pueden ser múltiples commits.
+- Realizar modificaciones y commitear. Los commits deben contener un texto descriptivo en inglés.
 - Publicar rama.
 
   `git push -u origin agencies_endpoint`
   
 - Crear pull request para mergear contenido a `master`.
+
+### Editor de OpenAPI 3.0
+
+Recomendamos utilizar [Swagger Editor](https://github.com/swagger-api/swagger-editor) para editar la documentación. La edición se realiza en formato `YAML`, permite importar y exportar en los formatos solicitados (`YAML` y `JSON`) y posee un validador de sintaxis en tiempo real.
+
+Para utilizar la aplicación, toda la información se puede encontrar en el [README del proyecto en GitHub](https://github.com/swagger-api/swagger-editor#swagger-editor).
