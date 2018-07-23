@@ -1559,7 +1559,7 @@
           {
             "in": "query",
             "name": "excursion_categories",
-            "description": "Available categories of the excursions. This filter will only apply to `excursion` items, the other items will remain untouched.",
+            "description": "Excursions with these categories will be returned. This filter will only apply to `excursion` items, the other items will remain untouched.",
             "required": false,
             "schema": {
               "type": "array",
@@ -1575,7 +1575,7 @@
           {
             "in": "query",
             "name": "transfer_kinds",
-            "description": "Available kinds of the transfers. This filter will only apply to `transfer` items, the other items will remain untouched.",
+            "description": "Transfers with these kinds will be returned. This filter will only apply to `transfer` items, the other items will remain untouched.",
             "required": false,
             "schema": {
               "type": "array",
@@ -1595,7 +1595,7 @@
           {
             "in": "query",
             "name": "others_kinds",
-            "description": "Available kinds of the `others` kinds. This filter will only apply to `others` items, the other items will remain untouched.",
+            "description": "`others` items with these kinds will be returned. This filter will only apply to `others` items, the other items will remain untouched.",
             "required": false,
             "schema": {
               "type": "array",
