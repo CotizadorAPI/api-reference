@@ -1660,6 +1660,13 @@ paths:
         - $ref: '#/components/parameters/optionalLocationIdsParam'
         - $ref: '#/components/parameters/optionalDateInParam'
         - $ref: '#/components/parameters/optionalDateOutParam'
+        - in: query
+          name: only_with_vacants
+          description: >
+            Only flights with at least one vacant if true.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: >-
@@ -1843,8 +1850,8 @@ paths:
         - in: query
           name: excursion_categories
           description: >-
-            Categories of the excursions. This filter will only apply to
-            excursion items, the other items will remain untouched.
+            Available categories of the excursions. This filter will only apply to
+            `excursion` items, the other items will remain untouched.
           required: false
           schema:
             type: array
@@ -1853,6 +1860,41 @@ paths:
               enum:
                 - private
                 - regular
+        - in: query
+          name: transfer_kinds
+          description: >-
+            Available kinds of the transfers. This filter will only apply to
+            `transfer` items, the other items will remain untouched.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - in_out
+                - in
+                - out
+                - interhotel
+                - in_out_city_tour
+                - in_out_excursion
+        - in: query
+          name: others_kinds
+          description: >-
+            Available kinds of the `others` kinds. This filter will only apply to
+            `others` items, the other items will remain untouched.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - admission
+                - visa
+                - internal_aereal
+                - internal_aerial
+                - generic
+                - others
+
       responses:
         '200':
           description: Standard response with a collection of land product rates
@@ -5973,7 +6015,9 @@ components:
         - country_name
         - date_in
         - date_out
+        - departure
         - depature
+        - departure_date
         - depature_date
         - destination_name
         - locations
@@ -6011,8 +6055,14 @@ components:
         departure:
           type: string
           example: EZE
+        depature:
+          deprecated: true
+          description: It will be deprecated. Use `departure` instead.
         departure_date:
           $ref: '#/components/schemas/Date'
+        depature_date:
+          deprecated: true
+          description: It will be deprecated. Use `departure_date` instead.
         arrival_date:
           $ref: '#/components/schemas/Date'
         vacant:
