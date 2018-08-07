@@ -845,6 +845,133 @@ paths:
                       $ref: '#/components/schemas/Hotel'
         '400':
           $ref: '#/components/responses/StandardError'
+  /hotels/disney:
+    get:
+      tags:
+        - Hotels
+      summary: Gets a list of Disney hotels.
+      description: |
+        # Gets a collection of hotel rates within item format.
+      operationId: searchDisneyHotels
+      parameters:
+        - $ref: '#/components/parameters/requestIdParam'
+        - $ref: '#/components/parameters/paxParam'
+        - $ref: '#/components/parameters/dateInParam'
+        - $ref: '#/components/parameters/dateOutParam'
+        - $ref: '#/components/parameters/sortByParam'
+        - $ref: '#/components/parameters/sortDirectionParam'
+        - $ref: '#/components/parameters/perPageParam'
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/currencyParam'
+        - $ref: '#/components/parameters/minPriceParam'
+        - $ref: '#/components/parameters/maxPriceParam'
+        - in: query
+          name: reduced
+          description: >-
+            Gets a response with less fields. This option is great for
+            displaying results in a map.
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: false
+        - in: query
+          name: hotel_name
+          description: Name of the hotel to match with.
+          required: false
+          schema:
+            type: string
+            example: Hilton
+        - in: query
+          name: contract
+          description: Source of the results where to look.
+          required: false
+          schema:
+            type: string
+            enum:
+              - nemo
+              - aero
+            example: nemo
+        - in: query
+          name: only_express_confirmation
+          description: 'When true, only express confirmation hotels will be returned.'
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: true
+        - in: query
+          name: exclude_sales_stoppage
+          description: 'When true, only sellable rates will be returned.'
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: true
+        - in: query
+          name: regimes
+          description: Ids of the regimes to filter by
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              example: 1
+        - in: query
+          name: only_allotments
+          description: 'When true, only allotment hotels will be returned.'
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: stars
+          description: Amount of stars to filter by.
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+        - in: query
+          name: operator_ids
+          description: >-
+            Ids of the operators to filter by. The ids are not numbers, are
+            initials.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              example: RIU
+      responses:
+        '200':
+          description: Standard response with a collection of hotel rates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status of the request
+                    example: ok
+                  transaction_status:
+                    type: string
+                    description: Status of the transaction
+                    example: finished
+                  data_type:
+                    type: string
+                    description: Type of the data value
+                    example: list
+                  metadata:
+                    type: object
+                  data:
+                    type: array
+                    description: Collection of hotel rates
+                    items:
+                      $ref: '#/components/schemas/Hotel'
+        '400':
+          $ref: '#/components/responses/StandardError'
   '/hotels/{itemId}/rates':
     get:
       tags:
@@ -869,6 +996,72 @@ paths:
             type: string
             format: uuid
             example: aaabc212-asdasd
+        - $ref: '#/components/parameters/sortByParam'
+        - $ref: '#/components/parameters/sortDirectionParam'
+        - $ref: '#/components/parameters/perPageParam'
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/minPriceParam'
+        - $ref: '#/components/parameters/maxPriceParam'
+      responses:
+        '200':
+          description: Standard response with a collection of hotel rates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status of the request
+                    example: ok
+                  transaction_status:
+                    type: string
+                    description: Status of the transaction
+                  data_type:
+                    type: string
+                    description: Type of the data value
+                  metadata:
+                    type: object
+                  data:
+                    type: array
+                    description: Collection of hotel rates
+                    items:
+                      $ref: '#/components/schemas/Hotel'
+        '400':
+          $ref: '#/components/responses/StandardError'
+  '/hotels/disney/{itemId}/rates':
+    get:
+      tags:
+        - Hotels
+      summary: Gets a list of rates associated with a previous obtained rate
+      description: >
+        # Gets a collection of Disney's hotel rates associated with a previous obtained rate.
+        
+        *This collection includes the original hotel rate*.
+      operationId: otherDisneyHotelRates
+      parameters:
+        - in: header
+          name: X-Request-ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: itemId
+          description: Id of the hotel rate.
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: aaabc212-asdasd
+        - in: query
+          name: promo
+          description: Name of the promo to search.
+          required: false
+          schema:
+            type: string
+            format: uuid
+            example: NFN - Descuento en Habitaciones
         - $ref: '#/components/parameters/sortByParam'
         - $ref: '#/components/parameters/sortDirectionParam'
         - $ref: '#/components/parameters/perPageParam'
@@ -2194,20 +2387,31 @@ paths:
                   data:
                     $ref: '#/components/schemas/ExtendedPackage'
         '400':
-          $ref: '#/components/responses/StandardError'        
+          $ref: '#/components/responses/StandardError'
   '/packages/{packageId}/items/{itemId}':
     post:
       tags:
         - Packages
       summary: Adds an item/service to a single package.
-      description: |
-        # Adds an item/service to a single package. An item or service is a flight, hotel, land product or assistance. Limited to certain types of items.
-        In a successful response the package is returned, including the item that was just added.
-        
+      description: >
+        # Adds an item/service to a single package. An item or service is a
+        flight, hotel, land product or assistance. Limited to certain types of
+        items.
+
+        In a successful response the package is returned, including the item
+        that was just added.
+
+
         There are several reasons for getting an error response:
-        - The package itself doesn't exist (i.e. the package with ID *packageId* could not be found).
-        - The item to be added doesn't exist (i.e. the item with ID *itemId* could not be found).
+
+        - The package itself doesn't exist (i.e. the package with ID *packageId*
+        could not be found).
+
+        - The item to be added doesn't exist (i.e. the item with ID *itemId*
+        could not be found).
+
         - The item to be added is already part of the package.
+
         - The item to be added is not that of an allowed kind.
       operationId: addItemToPackage
       parameters:
@@ -2224,11 +2428,13 @@ paths:
           required: true
           schema:
             type: string
-            example: assistance_050a5ac6-78b9-4ca5-9629-9a0a494cd40b            
+            example: assistance_050a5ac6-78b9-4ca5-9629-9a0a494cd40b
         - $ref: '#/components/parameters/requestIdParam'
       responses:
         '200':
-          description: Standard response with package info. It returns the resulting package after adding an item.
+          description: >-
+            Standard response with package info. It returns the resulting
+            package after adding an item.
           content:
             application/json:
               schema:
@@ -2253,13 +2459,22 @@ paths:
       tags:
         - Packages
       summary: Removes an item/service from a single package.
-      description: |
-        # Removes an item/service from a single package. An item or service is a flight, hotel, land product or assistance. Limited to certain types of items.
-        In a successful response the package is returned, including the item that was just removed.
-        
+      description: >
+        # Removes an item/service from a single package. An item or service is a
+        flight, hotel, land product or assistance. Limited to certain types of
+        items.
+
+        In a successful response the package is returned, including the item
+        that was just removed.
+
+
         There are several reasons for getting an error response:
-        - The package itself doesn't exist (i.e. the package with ID *packageId* could not be found).
+
+        - The package itself doesn't exist (i.e. the package with ID *packageId*
+        could not be found).
+
         - The item to be removed is not present in the package.
+
         - The item to be removed is not that of an allowed kind.        
       operationId: removeItemFromPackage
       parameters:
@@ -2276,11 +2491,13 @@ paths:
           required: true
           schema:
             type: string
-            example: assistance_050a5ac6-78b9-4ca5-9629-9a0a494cd40b            
+            example: assistance_050a5ac6-78b9-4ca5-9629-9a0a494cd40b
         - $ref: '#/components/parameters/requestIdParam'
       responses:
         '200':
-          description: Standard response with package info. It returns the resulting package after removing an item.
+          description: >-
+            Standard response with package info. It returns the resulting
+            package after removing an item.
           content:
             application/json:
               schema:
@@ -2300,7 +2517,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/ExtendedPackage'
         '400':
-          $ref: '#/components/responses/StandardError'           
+          $ref: '#/components/responses/StandardError'
   /circuits:
     get:
       tags:
@@ -4227,7 +4444,7 @@ components:
             kind:
               example: hotel
             info:
-              $ref: '#/components/schemas/HotelAdditionalInformation'              
+              $ref: '#/components/schemas/HotelAdditionalInformation'
     HotelInfo:
       type: object
       required:
@@ -5165,7 +5382,7 @@ components:
                 anyOf:
                   - $ref: '#/components/schemas/ExtendedHotel'
                   - $ref: '#/components/schemas/Flight'
-                  - $ref: '#/components/schemas/LandProduct'                  
+                  - $ref: '#/components/schemas/LandProduct'
     Circuit:
       allOf:
         - $ref: '#/components/schemas/Item'

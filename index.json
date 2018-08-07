@@ -219,6 +219,198 @@
         }
       }
     },
+    "/hotels/disney": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of Disney hotels.",
+        "description": "# Gets a collection of hotel rates within item format.\n",
+        "operationId": "searchDisneyHotels",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "in": "query",
+            "name": "reduced",
+            "description": "Gets a response with less fields. This option is great for displaying results in a map.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          },
+          {
+            "in": "query",
+            "name": "hotel_name",
+            "description": "Name of the hotel to match with.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Hilton"
+            }
+          },
+          {
+            "in": "query",
+            "name": "contract",
+            "description": "Source of the results where to look.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "nemo",
+                "aero"
+              ],
+              "example": "nemo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "only_express_confirmation",
+            "description": "When true, only express confirmation hotels will be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "exclude_sales_stoppage",
+            "description": "When true, only sellable rates will be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "regimes",
+            "description": "Ids of the regimes to filter by",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "only_allotments",
+            "description": "When true, only allotment hotels will be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "in": "query",
+            "name": "stars",
+            "description": "Amount of stars to filter by.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "operator_ids",
+            "description": "Ids of the operators to filter by. The ids are not numbers, are initials.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "example": "RIU"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of hotel rates",
+                      "items": {
+                        "$ref": "#/components/schemas/Hotel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/hotels/{itemId}/rates": {
       "get": {
         "tags": [
@@ -246,6 +438,107 @@
               "type": "string",
               "format": "uuid",
               "example": "aaabc212-asdasd"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of hotel rates",
+                      "items": {
+                        "$ref": "#/components/schemas/Hotel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotels/disney/{itemId}/rates": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of rates associated with a previous obtained rate",
+        "description": "# Gets a collection of Disney's hotel rates associated with a previous obtained rate.\n*This collection includes the original hotel rate*.\n",
+        "operationId": "otherDisneyHotelRates",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the hotel rate.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          },
+          {
+            "in": "query",
+            "name": "promo",
+            "description": "Name of the promo to search.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "NFN - Descuento en Habitaciones"
             }
           },
           {
