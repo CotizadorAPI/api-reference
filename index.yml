@@ -969,7 +969,7 @@ paths:
                     type: array
                     description: Collection of hotel rates
                     items:
-                      $ref: '#/components/schemas/Hotel'
+                      $ref: '#/components/schemas/DisneyHotel'
         '400':
           $ref: '#/components/responses/StandardError'
   '/hotels/{itemId}/rates':
@@ -1035,8 +1035,9 @@ paths:
         - Hotels
       summary: Gets a list of rates associated with a previous obtained rate
       description: >
-        # Gets a collection of Disney's hotel rates associated with a previous obtained rate.
-        
+        # Gets a collection of Disney's hotel rates associated with a previous
+        obtained rate.
+
         *This collection includes the original hotel rate*.
       operationId: otherDisneyHotelRates
       parameters:
@@ -4434,6 +4435,17 @@ components:
               example: hotel
             info:
               $ref: '#/components/schemas/HotelInfo'
+    DisneyHotel:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          properties:
+            name:
+              example: Riu Plaza Miami Beach
+            kind:
+              example: hotel
+            info:
+              $ref: '#/components/schemas/DisneyHotelInfo'
     ExtendedHotel:
       allOf:
         - $ref: '#/components/schemas/Item'
@@ -4445,6 +4457,27 @@ components:
               example: hotel
             info:
               $ref: '#/components/schemas/HotelAdditionalInformation'
+    DisneyHotelInfo:
+      allOf:
+        - $ref: '#/components/schemas/HotelInfo'
+        - type: object
+          properties:
+            supplements:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+            promo_names:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
     HotelInfo:
       type: object
       required:

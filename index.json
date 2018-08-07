@@ -397,7 +397,7 @@
                       "type": "array",
                       "description": "Collection of hotel rates",
                       "items": {
-                        "$ref": "#/components/schemas/Hotel"
+                        "$ref": "#/components/schemas/DisneyHotel"
                       }
                     }
                   }
@@ -5106,6 +5106,27 @@
           }
         ]
       },
+      "DisneyHotel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "example": "Riu Plaza Miami Beach"
+              },
+              "kind": {
+                "example": "hotel"
+              },
+              "info": {
+                "$ref": "#/components/schemas/DisneyHotelInfo"
+              }
+            }
+          }
+        ]
+      },
       "ExtendedHotel": {
         "allOf": [
           {
@@ -5122,6 +5143,43 @@
               },
               "info": {
                 "$ref": "#/components/schemas/HotelAdditionalInformation"
+              }
+            }
+          }
+        ]
+      },
+      "DisneyHotelInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HotelInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "supplements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "promo_names": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           }
