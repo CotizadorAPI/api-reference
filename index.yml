@@ -1849,6 +1849,7 @@ paths:
       summary: Gets a list of all the available Aero's flights
       description: |
         # Gets a list of all the available Aero's flights
+        A simplified list of locations names is returned in the metadata field. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight.
       operationId: aeroFlights
       parameters:
         - $ref: '#/components/parameters/optionalLocationIdsParam'
@@ -1882,6 +1883,37 @@ paths:
                     description: type of the data value
                   metadata:
                     type: object
+                    properties:
+                      request_id:
+                        type: string
+                        example: 831aa426-bf1d-42b7-be75-ebb24056e5f7
+                      query:
+                        type: object
+                      locations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            main_location:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 3838
+                                name:
+                                  type: string
+                                  example: Habana
+                            other_locations:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 3453
+                                  name:
+                                    type: string
+                                    example: Cancún
                   data:
                     type: array
                     description: collection of Aero's flights
@@ -4464,10 +4496,10 @@ components:
           properties:
             check_in:
               type: string
-              example: 12:00
+              example: 720
             check_out:
               type: string
-              example: 15:00
+              example: 900
             supplements:
               type: array
               items:
