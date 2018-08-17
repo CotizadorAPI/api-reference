@@ -4513,8 +4513,8 @@ components:
                   original_type:
                     type: string
                     description: >-
-                      Original room type returned by the provider. This is converted
-                      to one of the common room types (field `type`).
+                      Original room type returned by the provider. This is
+                      converted to one of the common room types (field `type`).
                     example: DBL
                   details:
                     type: string
@@ -4523,17 +4523,17 @@ components:
                   occupancy:
                     type: string
                     description: >-
-                      It defines the type and number of passengers for which this
-                      room is for. The first number is the number of adult
+                      It defines the type and number of passengers for which
+                      this room is for. The first number is the number of adult
                       passengers that this room allows. The next number is the
-                      number of children and the last is the number of infants. For
-                      example, if the occupancy is 2/0/0, the room is for 2 adults,
-                      0 children and 0 infants. The difference between children and
-                      infants is given by their ages. Usually, an infant is a
-                      passenger which age is 0 or 1 years old, a child is 2 to 15
-                      years old and passengers of more than 16 years old are
-                      considered adults. The exact age ranges are given by the rate
-                      provider.
+                      number of children and the last is the number of infants.
+                      For example, if the occupancy is 2/0/0, the room is for 2
+                      adults, 0 children and 0 infants. The difference between
+                      children and infants is given by their ages. Usually, an
+                      infant is a passenger which age is 0 or 1 years old, a
+                      child is 2 to 15 years old and passengers of more than 16
+                      years old are considered adults. The exact age ranges are
+                      given by the rate provider.
                     pattern: ^\d+/\d+/\d+$
                     example: 2/0/0
                   availability:
@@ -4544,13 +4544,16 @@ components:
                       - NOP
                   comment:
                     type: string
-                    description: Comment for the room. It is used mainly for Aero hotel rates.
+                    description: >-
+                      Comment for the room. It is used mainly for Aero hotel
+                      rates.
                     example: (Ex Moon Palace Golf & Spa Resort)
                   description:
                     type: string
                     description: Detailed description of the room.
                     example: >-
-                      Habitación doble con vista al lago, duerman hasta 4 personas
+                      Habitación doble con vista al lago, duerman hasta 4
+                      personas
                   max_adult_occupancy:
                     type: integer
                     description: Maximum number of adults in the room.
@@ -4561,7 +4564,9 @@ components:
                     example: 4
                   max_occupancy:
                     type: integer
-                    description: Maximum number of people in the room, counting children and adults 
+                    description: >-
+                      Maximum number of people in the room, counting children
+                      and adults
                     example: 4
                   name:
                     type: string

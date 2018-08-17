@@ -5158,11 +5158,11 @@
             "properties": {
               "check_in": {
                 "type": "string",
-                "example": 720
+                "example": "12:00"
               },
               "check_out": {
                 "type": "string",
-                "example": 900
+                "example": "15:00"
               },
               "supplements": {
                 "type": "array",
