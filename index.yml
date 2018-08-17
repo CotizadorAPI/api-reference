@@ -1847,9 +1847,13 @@ paths:
       tags:
         - Flights
       summary: Gets a list of all the available Aero's flights
-      description: |
+      description: >
         # Gets a list of all the available Aero's flights
-        A simplified list of locations names is returned in the metadata field. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight.
+
+        A simplified list of locations names is returned in the metadata field.
+        Each location in that field is composed of a *main_location* (i.e. the
+        destination of the flight), and *other_locations*, which is a list of
+        locations related to the flight.
       operationId: aeroFlights
       parameters:
         - $ref: '#/components/parameters/optionalLocationIdsParam'
@@ -4496,10 +4500,10 @@ components:
           properties:
             check_in:
               type: string
-              example: 720
+              example: 12:00
             check_out:
               type: string
-              example: 900
+              example: 15:00
             supplements:
               type: array
               items:
