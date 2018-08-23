@@ -3389,7 +3389,7 @@
           "Reservations"
         ],
         "summary": "Updates a provisional reservation.",
-        "description": "# Update a provisional reservation.\n**This endpoint must be called before confirming the reservation.\nThe required parameters must be set.**\n",
+        "description": "# Update a provisional reservation.\n**This endpoint must be called before confirming the reservation.\nThe required parameters must be set.**\n\n*If you send a valid existig_reservation_id, this action will add the field aptour_reservation_id to reservation*\n",
         "operationId": "updateReservation",
         "parameters": [
           {
@@ -3616,6 +3616,11 @@
                     "type": "boolean",
                     "example": false,
                     "description": "If this parameter is `true`, then the agency will receive the confirmation email.  \nIf this parameter's value is `false` or it is not set, then the email will not be sent to the agency. This is the default behavior."
+                  },
+                  "send_email_to_seller": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "If this parameter is `true`, then the seller will receive the confirmation email.  \nIf this parameter's value is `false` or it is not set, then the email will not be sent to the seller. This is the default behavior."
                   }
                 }
               }
@@ -7144,6 +7149,11 @@
             "format": "uuid",
             "description": "MiddleOffice reservation id"
           },
+          "aptour_reservation_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Aptour reservation id"
+          },
           "seller_email": {
             "type": "string",
             "example": "arturo@puig.com"
@@ -7213,6 +7223,14 @@
           "note": {
             "type": "string",
             "description": "Note about the reservation that will be sent to MiddleOffice."
+          },
+          "additional_note": {
+            "type": "string",
+            "description": "Adittional note about the reservation that will be sent to MiddleOffice."
+          },
+          "user_note": {
+            "type": "string",
+            "description": "Note about the reservation wrote by the client that will be sent to MiddleOffice and the product provider."
           },
           "emails": {
             "type": "string",
