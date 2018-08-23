@@ -7226,7 +7226,7 @@
           },
           "additional_note": {
             "type": "string",
-            "description": "Adittional note about the reservation that will be sent to MiddleOffice."
+            "description": "Additional note about the reservation that will be sent to MiddleOffice."
           },
           "user_note": {
             "type": "string",
