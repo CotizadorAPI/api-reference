@@ -5231,13 +5231,44 @@
                   }
                 }
               },
-              "promos_info": {
+              "promotions": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "NFN"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "NFN - Descuento en habitaciones"
+                    }
+                  }
+                }
+              },
+              "promos_info": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": [
+                    "Habitaciones",
+                    "NFN"
+                  ]
+                }
+              },
+              "descriptions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "short"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Hotel con vista a la playa"
                     }
                   }
                 }
