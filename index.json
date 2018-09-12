@@ -411,6 +411,142 @@
         }
       }
     },
+    "/hotels/disney/names": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of Disney hotels names.",
+        "description": "# Gets a collection of hotel names.\n",
+        "operationId": "searchDisneyHotelsNames",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "description": "Metadata with information about the response",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "total_results",
+                          "page",
+                          "per_page",
+                          "total_pages",
+                          "request_id",
+                          "query"
+                        ],
+                        "properties": {
+                          "total_results": {
+                            "type": "integer",
+                            "description": "Number of elementes obtained",
+                            "example": 40
+                          },
+                          "page": {
+                            "type": "integer",
+                            "description": "Number of page listing results",
+                            "example": 4
+                          },
+                          "per_page": {
+                            "$ref": "#/components/parameters/perPageParam"
+                          },
+                          "total_pages": {
+                            "type": "integer",
+                            "description": "Number of all pages available. It will change depending the per_page attribute",
+                            "example": 10
+                          },
+                          "request_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "RequestId received in the request.",
+                            "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                          },
+                          "query": {
+                            "type": "object",
+                            "properties": {
+                              "per_page": {
+                                "type": "integer",
+                                "example": 10
+                              },
+                              "page": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "request_id": {
+                                "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of hotel names",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "source",
+                          "hotel_id"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Name of Disney hotel",
+                            "example": "Disney All Star Sports Resort"
+                          },
+                          "source": {
+                            "type": "string",
+                            "description": "Name of Disney hotel provider",
+                            "example": "Action_travel"
+                          },
+                          "hotel_id": {
+                            "type": "string",
+                            "description": "Code to identify hotel in provider's context",
+                            "example": "DASSR"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/hotels/{itemId}/rates": {
       "get": {
         "tags": [
