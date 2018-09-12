@@ -391,7 +391,38 @@
                       "example": "list"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "regime": {
+                            "type": "array",
+                            "description": "Regimes of all the items in actual response",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "example": 2
+                                },
+                                "code": {
+                                  "type": "string",
+                                  "example": "SA"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Solo alojamiento"
+                                },
+                                "provider_id": {
+                                  "type": "string",
+                                  "description": "Code to identify and filter regime",
+                                  "example": 88
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     },
                     "data": {
                       "type": "array",
@@ -539,6 +570,16 @@
               "type": "string",
               "format": "uuid",
               "example": "NFN - Descuento en Habitaciones"
+            }
+          },
+          {
+            "in": "query",
+            "name": "provider_regimes",
+            "description": "Provider code obtained from search metadata, to filter by regime.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": 88
             }
           },
           {
