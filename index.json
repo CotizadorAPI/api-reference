@@ -401,14 +401,6 @@
                             "items": {
                               "type": "object",
                               "properties": {
-                                "id": {
-                                  "type": "integer",
-                                  "example": 2
-                                },
-                                "code": {
-                                  "type": "string",
-                                  "example": "SA"
-                                },
                                 "name": {
                                   "type": "string",
                                   "example": "Solo alojamiento"
