@@ -453,55 +453,52 @@
                     "metadata": {
                       "type": "object",
                       "description": "Metadata with information about the response",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "total_results",
-                          "page",
-                          "per_page",
-                          "total_pages",
-                          "request_id",
-                          "query"
-                        ],
-                        "properties": {
-                          "total_results": {
-                            "type": "integer",
-                            "description": "Number of elementes obtained",
-                            "example": 40
-                          },
-                          "page": {
-                            "type": "integer",
-                            "description": "Number of page listing results",
-                            "example": 4
-                          },
-                          "per_page": {
-                            "$ref": "#/components/parameters/perPageParam"
-                          },
-                          "total_pages": {
-                            "type": "integer",
-                            "description": "Number of all pages available. It will change depending the per_page attribute",
-                            "example": 10
-                          },
-                          "request_id": {
-                            "type": "string",
-                            "format": "uuid",
-                            "description": "RequestId received in the request.",
-                            "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
-                          },
-                          "query": {
-                            "type": "object",
-                            "properties": {
-                              "per_page": {
-                                "type": "integer",
-                                "example": 10
-                              },
-                              "page": {
-                                "type": "integer",
-                                "example": 4
-                              },
-                              "request_id": {
-                                "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
-                              }
+                      "required": [
+                        "total_results",
+                        "page",
+                        "per_page",
+                        "total_pages",
+                        "request_id",
+                        "query"
+                      ],
+                      "properties": {
+                        "total_results": {
+                          "type": "integer",
+                          "description": "Number of elementes obtained",
+                          "example": 40
+                        },
+                        "page": {
+                          "type": "integer",
+                          "description": "Number of page listing results",
+                          "example": 4
+                        },
+                        "per_page": {
+                          "$ref": "#/components/parameters/perPageParam"
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "description": "Number of all pages available. It will change depending the per_page attribute",
+                          "example": 10
+                        },
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "per_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "page": {
+                              "type": "integer",
+                              "example": 4
+                            },
+                            "request_id": {
+                              "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
                             }
                           }
                         }
