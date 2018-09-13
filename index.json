@@ -1496,7 +1496,7 @@
           "Flights"
         ],
         "summary": "Gets a list of flights with flexible dates, one flight for each days combination considering ±3 days. Each flight represents the cheapest rate for that days combination. It generates 49 rates with all the possible combinations. The result is a grid represented as an array, reading the grid from left to right and then from top to bottom.",
-        "description": "# Gets a collection of the cheapest flight rates for all the combinations of ±3 days according to given date_it and date_out.\n",
+        "description": "# Gets a collection of the cheapest flight rates for all the combinations of ±3 days according to given `date_in` and `date_out`.\n",
         "operationId": "searchFlexibleFlights",
         "parameters": [
           {
@@ -6190,7 +6190,7 @@
               "valid": {
                 "type": "boolean",
                 "example": true,
-                "description": "This boolean is true when at least one flight is found with the date_in-date_out combination, whereas it is false when there are no flights or when date_in is later than date_out."
+                "description": "This boolean is `true` when at least one flight is found with the `date_in`-`date_out` combination, whereas it is `false` when there are no flights or when `date_in` is later than `date_out`."
               },
               "info": {
                 "$ref": "#/components/schemas/FlexibleFlightInfo"
