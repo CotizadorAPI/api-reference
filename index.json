@@ -392,24 +392,21 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "regime": {
-                            "type": "array",
-                            "description": "Regimes of all the items in actual response",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "name": {
-                                  "type": "string",
-                                  "example": "Solo alojamiento"
-                                },
-                                "provider_id": {
-                                  "type": "string",
-                                  "description": "Code to identify and filter regime",
-                                  "example": 88
-                                }
+                      "properties": {
+                        "regime": {
+                          "type": "array",
+                          "description": "Regimes of all the items in actual response",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "Solo alojamiento"
+                              },
+                              "provider_id": {
+                                "type": "string",
+                                "description": "Code to identify and filter regime",
+                                "example": 88
                               }
                             }
                           }
