@@ -1158,24 +1158,10 @@
             "$ref": "#/components/parameters/requestIdParam"
           },
           {
-            "in": "query",
-            "name": "origin_location_id",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 4239
-            },
-            "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the location. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_city_id` parameter are defined, the default IATA code is BUE.\n"
+            "$ref": "#/components/parameters/originLocationIdParam"
           },
           {
-            "in": "query",
-            "name": "origin_city_id",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 667
-            },
-            "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
+            "$ref": "#/components/parameters/originCityIdParam"
           },
           {
             "$ref": "#/components/parameters/locationIdsParam"
@@ -1490,6 +1476,144 @@
                         "total_pages": {
                           "type": "integer",
                           "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/flexible": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a list of flights with flexible dates, one flight for each days combination considering ±3 days. Each flight represents the cheapest rate for that days combination. It generates 49 rates with all the possible combinations. The result is a grid represented as an array, reading the grid from left to right and then from top to bottom.",
+        "description": "# Gets a collection of the cheapest flight rates for all the combinations of ±3 days according to given `date_in` and `date_out`.\n",
+        "operationId": "searchFlexibleFlights",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of flight rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of flight rates",
+                      "items": {
+                        "$ref": "#/components/schemas/FlexibleFlight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                          "properties": {
+                            "date_in": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "date_out": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "location_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "example": 3453
+                              }
+                            },
+                            "pax": {
+                              "type": "string",
+                              "example": "1"
+                            }
+                          }
+                        },
+                        "static": {
+                          "type": "object",
+                          "properties": {
+                            "airlines": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "AA"
+                              }
+                            },
+                            "min_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            },
+                            "max_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            }
+                          }
+                        },
+                        "airlines": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AA"
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
                         }
                       }
                     }
@@ -6054,6 +6178,71 @@
           }
         ]
       },
+      "FlexibleFlight": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "expires_at": {
+                "$ref": "#/components/schemas/DateTime"
+              },
+              "locations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              },
+              "date_in": {
+                "$ref": "#/components/schemas/Date"
+              },
+              "date_out": {
+                "$ref": "#/components/schemas/Date"
+              },
+              "kind": {
+                "type": "string",
+                "example": "flight"
+              },
+              "source": {
+                "type": "string",
+                "example": "netviax",
+                "enum": [
+                  "aero",
+                  "netviax"
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "ARS",
+                  "EUR",
+                  "GBP"
+                ],
+                "example": "USD"
+              },
+              "total": {
+                "$ref": "#/components/schemas/AllCurrencies"
+              },
+              "valid": {
+                "type": "boolean",
+                "example": true,
+                "description": "This boolean is `true` when at least one flight is found with the `date_in`-`date_out` combination, whereas it is `false` when there are no flights or when `date_in` is later than `date_out`."
+              },
+              "info": {
+                "$ref": "#/components/schemas/FlexibleFlightInfo"
+              }
+            }
+          }
+        ]
+      },
+      "FlexibleFlightInfo": {
+        "type": "object",
+        "properties": {
+          "airline": {
+            "$ref": "#/components/schemas/Airline"
+          }
+        }
+      },
       "FlightInfo": {
         "type": "object",
         "required": [
@@ -8574,6 +8763,26 @@
             "example": "LA"
           }
         }
+      },
+      "originLocationIdParam": {
+        "in": "query",
+        "name": "origin_location_id",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 4239
+        },
+        "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the location. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_city_id` parameter are defined, the default IATA code is BUE.\n"
+      },
+      "originCityIdParam": {
+        "in": "query",
+        "name": "origin_city_id",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 667
+        },
+        "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
       }
     }
   }
