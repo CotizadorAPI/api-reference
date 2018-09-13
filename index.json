@@ -6139,13 +6139,13 @@
             "type": "object",
             "properties": {
               "elapsed_flight_time_in_minutes": {
-                "type": "integer",
-                "example": 875,
+                "type": "string",
+                "example": "875",
                 "description": "Total flight time, including layovers (in minutes)"
               },
               "elapsed_layover_time_in_minutes": {
-                "type": "integer",
-                "example": 155,
+                "type": "string",
+                "example": "155",
                 "description": "Total layover time (in minutes)"
               },
               "flights": {
@@ -6160,13 +6160,13 @@
             "type": "object",
             "properties": {
               "elapsed_flight_time_in_minutes": {
-                "type": "integer",
-                "example": 875,
+                "type": "string",
+                "example": "875",
                 "description": "Total flight time, including layovers (in minutes)"
               },
               "elapsed_layover_time_in_minutes": {
-                "type": "integer",
-                "example": 155,
+                "type": "string",
+                "example": "155",
                 "description": "Total layover time (in minutes)"
               },
               "flights": {
@@ -8216,7 +8216,7 @@
         "type": "string",
         "pattern": "^[0-9]{4}\\-((0[0-9]|1[0-2])){1}-([01][0-9])T(([01]([0-9])|(2[0-4])){1}:?([0-5][0-9])){1}(:?([0-5][0-9])(.([0-9]+))?)?(Z|(\\+|\\-)([01]([0-9])|(2[0-4])){1}((:)?([0-5][0-9]){1})?){1}$",
         "example": "2017-10-12T23:45:00.000+00:00",
-        "description": "Expressed in local time"
+        "description": "Expressed in local time. That is, departure time is expressed in the origin's local time, whereas arrival time is expressed in the destination's local time"
       },
       "Date": {
         "type": "string",
