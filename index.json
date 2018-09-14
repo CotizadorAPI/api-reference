@@ -5489,7 +5489,7 @@
           }
         ]
       },
-      "GenericInfo": {
+      "GenericHotelInfo": {
         "type": "object",
         "required": [
           "id",
@@ -5656,7 +5656,7 @@
       "DisneyHotelInfo": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/GenericInfo"
+            "$ref": "#/components/schemas/GenericHotelInfo"
           },
           {
             "type": "object",
@@ -5818,7 +5818,7 @@
       "HotelInfo": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/GenericInfo"
+            "$ref": "#/components/schemas/GenericHotelInfo"
           },
           {
             "type": "object",
