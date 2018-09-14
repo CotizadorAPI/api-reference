@@ -5791,7 +5791,8 @@
         "required": [
           "name",
           "description",
-          "code"
+          "code",
+          "translated_code"
         ],
         "properties": {
           "name": {
@@ -5823,7 +5824,28 @@
               "cyber_cafe",
               "restaurant",
               "wifi",
-              "other"
+              "other",
+              "hotel",
+              "room"
+            ]
+          },
+          "translated_code": {
+            "type": "string",
+            "description": "Spanish name of the amenity.",
+            "enum": [
+              "gimnasio",
+              "bar",
+              "facilidades de acceso",
+              "aire acondicionado",
+              "piscina",
+              "ascensor",
+              "estacionamiento",
+              "cyber cafe",
+              "restaurante",
+              "wifi",
+              "otros",
+              "hotel",
+              "habitación"
             ]
           }
         }
