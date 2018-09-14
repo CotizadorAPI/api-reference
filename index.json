@@ -406,7 +406,7 @@
                               "provider_id": {
                                 "type": "string",
                                 "description": "Code to identify and filter regime",
-                                "example": 88
+                                "example": "88"
                               }
                             }
                           }
