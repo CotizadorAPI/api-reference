@@ -568,7 +568,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": 88
+              "example": "88"
             }
           },
           {
