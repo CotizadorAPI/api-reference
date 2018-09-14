@@ -5431,7 +5431,7 @@
             "type": "object",
             "properties": {
               "name": {
-                "example": "Riu Plaza Miami Beach"
+                "example": "Disney All Star Sports Resort"
               },
               "kind": {
                 "example": "hotel"
@@ -5489,10 +5489,174 @@
           }
         ]
       },
+      "GenericInfo": {
+        "type": "object",
+        "required": [
+          "id",
+          "hotel_id",
+          "name",
+          "address",
+          "stars",
+          "longitude",
+          "latitude",
+          "regime"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "99573aff"
+          },
+          "hotel_id": {
+            "type": "string",
+            "description": "Identifier of the hotel given by the provider. It is used when additional information about this hotel is requested.",
+            "example": "T45-fK5T-3na"
+          },
+          "name": {
+            "type": "string",
+            "description": "Transliterated name used by the filter by name.",
+            "example": "Riu Plaza Miami Beach"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of the hotel.",
+            "example": "3101 Collins Ave"
+          },
+          "stars": {
+            "type": "integer",
+            "description": "Number of stars of the hotel.",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "example": 4
+          },
+          "longitude": {
+            "type": "string",
+            "example": "-80.124218"
+          },
+          "latitude": {
+            "type": "string",
+            "example": "25.806871"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HotelImage"
+            }
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HotelAmenity"
+            }
+          },
+          "regime": {
+            "type": "object",
+            "description": "Regime of the hotel tariff. Available regimes can be obtained from [here](#/Hotels/hotelRegimes).",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "Sólo alojamiento",
+                  "Sólo desayuno",
+                  "Media pensión",
+                  "Pensión completa"
+                ]
+              }
+            }
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "original_type",
+                "details",
+                "occupancy"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of the room",
+                  "enum": [
+                    "Double",
+                    "Triple",
+                    "Twin",
+                    "Single"
+                  ],
+                  "example": "Double"
+                },
+                "original_type": {
+                  "type": "string",
+                  "description": "Original room type returned by the provider. This is converted to one of the common room types (field `type`).",
+                  "example": "DBL"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "Detailed description of the room.",
+                  "example": "Habitación doble"
+                },
+                "occupancy": {
+                  "type": "string",
+                  "description": "It defines the type and number of passengers for which this room is for. The first number is the number of adult passengers that this room allows. The next number is the number of children and the last is the number of infants. For example, if the occupancy is 2/0/0, the room is for 2 adults, 0 children and 0 infants. The difference between children and infants is given by their ages. Usually, an infant is a passenger which age is 0 or 1 years old, a child is 2 to 15 years old and passengers of more than 16 years old are considered adults. The exact age ranges are given by the rate provider.",
+                  "pattern": "^\\d+/\\d+/\\d+$",
+                  "example": "2/0/0"
+                },
+                "availability": {
+                  "type": "string",
+                  "description": "Availability of the room",
+                  "enum": [
+                    "CNF",
+                    "NOP"
+                  ]
+                },
+                "comment": {
+                  "type": "string",
+                  "description": "Comment for the room. It is used mainly for Aero hotel rates.",
+                  "example": "(Ex Moon Palace Golf & Spa Resort)"
+                }
+              }
+            }
+          },
+          "cancellation": {
+            "type": "object",
+            "required": [
+              "status",
+              "charges"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Cancellation status of the hotel rate.  \nThe status `with_fee` means that the rate actually has cancellation fees, so if users reserve this rate, and immediately cancel the reservation, they will have to pay the penalty fee.  \nThe status `without_fee` means that the rate has cancellation fees, but they start to rule in the future, not at the moment the rate was generated.  \nWhen it is not possible to determine the cancellation fees, the status will be `unknown`.\n",
+                "enum": [
+                  "without_fee",
+                  "with_fee",
+                  "unknown"
+                ]
+              },
+              "charges": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Fee"
+                }
+              }
+            }
+          }
+        }
+      },
       "DisneyHotelInfo": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/HotelInfo"
+            "$ref": "#/components/schemas/GenericInfo"
           },
           {
             "type": "object",
@@ -5652,200 +5816,102 @@
         ]
       },
       "HotelInfo": {
-        "type": "object",
-        "required": [
-          "id",
-          "hotel_id",
-          "name",
-          "address",
-          "stars",
-          "longitude",
-          "latitude",
-          "regime"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "99573aff"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GenericInfo"
           },
-          "hotel_id": {
-            "type": "string",
-            "description": "Identifier of the hotel given by the provider. It is used when additional information about this hotel is requested.",
-            "example": "T45-fK5T-3na"
-          },
-          "name": {
-            "type": "string",
-            "description": "Transliterated name used by the filter by name.",
-            "example": "Riu Plaza Miami Beach"
-          },
-          "address": {
-            "type": "string",
-            "description": "Address of the hotel.",
-            "example": "3101 Collins Ave"
-          },
-          "stars": {
-            "type": "integer",
-            "description": "Number of stars of the hotel.",
-            "enum": [
-              1,
-              2,
-              3,
-              4,
-              5
-            ],
-            "example": 4
-          },
-          "longitude": {
-            "type": "string",
-            "example": "-80.124218"
-          },
-          "latitude": {
-            "type": "string",
-            "example": "25.806871"
-          },
-          "images": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HotelImage"
-            }
-          },
-          "amenities": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HotelAmenity"
-            }
-          },
-          "nemo_info": {
-            "type": "string",
-            "description": "Hotel Id in PriceSurfer of this hotel. It is used to obtain the additional information of the hotel from PriceSurfer. At the moment, only Aero hotels use this field.",
-            "nullable": true,
-            "example": "CCL-2XW-30S"
-          },
-          "promo": {
-            "type": "string",
-            "description": "Description about the promotion that applies for the hotel rate. It is present only in Aero hotel tariffs.",
-            "example": "Sin promo"
-          },
-          "can_sell": {
-            "type": "boolean",
-            "description": "If it is true, the hotel rate is available for sell.",
-            "example": true
-          },
-          "stop_sales": {
-            "type": "array",
-            "description": "Only for Aero hotel rates.",
-            "items": {
-              "type": "string"
-            }
-          },
-          "regime": {
+          {
             "type": "object",
-            "description": "Regime of the hotel tariff. Available regimes can be obtained from [here](#/Hotels/hotelRegimes).",
             "properties": {
-              "code": {
-                "type": "integer",
-                "example": 1
-              },
-              "name": {
+              "nemo_info": {
                 "type": "string",
-                "enum": [
-                  "Sólo alojamiento",
-                  "Sólo desayuno",
-                  "Media pensión",
-                  "Pensión completa"
-                ]
-              }
-            }
-          },
-          "rooms": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": [
-                "type",
-                "original_type",
-                "details",
-                "occupancy"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "Type of the room",
-                  "enum": [
-                    "Double",
-                    "Triple",
-                    "Twin",
-                    "Single"
-                  ],
-                  "example": "Double"
-                },
-                "original_type": {
-                  "type": "string",
-                  "description": "Original room type returned by the provider. This is converted to one of the common room types (field `type`).",
-                  "example": "DBL"
-                },
-                "details": {
-                  "type": "string",
-                  "description": "Detailed description of the room.",
-                  "example": "Habitación doble"
-                },
-                "occupancy": {
-                  "type": "string",
-                  "description": "It defines the type and number of passengers for which this room is for. The first number is the number of adult passengers that this room allows. The next number is the number of children and the last is the number of infants. For example, if the occupancy is 2/0/0, the room is for 2 adults, 0 children and 0 infants. The difference between children and infants is given by their ages. Usually, an infant is a passenger which age is 0 or 1 years old, a child is 2 to 15 years old and passengers of more than 16 years old are considered adults. The exact age ranges are given by the rate provider.",
-                  "pattern": "^\\d+/\\d+/\\d+$",
-                  "example": "2/0/0"
-                },
-                "availability": {
-                  "type": "string",
-                  "description": "Availability of the room",
-                  "enum": [
-                    "CNF",
-                    "NOP"
-                  ]
-                },
-                "comment": {
-                  "type": "string",
-                  "description": "Comment for the room. It is used mainly for Aero hotel rates.",
-                  "example": "(Ex Moon Palace Golf & Spa Resort)"
+                "description": "Hotel Id in PriceSurfer of this hotel. It is used to obtain the additional information of the hotel from PriceSurfer. At the moment, only Aero hotels use this field.",
+                "nullable": true,
+                "example": "CCL-2XW-30S"
+              },
+              "promo": {
+                "type": "string",
+                "description": "Description about the promotion that applies for the hotel rate. It is present only in Aero hotel tariffs.",
+                "example": "Sin promo"
+              },
+              "can_sell": {
+                "type": "boolean",
+                "description": "If it is true, the hotel rate is available for sell.",
+                "example": true
+              },
+              "stop_sales": {
+                "type": "array",
+                "description": "Only for Aero hotel rates.",
+                "items": {
+                  "type": "string"
                 }
-              }
-            }
-          },
-          "additional_regime": {
-            "type": "object",
-            "description": "Additional regimes of the hotel. Only for Aero hotel rates."
-          },
-          "markup": {
-            "type": "number",
-            "description": "Only for Aero hotel rates.",
-            "format": "float"
-          },
-          "cancellation": {
-            "type": "object",
-            "required": [
-              "status",
-              "charges"
-            ],
-            "properties": {
-              "status": {
-                "type": "string",
-                "description": "Cancellation status of the hotel rate.  \nThe status `with_fee` means that the rate actually has cancellation fees, so if users reserve this rate, and immediately cancel the reservation, they will have to pay the penalty fee.  \nThe status `without_fee` means that the rate has cancellation fees, but they start to rule in the future, not at the moment the rate was generated.  \nWhen it is not possible to determine the cancellation fees, the status will be `unknown`.\n",
-                "enum": [
-                  "without_fee",
-                  "with_fee",
-                  "unknown"
-                ]
               },
-              "charges": {
+              "rooms": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/Fee"
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "original_type",
+                    "details",
+                    "occupancy"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Type of the room",
+                      "enum": [
+                        "Double",
+                        "Triple",
+                        "Twin",
+                        "Single"
+                      ],
+                      "example": "Double"
+                    },
+                    "original_type": {
+                      "type": "string",
+                      "description": "Original room type returned by the provider. This is converted to one of the common room types (field `type`).",
+                      "example": "DBL"
+                    },
+                    "details": {
+                      "type": "string",
+                      "description": "Detailed description of the room.",
+                      "example": "Habitación doble"
+                    },
+                    "occupancy": {
+                      "type": "string",
+                      "description": "It defines the type and number of passengers for which this room is for. The first number is the number of adult passengers that this room allows. The next number is the number of children and the last is the number of infants. For example, if the occupancy is 2/0/0, the room is for 2 adults, 0 children and 0 infants. The difference between children and infants is given by their ages. Usually, an infant is a passenger which age is 0 or 1 years old, a child is 2 to 15 years old and passengers of more than 16 years old are considered adults. The exact age ranges are given by the rate provider.",
+                      "pattern": "^\\d+/\\d+/\\d+$",
+                      "example": "2/0/0"
+                    },
+                    "availability": {
+                      "type": "string",
+                      "description": "Availability of the room",
+                      "enum": [
+                        "CNF",
+                        "NOP"
+                      ]
+                    },
+                    "comment": {
+                      "type": "string",
+                      "description": "Comment for the room. It is used mainly for Aero hotel rates.",
+                      "example": "(Ex Moon Palace Golf & Spa Resort)"
+                    }
+                  }
                 }
+              },
+              "additional_regime": {
+                "type": "object",
+                "description": "Additional regimes of the hotel. Only for Aero hotel rates."
+              },
+              "markup": {
+                "type": "number",
+                "description": "Only for Aero hotel rates.",
+                "format": "float"
               }
             }
           }
-        }
+        ]
       },
       "HotelAdditionalInformation": {
         "type": "object",
