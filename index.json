@@ -508,29 +508,7 @@
                       "type": "array",
                       "description": "Collection of hotel names",
                       "items": {
-                        "type": "object",
-                        "required": [
-                          "name",
-                          "source",
-                          "hotel_id"
-                        ],
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "description": "Name of Disney hotel",
-                            "example": "Disney All Star Sports Resort"
-                          },
-                          "source": {
-                            "type": "string",
-                            "description": "Name of Disney hotel provider",
-                            "example": "Action_travel"
-                          },
-                          "hotel_id": {
-                            "type": "string",
-                            "description": "Code to identify hotel in provider's context",
-                            "example": "DASSR"
-                          }
-                        }
+                        "$ref": "#/components/schemas/HotelName"
                       }
                     }
                   }
@@ -5310,6 +5288,31 @@
             }
           }
         ]
+      },
+      "HotelName": {
+        "type": "object",
+        "required": [
+          "name",
+          "source",
+          "hotel_id"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of Disney hotel",
+            "example": "Disney All Star Sports Resort"
+          },
+          "source": {
+            "type": "string",
+            "description": "Name of Disney hotel provider",
+            "example": "Action_travel"
+          },
+          "hotel_id": {
+            "type": "string",
+            "description": "Code to identify hotel in provider's context",
+            "example": "DASSR"
+          }
+        }
       },
       "ExtendedHotel": {
         "allOf": [
