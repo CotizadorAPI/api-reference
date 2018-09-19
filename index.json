@@ -5831,7 +5831,7 @@
               },
               "promo": {
                 "type": "string",
-                "description": "Description about the promotion that applies for the hotel rate. It is present only in Aero hotel tariffs (item's source = Aero).",
+                "description": "Description about the promotion that applies for the hotel rate. It is present only in Aero hotel tariffs (item's source = 'aero').",
                 "example": "Sin promo"
               },
               "can_sell": {
@@ -5841,7 +5841,7 @@
               },
               "stop_sales": {
                 "type": "array",
-                "description": "Only for Aero hotel rates (item's source = Aero).",
+                "description": "Only for Aero hotel rates (item's source = 'aero').",
                 "items": {
                   "type": "string"
                 }
