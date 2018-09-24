@@ -262,6 +262,9 @@
             "$ref": "#/components/parameters/maxPriceParam"
           },
           {
+            "$ref": "#/components/parameters/providerRegimeParam"
+          },
+          {
             "in": "query",
             "name": "reduced",
             "description": "Gets a response with less fields. This option is great for displaying results in a map.",
@@ -673,16 +676,6 @@
             }
           },
           {
-            "in": "query",
-            "name": "provider_regimes",
-            "description": "Provider code obtained from search metadata, to filter by regime.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "88"
-            }
-          },
-          {
             "$ref": "#/components/parameters/sortByParam"
           },
           {
@@ -699,6 +692,9 @@
           },
           {
             "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/providerRegimeParam"
           }
         ],
         "responses": {
@@ -8986,6 +8982,16 @@
         "schema": {
           "type": "number",
           "format": "float"
+        }
+      },
+      "providerRegimeParam": {
+        "in": "query",
+        "name": "provider_regimes",
+        "description": "Provider code obtained from search metadata, to filter by regime.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "88"
         }
       },
       "currencyParam": {
