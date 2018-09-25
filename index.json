@@ -448,6 +448,16 @@
           },
           {
             "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Partial name included in Disney's hotel name.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "kingdom"
+            }
           }
         ],
         "responses": {
