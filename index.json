@@ -4050,7 +4050,7 @@
           "Reservations"
         ],
         "summary": "Gets the additional rates of reservation. It responds with an array that contains the additional rates, one for each rate.",
-        "description": "# Gets the additional rates of reservation. It responds with an array that contains the additional rates, one for each rate.\n## Rates in response: tariff, cost, charges, commission, iva, taxes, total\n",
+        "description": "# Gets the additional rates of reservation. It responds with an array that contains the additional rates, one for each rate.\n### Types of rates in response:\n\n - tariff\n - cost\n - charges\n - commission\n - iva\n - taxes\n - total\n",
         "operationId": "getAdditionaRates",
         "parameters": [
           {
