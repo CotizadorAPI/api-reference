@@ -4044,6 +4044,83 @@
         }
       }
     },
+    "/reservations/{reservationId}/additional_rates": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Gets the additional rates of reservation. It responds with an array that contains the additional rates.",
+        "description": "# Gets the additional rates of reservation. It responds with an array that contains the additional rates.\n### Types of rates in response:\n\n - tariff\n - cost\n - charges\n - commission\n - iva\n - taxes\n - total\n",
+        "operationId": "getAdditionalRates",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "path",
+            "name": "reservationId",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "ID of the reservation to get its details."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with the additional rates of a reservation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdditionalRate"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/reservations/{reservationId}/items/{itemId}/observations": {
       "put": {
         "tags": [
@@ -7466,6 +7543,43 @@
           "payment_token": {
             "type": "string",
             "example": "31346270"
+          }
+        }
+      },
+      "AdditionalRate": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "tariff"
+          },
+          "value": {
+            "properties": {
+              "usd_value": {
+                "type": "number",
+                "format": "float",
+                "example": 439.56
+              },
+              "ars_value": {
+                "type": "number",
+                "format": "float",
+                "example": 8197.65
+              },
+              "eur_value": {
+                "type": "number",
+                "format": "float",
+                "example": 351.83
+              },
+              "gbp_value": {
+                "type": "number",
+                "format": "float",
+                "example": 335.54
+              }
+            }
           }
         }
       },
