@@ -4049,9 +4049,9 @@
         "tags": [
           "Reservations"
         ],
-        "summary": "Gets the additional rates of reservation. It responds with an array that contains the additional rates, one for each rate.",
-        "description": "# Gets the additional rates of reservation. It responds with an array that contains the additional rates, one for each rate.\n### Types of rates in response:\n\n - tariff\n - cost\n - charges\n - commission\n - iva\n - taxes\n - total\n",
-        "operationId": "getAdditionaRates",
+        "summary": "Gets the additional rates of reservation. It responds with an array that contains the additional rates.",
+        "description": "# Gets the additional rates of reservation. It responds with an array that contains the additional rates.\n### Types of rates in response:\n\n - tariff\n - cost\n - charges\n - commission\n - iva\n - taxes\n - total\n",
+        "operationId": "getAdditionalRates",
         "parameters": [
           {
             "$ref": "#/components/parameters/requestIdParam"
@@ -4069,7 +4069,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response with a reservation",
+            "description": "Standard response with the additional rates of a reservation",
             "content": {
               "application/json": {
                 "schema": {
