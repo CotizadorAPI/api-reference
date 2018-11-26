@@ -1637,6 +1637,190 @@
         }
       }
     },
+    "/flights/{itemId}/search": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a list of flights from another item.",
+        "description": "# Gets a collection of flight rates.\n**IMPORTANT:** as finding flights using data of a specific item is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search param. This collection can be found inside `metadata`.\n",
+        "operationId": "searchFlightsFromItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the flight rate.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "flight_0f58e8e9-6bcd-4b5b-80dd-d44bfd4d889e"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of flight rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of flight rates",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                          "properties": {
+                            "date_in": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "date_out": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "location_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "example": 3453
+                              }
+                            },
+                            "pax": {
+                              "type": "string",
+                              "example": "1"
+                            },
+                            "sort_by": {
+                              "type": "string",
+                              "example": "price"
+                            },
+                            "sort_direction": {
+                              "type": "string",
+                              "example": "asc"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "min_departure_duration": {
+                              "$ref": "#/components/schemas/HourMinuteDuration"
+                            },
+                            "max_departure_duration": {
+                              "$ref": "#/components/schemas/HourMinuteDuration"
+                            },
+                            "min_arrival_duration": {
+                              "$ref": "#/components/schemas/HourMinuteDuration"
+                            },
+                            "max_arrival_duration": {
+                              "$ref": "#/components/schemas/HourMinuteDuration"
+                            }
+                          }
+                        },
+                        "static": {
+                          "type": "object",
+                          "properties": {
+                            "airlines": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "AA"
+                              }
+                            },
+                            "min_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            },
+                            "max_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            }
+                          }
+                        },
+                        "airlines": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AA"
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "min_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "min_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total_results": {
+                          "type": "integer",
+                          "example": 12
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/flights/flexible": {
       "get": {
         "tags": [
