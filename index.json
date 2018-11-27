@@ -1347,289 +1347,45 @@
             "$ref": "#/components/parameters/airlinesParam"
           },
           {
-            "in": "query",
-            "name": "contract",
-            "description": "Contract where to look at",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "aero",
-                "netviax"
-              ],
-              "default": "aero"
-            }
+            "$ref": "#/components/parameters/contract"
           },
           {
-            "in": "query",
-            "name": "suggestions_contract",
-            "description": "**Exclusive for suggestions:** contract where to look at. Only available for suggested flights (`suggestions`) when `contract` is not defined.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "aero",
-                "netviax"
-              ],
-              "default": "aero"
-            }
+            "$ref": "#/components/parameters/suggestionsContract"
           },
           {
-            "in": "query",
-            "name": "by_country",
-            "description": "Group flights by destination country. Only available for flights returned by Aero Service.",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
+            "$ref": "#/components/parameters/byCountry"
           },
           {
-            "in": "query",
-            "name": "departure_layovers",
-            "description": "Maximum number of layovers for the departure flights. When its value is 0, only flights with a direct departure flight will be returned. When its value is 1, flights with a direct departure flight and flights with one departure layover will be returned. The same rules apply for the remaining values.",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            }
+            "$ref": "#/components/parameters/departureLayovers"
           },
           {
-            "in": "query",
-            "name": "arrival_layovers",
-            "description": "Maximum number of layovers for the arrival flights. When its value is 0, only flights with a direct arrival flight will be returned. When its value is 1, flights with a direct arrival flight and flights with one arrival layover will be returned. The same rules apply for the remaining values.",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            }
+            "$ref": "#/components/parameters/arrivalLayovers"
           },
           {
-            "in": "query",
-            "name": "min_departure_duration",
-            "description": "Minimum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/HourMinuteDuration"
-            }
+            "$ref": "#/components/parameters/minDepartureDuration"
           },
           {
-            "in": "query",
-            "name": "max_departure_duration",
-            "description": "Maximum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/HourMinuteDuration"
-            }
+            "$ref": "#/components/parameters/maxDepartureDuration"
           },
           {
-            "in": "query",
-            "name": "min_arrival_duration",
-            "description": "Minimum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/HourMinuteDuration"
-            }
+            "$ref": "#/components/parameters/minArrivalDuration"
           },
           {
-            "in": "query",
-            "name": "max_arrival_duration",
-            "description": "Maximum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/HourMinuteDuration"
-            }
+            "$ref": "#/components/parameters/minDepartureTime"
           },
           {
-            "in": "query",
-            "name": "min_departure_time",
-            "description": "Minimum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Time"
-            }
+            "$ref": "#/components/parameters/maxDepartureTime"
           },
           {
-            "in": "query",
-            "name": "max_departure_time",
-            "description": "Maximum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Time"
-            }
+            "$ref": "#/components/parameters/minArrivalTime"
           },
           {
-            "in": "query",
-            "name": "min_arrival_time",
-            "description": "Minimum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Time"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max_arrival_time",
-            "description": "Maximum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Time"
-            }
+            "$ref": "#/components/parameters/maxArrivalTime"
           }
         ],
         "responses": {
           "200": {
-            "description": "Standard response with a collection of flight rates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "description": "Status of the request",
-                      "example": "ok"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "description": "Status of the transaction",
-                      "example": "finished"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of flight rates",
-                      "items": {
-                        "$ref": "#/components/schemas/Flight"
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
-                        },
-                        "query": {
-                          "type": "object",
-                          "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
-                          "properties": {
-                            "date_in": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "date_out": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "location_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "example": 3453
-                              }
-                            },
-                            "pax": {
-                              "type": "string",
-                              "example": "1"
-                            },
-                            "sort_by": {
-                              "type": "string",
-                              "example": "price"
-                            },
-                            "sort_direction": {
-                              "type": "string",
-                              "example": "asc"
-                            },
-                            "page": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "per_page": {
-                              "type": "integer",
-                              "example": 10
-                            },
-                            "min_departure_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "max_departure_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "min_arrival_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "max_arrival_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            }
-                          }
-                        },
-                        "static": {
-                          "type": "object",
-                          "properties": {
-                            "airlines": {
-                              "type": "array",
-                              "items": {
-                                "type": "string",
-                                "example": "AA"
-                              }
-                            },
-                            "min_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            },
-                            "max_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            }
-                          }
-                        },
-                        "airlines": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "example": "AA"
-                          }
-                        },
-                        "min_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "max_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "min_departure_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "max_departure_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "min_arrival_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "max_arrival_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "per_page": {
-                          "type": "integer",
-                          "example": 10
-                        },
-                        "total_results": {
-                          "type": "integer",
-                          "example": 12
-                        },
-                        "total_pages": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Flights"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -1643,11 +1399,47 @@
           "Flights"
         ],
         "summary": "Gets a list of flights from another item.",
-        "description": "# Gets a collection of flight rates.\n**IMPORTANT:** as finding flights using data of a specific item is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search param. This collection can be found inside `metadata`.\n",
+        "description": "# Gets a collection of flight rates.\n\n**IMPORTANT:** as finding flights using data of a specific item is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search param. This collection can be found inside `metadata`.\n\n**The item that was specified by itemId always will be into results.**\n\nThis endpoint uses the information about itemId to perform an ordinary flights search using **GET /hotels**\n",
         "operationId": "searchFlightsFromItem",
         "parameters": [
           {
             "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/byCountry"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
           },
           {
             "in": "path",
@@ -1663,157 +1455,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response with a collection of flight rates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "description": "Status of the request",
-                      "example": "ok"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "description": "Status of the transaction",
-                      "example": "finished"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of flight rates",
-                      "items": {
-                        "$ref": "#/components/schemas/Flight"
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
-                        },
-                        "query": {
-                          "type": "object",
-                          "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
-                          "properties": {
-                            "date_in": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "date_out": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "location_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "example": 3453
-                              }
-                            },
-                            "pax": {
-                              "type": "string",
-                              "example": "1"
-                            },
-                            "sort_by": {
-                              "type": "string",
-                              "example": "price"
-                            },
-                            "sort_direction": {
-                              "type": "string",
-                              "example": "asc"
-                            },
-                            "page": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "per_page": {
-                              "type": "integer",
-                              "example": 10
-                            },
-                            "min_departure_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "max_departure_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "min_arrival_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            },
-                            "max_arrival_duration": {
-                              "$ref": "#/components/schemas/HourMinuteDuration"
-                            }
-                          }
-                        },
-                        "static": {
-                          "type": "object",
-                          "properties": {
-                            "airlines": {
-                              "type": "array",
-                              "items": {
-                                "type": "string",
-                                "example": "AA"
-                              }
-                            },
-                            "min_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            },
-                            "max_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            }
-                          }
-                        },
-                        "airlines": {
-                          "type": "array",
-                          "items": {
-                            "type": "string",
-                            "example": "AA"
-                          }
-                        },
-                        "min_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "max_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "min_departure_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "max_departure_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "min_arrival_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "max_arrival_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "per_page": {
-                          "type": "integer",
-                          "example": 10
-                        },
-                        "total_results": {
-                          "type": "integer",
-                          "example": 12
-                        },
-                        "total_pages": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Flights"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -8131,9 +7773,7 @@
             "nullable": true,
             "example": null
           },
-          "expires_at": {
-            "$ref": "#/components/schemas/DateTime"
-          },
+          "expires_at": null,
           "data": {
             "type": "object",
             "description": "Misc information."
@@ -9131,6 +8771,159 @@
             }
           }
         }
+      },
+      "Flights": {
+        "description": "Standard response with a collection of flight rates",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "type": "array",
+                  "description": "Collection of flight rates",
+                  "items": {
+                    "$ref": "#/components/schemas/Flight"
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "date_in": {
+                          "$ref": "#/components/schemas/Date"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/schemas/Date"
+                        },
+                        "location_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3453
+                          }
+                        },
+                        "pax": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "sort_by": {
+                          "type": "string",
+                          "example": "price"
+                        },
+                        "sort_direction": {
+                          "type": "string",
+                          "example": "asc"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "min_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "min_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        }
+                      }
+                    },
+                    "static": {
+                      "type": "object",
+                      "properties": {
+                        "airlines": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AA"
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        }
+                      }
+                    },
+                    "airlines": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "AA"
+                      }
+                    },
+                    "min_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "max_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "min_departure_duration": {
+                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    },
+                    "max_departure_duration": {
+                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    },
+                    "min_arrival_duration": {
+                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    },
+                    "max_arrival_duration": {
+                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "per_page": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "total_results": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -9351,6 +9144,136 @@
           "example": 667
         },
         "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
+      },
+      "contract": {
+        "in": "query",
+        "name": "contract",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "aero",
+            "netviax"
+          ],
+          "default": "aero"
+        },
+        "description": "Contract where to look at"
+      },
+      "suggestionsContract": {
+        "in": "query",
+        "name": "suggestions_contract",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "aero",
+            "netviax"
+          ],
+          "default": "aero"
+        },
+        "description": "**Exclusive for suggestions:** contract where to look at. Only available for suggested flights (`suggestions`) when `contract` is not defined."
+      },
+      "byCountry": {
+        "in": "query",
+        "name": "by_country",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": "Group flights by destination country. Only available for flights returned by Aero Service."
+      },
+      "departureLayovers": {
+        "in": "query",
+        "name": "departure_layovers",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 1
+        },
+        "description": "Maximum number of layovers for the departure flights. When its value is 0, only flights with a direct departure flight will be returned. When its value is 1, flights with a direct departure flight and flights with one departure layover will be returned. The same rules apply for the remaining values."
+      },
+      "arrivalLayovers": {
+        "in": "query",
+        "name": "arrival_layovers",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 1
+        },
+        "description": "Maximum number of layovers for the arrival flights. When its value is 0, only flights with a direct arrival flight will be returned. When its value is 1, flights with a direct arrival flight and flights with one arrival layover will be returned. The same rules apply for the remaining values."
+      },
+      "minDepartureDuration": {
+        "in": "query",
+        "name": "min_departure_duration",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/HourMinuteDuration"
+        },
+        "description": "Minimum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n"
+      },
+      "maxDepartureDuration": {
+        "in": "query",
+        "name": "max_departure_duration",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/HourMinuteDuration"
+        },
+        "description": "Maximum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n"
+      },
+      "minArrivalDuration": {
+        "in": "query",
+        "name": "min_arrival_duration",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/HourMinuteDuration"
+        },
+        "description": "Minimum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n"
+      },
+      "maxArrivalDuration": {
+        "in": "query",
+        "name": "min_arrival_duration",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/HourMinuteDuration"
+        },
+        "description": "Maximum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n"
+      },
+      "minDepartureTime": {
+        "in": "query",
+        "name": "min_departure_time",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Minimum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+      },
+      "maxDepartureTime": {
+        "in": "query",
+        "name": "max_departure_time",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Maximum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+      },
+      "minArrivalTime": {
+        "in": "query",
+        "name": "min_arrival_time",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Minimum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+      },
+      "maxArrivalTime": {
+        "in": "query",
+        "name": "max_arrival_time",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Maximum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
       }
     }
   }
