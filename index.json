@@ -1402,7 +1402,7 @@
           "Flights"
         ],
         "summary": "Gets a list of flights from another item.",
-        "description": "# Gets a collection of flight rates.\n\n**IMPORTANT:** as finding flights using data of a specific item is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search param. This collection can be found inside `metadata`.\n\n**The item that was specified by itemId always will be into results.**\n\nThis endpoint uses the information about itemId to perform an ordinary flights search using **GET /hotels**\n",
+        "description": "# Gets a collection of flight rates.\n\n**IMPORTANT:** as finding flights using data of a specific item is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search param. This collection can be found inside `metadata`.\n\n**The item that was specified by itemId always will be into results.**\n\nThis endpoint uses the information about itemId to perform an ordinary flights search using **GET /flights**\n",
         "operationId": "searchFlightsFromItem",
         "parameters": [
           {
@@ -7779,7 +7779,9 @@
             "nullable": true,
             "example": null
           },
-          "expires_at": null,
+          "expires_at": {
+            "$ref": "#/components/schemas/DateTime"
+          },
           "data": {
             "type": "object",
             "description": "Misc information."
