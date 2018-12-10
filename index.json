@@ -1451,6 +1451,9 @@
             "$ref": "#/components/parameters/maxArrivalTime"
           },
           {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
             "in": "path",
             "name": "itemId",
             "description": "Id of the flight rate.",
@@ -9288,7 +9291,7 @@
       },
       "baggageIncluded": {
         "in": "query",
-        "name": "baggageIncluded",
+        "name": "baggage_included",
         "required": false,
         "schema": {
           "type": "boolean",
