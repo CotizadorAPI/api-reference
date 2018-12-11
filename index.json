@@ -1384,6 +1384,9 @@
           },
           {
             "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
           }
         ],
         "responses": {
@@ -1446,6 +1449,9 @@
           },
           {
             "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
           },
           {
             "in": "path",
@@ -9282,6 +9288,16 @@
           "$ref": "#/components/schemas/Time"
         },
         "description": "Maximum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+      },
+      "baggageIncluded": {
+        "in": "query",
+        "name": "baggage_included",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": "Flights that have luggage included in all their legs. Only available for flights returned by Netviax Service."
       }
     }
   }
