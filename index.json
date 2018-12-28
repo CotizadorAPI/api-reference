@@ -8957,7 +8957,8 @@
         "schema": {
           "type": "string",
           "enum": [
-            "price"
+            "price",
+            "name (hotel name)"
           ],
           "example": "price"
         },
