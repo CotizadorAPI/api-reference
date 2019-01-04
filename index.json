@@ -4542,21 +4542,60 @@
             "name": "status",
             "description": "Existing reservation status to filter by",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "open",
+                "close",
+                "without_liquidations",
+                "without_vouchers",
+                "all"
+              ],
+              "default": "open"
             }
           },
           {
             "in": "query",
-            "name": "agency_id",
-            "description": "Id of the agency to filter by",
+            "name": "order",
+            "description": "Sort direction to use.",
             "schema": {
-              "type": "integer"
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includes",
+            "description": "Elements included in the reservation.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "services"
+                ]
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "criterion_date",
+            "description": "Criterion to filter by dates.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "departure_date",
+                "expiration_date"
+              ]
             }
           },
           {
             "in": "query",
             "name": "date_in",
-            "description": "Date in as yyyy-mm-dd.",
+            "description": "Date in as yyyy-mm-dd. It works only if a criterion_date is given.",
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
@@ -4564,7 +4603,7 @@
           {
             "in": "query",
             "name": "date_out",
-            "description": "Date out as yyyy-mm-dd.",
+            "description": "Date out as yyyy-mm-dd. It works only if a criterion_date is given.",
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
