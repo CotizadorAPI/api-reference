@@ -4556,7 +4556,7 @@
           {
             "in": "query",
             "name": "order",
-            "description": "Sort direction to use.",
+            "description": "Sort according to id.",
             "schema": {
               "type": "string",
               "enum": [
