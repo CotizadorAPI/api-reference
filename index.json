@@ -8958,7 +8958,7 @@
           "type": "string",
           "enum": [
             "price",
-            "name (hotel name)"
+            "name"
           ],
           "example": "price"
         },
