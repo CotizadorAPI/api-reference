@@ -6892,7 +6892,7 @@
           "baggage_icluded": {
             "type": "boolean",
             "example": true,
-            "description": "This boolean is `true` If leg includes baggage"
+            "description": "This boolean is `true` if leg includes baggage"
           },
           "flights": {
             "type": "array",
