@@ -1399,6 +1399,83 @@
         }
       }
     },
+    "/flights/multiple_destinations": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a list of multiple destinations flights.",
+        "description": "# Gets a collection of flight rates.\n",
+        "operationId": "searchMultipleDestinationsFlights",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/datesParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/layovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDurations"
+          },
+          {
+            "$ref": "#/components/parameters/maxDurations"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/cabin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/MultipleDestinationsFlights"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/flights/{itemId}/search": {
       "get": {
         "tags": [
@@ -6353,6 +6430,59 @@
           }
         ]
       },
+      "MultipleDestinationsFlight": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Vuelo DL265 2019-05-02T18:05:00 Varias noches"
+              },
+              "source": {
+                "type": "string",
+                "example": "netviax"
+              },
+              "locations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Locations"
+                }
+              },
+              "operator": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 25
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "operator_name"
+                  },
+                  "initials": {
+                    "type": "string",
+                    "example": "operator_initials"
+                  }
+                }
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "flight"
+                ],
+                "example": "flight"
+              },
+              "info": {
+                "$ref": "#/components/schemas/MultipleDestinationsFlightInfo"
+              }
+            }
+          }
+        ]
+      },
       "FlexibleFlight": {
         "allOf": [
           {
@@ -6581,6 +6711,139 @@
           }
         }
       },
+      "MultipleDestinationsFlightInfo": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "99573aff"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vuelo DL265 2019-05-02T18:05:00 Varias noches"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "ARS",
+              "EUR",
+              "GBP"
+            ],
+            "example": "USD"
+          },
+          "passengers_count": {
+            "type": "object",
+            "properties": {
+              "INF": {
+                "type": "integer",
+                "example": 0
+              },
+              "CNN": {
+                "type": "integer",
+                "example": 0
+              },
+              "ADT": {
+                "type": "integer",
+                "example": 0
+              }
+            }
+          },
+          "passengers_prices": {
+            "type": "object",
+            "properties": {
+              "INF": {
+                "type": "number",
+                "example": 0
+              },
+              "CNN": {
+                "type": "number",
+                "example": 0
+              },
+              "ADT": {
+                "type": "number",
+                "example": 0
+              }
+            }
+          },
+          "passengers_taxes": {
+            "type": "object",
+            "properties": {
+              "INF": {
+                "type": "number",
+                "example": 0
+              },
+              "CNN": {
+                "type": "number",
+                "example": 0
+              },
+              "ADT": {
+                "type": "number",
+                "example": 0
+              }
+            }
+          },
+          "passengers_net_prices": {
+            "type": "object",
+            "properties": {
+              "INF": {
+                "type": "number",
+                "example": 0
+              },
+              "CNN": {
+                "type": "number",
+                "example": 0
+              },
+              "ADT": {
+                "type": "number",
+                "example": 0
+              }
+            }
+          },
+          "markup": {
+            "type": "integer",
+            "example": 5
+          },
+          "can_be_alone": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "confirmed": {
+            "type": "boolean",
+            "default": false,
+            "example": false
+          },
+          "fare_type": {
+            "type": "string",
+            "example": "PUB"
+          },
+          "source": {
+            "type": "string",
+            "example": "netviax"
+          },
+          "airline": {
+            "$ref": "#/components/schemas/Airline"
+          },
+          "origins": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlightOrigins"
+            }
+          },
+          "legs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MultipleDestinationsFlightLeg"
+            }
+          }
+        }
+      },
       "Airline": {
         "type": "object",
         "properties": {
@@ -6610,6 +6873,46 @@
           },
           "arrival": {
             "$ref": "#/components/schemas/FlightSecuence"
+          }
+        }
+      },
+      "MultipleDestinationsFlightLeg": {
+        "type": "object",
+        "properties": {
+          "elapsed_flight_time": {
+            "type": "string",
+            "example": "875",
+            "description": "Total flight time, including layovers (in minutes)"
+          },
+          "elapsed_layover_time_in_minutes": {
+            "type": "string",
+            "example": "155",
+            "description": "Total layover time (in minutes)"
+          },
+          "baggage_icluded": {
+            "type": "boolean",
+            "example": true,
+            "description": "This boolean is `true` if leg includes baggage"
+          },
+          "flights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlightLeg"
+            }
+          },
+          "passenger_baggage": {
+            "type": "object",
+            "properties": {
+              "INF": {
+                "$ref": "#/components/schemas/PassengerBaggage"
+              },
+              "CNN": {
+                "$ref": "#/components/schemas/PassengerBaggage"
+              },
+              "ADT": {
+                "$ref": "#/components/schemas/PassengerBaggage"
+              }
+            }
           }
         }
       },
@@ -6667,6 +6970,29 @@
               "location",
               "city"
             ]
+          }
+        }
+      },
+      "FlightOrigins": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/FlightOrigin"
+        }
+      },
+      "PassengerBaggage": {
+        "type": "object",
+        "properties": {
+          "pieces": {
+            "type": "number",
+            "example": 1
+          },
+          "weight": {
+            "type": "number",
+            "example": 32
+          },
+          "unit": {
+            "type": "string",
+            "example": "kg"
           }
         }
       },
@@ -8938,6 +9264,172 @@
             }
           }
         }
+      },
+      "MultipleDestinationsFlights": {
+        "description": "Standard response with a collection of flight rates",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "type": "array",
+                  "description": "Collection of flight rates",
+                  "items": {
+                    "$ref": "#/components/schemas/MultipleDestinationsFlight"
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "dates": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Date"
+                          }
+                        },
+                        "location_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3453
+                          }
+                        },
+                        "origin_location_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3453
+                          }
+                        },
+                        "pax": {
+                          "type": "string",
+                          "example": "1"
+                        },
+                        "sort_by": {
+                          "type": "string",
+                          "example": "price"
+                        },
+                        "sort_direction": {
+                          "type": "string",
+                          "example": "asc"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "min_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        }
+                      }
+                    },
+                    "static": {
+                      "type": "object",
+                      "properties": {
+                        "airlines": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AA"
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "min_durations": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/HourMinuteDuration"
+                          }
+                        },
+                        "max_durations": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/HourMinuteDuration"
+                          }
+                        }
+                      }
+                    },
+                    "airlines": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "AA"
+                      }
+                    },
+                    "min_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "max_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "min_durations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HourMinuteDuration"
+                      }
+                    },
+                    "max_durations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HourMinuteDuration"
+                      }
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "per_page": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "total_results": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -9061,6 +9553,17 @@
           "$ref": "#/components/schemas/Date"
         }
       },
+      "datesParam": {
+        "in": "query",
+        "name": "dates",
+        "description": "Dates of each departure date of each leg of the flights searched.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])), ([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
+          "example": "2019-05-10, 2019-05-17"
+        }
+      },
       "optionalDateInParam": {
         "in": "query",
         "name": "date_in",
@@ -9139,6 +9642,17 @@
           }
         }
       },
+      "layovers": {
+        "in": "query",
+        "name": "layovers",
+        "description": "It defines the maximum layovers number of each leg of the flights searched.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^(\\d{1})((,\\s*\\d{1})*)?",
+          "example": "1, 2"
+        }
+      },
       "originLocationIdParam": {
         "in": "query",
         "name": "origin_location_id",
@@ -9149,6 +9663,17 @@
         },
         "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the location. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_city_id` parameter are defined, the default IATA code is BUE.\n"
       },
+      "originLocationIdsParam": {
+        "in": "query",
+        "name": "origin_location_ids",
+        "description": "If it is given, it defines the origin airports of each leg of the flights searched.\nThe airport is determined by the IATA code associated to each location.\nIf neither of this parameter or `origin_city_ids` parameter are defined, the default IATA code is BUE.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^(\\d{1,5})((,\\s*\\d{1,5})*)?",
+          "example": "4239, 2546"
+        }
+      },
       "originCityIdParam": {
         "in": "query",
         "name": "origin_city_id",
@@ -9158,6 +9683,17 @@
           "example": 667
         },
         "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
+      },
+      "originCityIdsParam": {
+        "in": "query",
+        "name": "origin_city_ids",
+        "description": "If it is given, it defines the origin airports of each leg of the flights searched.\nThe airport is determined by the IATA code associated to each city.\nIf neither of this parameter or `origin_city_ids` parameter are defined, the default IATA code is BUE.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^(\\d{1,5})((,\\s*\\d{1,5})*)?",
+          "example": "667, 967"
+        }
       },
       "contract": {
         "in": "query",
@@ -9216,6 +9752,28 @@
           "example": 1
         },
         "description": "Maximum number of layovers for the arrival flights. When its value is 0, only flights with a direct arrival flight will be returned. When its value is 1, flights with a direct arrival flight and flights with one arrival layover will be returned. The same rules apply for the remaining values."
+      },
+      "minDurations": {
+        "in": "query",
+        "name": "min_durations",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9], (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+          "example": "04:00, 06:00"
+        },
+        "description": "Minimum duration of each leg of the flights searched.\n\nE.g. If you send **04:00, 06:00** you will recive filghts whose first leg duration is longer or equal to **04:00** and second leg duration is longer or equal to **06:00**.\n \nThe format of each duration is HH:MM.\n"
+      },
+      "maxDurations": {
+        "in": "query",
+        "name": "max_durations",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9], (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+          "example": "12:00, 13:00"
+        },
+        "description": "Maximum duration of each leg of the flights searched.\n\nE.g. If you send **12:00, 13:00** you will recive filghts whose first leg duration is shorter or equal to '12:00' and second leg duration is shorter or equal to **13:00**.\n\nThe format of each duration is HH:MM.\n"
       },
       "minDepartureDuration": {
         "in": "query",
@@ -9298,6 +9856,24 @@
           "default": false
         },
         "description": "Flights that have luggage included in all their legs. Only available for flights returned by Netviax Service."
+      },
+      "cabin": {
+        "in": "query",
+        "name": "cabin",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "economy",
+            "premium_economy",
+            "business",
+            "premium_business",
+            "first",
+            "premium_first"
+          ],
+          "example": "economy"
+        },
+        "description": "Aircraft cabin type of the legs"
       }
     }
   }
