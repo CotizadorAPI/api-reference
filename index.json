@@ -6440,15 +6440,34 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "Cupo LA 02 Octubre"
+                "example": "Vuelo DL265 2019-05-02T18:05:00 Varias noches"
               },
               "source": {
                 "type": "string",
-                "enum": [
-                  "aero",
-                  "netviax"
-                ],
-                "example": "aero"
+                "example": "netviax"
+              },
+              "locations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Locations"
+                }
+              },
+              "operator": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 25
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "operator_name"
+                  },
+                  "initials": {
+                    "type": "string",
+                    "example": "operator_initials"
+                  }
+                }
               },
               "kind": {
                 "type": "string",
@@ -9286,13 +9305,20 @@
                       "type": "object",
                       "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
                       "properties": {
-                        "date_in": {
-                          "$ref": "#/components/schemas/Date"
-                        },
-                        "date_out": {
-                          "$ref": "#/components/schemas/Date"
+                        "dates": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Date"
+                          }
                         },
                         "location_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "example": 3453
+                          }
+                        },
+                        "origin_location_ids": {
                           "type": "array",
                           "items": {
                             "type": "integer",
@@ -9319,16 +9345,10 @@
                           "type": "integer",
                           "example": 10
                         },
-                        "min_departure_duration": {
+                        "min_duration": {
                           "$ref": "#/components/schemas/HourMinuteDuration"
                         },
-                        "max_departure_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "min_arrival_duration": {
-                          "$ref": "#/components/schemas/HourMinuteDuration"
-                        },
-                        "max_arrival_duration": {
+                        "max_duration": {
                           "$ref": "#/components/schemas/HourMinuteDuration"
                         }
                       }
@@ -9348,6 +9368,18 @@
                         },
                         "max_price": {
                           "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "min_durations": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/HourMinuteDuration"
+                          }
+                        },
+                        "max_durations": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/HourMinuteDuration"
+                          }
                         }
                       }
                     },
@@ -9364,17 +9396,17 @@
                     "max_price": {
                       "$ref": "#/components/schemas/AllCurrencies"
                     },
-                    "min_departure_duration": {
-                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    "min_durations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HourMinuteDuration"
+                      }
                     },
-                    "max_departure_duration": {
-                      "$ref": "#/components/schemas/HourMinuteDuration"
-                    },
-                    "min_arrival_duration": {
-                      "$ref": "#/components/schemas/HourMinuteDuration"
-                    },
-                    "max_arrival_duration": {
-                      "$ref": "#/components/schemas/HourMinuteDuration"
+                    "max_durations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HourMinuteDuration"
+                      }
                     },
                     "page": {
                       "type": "integer",
