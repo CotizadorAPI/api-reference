@@ -1298,7 +1298,7 @@
           "Flights"
         ],
         "summary": "Gets a list of flights.",
-        "description": "# Gets a collection of flight rates.\n**IMPORTANT:** as finding flights for an specific range of dates is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search params. This collection can be found inside `metadata`.\n",
+        "description": "# Gets a collection of flight rates.\nBy default, when only the required params are sent, the flights returned are composed of two itineraries: departure and arrival itineraries.\n\nA itinerary is a collection of flights called segments. Each segment is composed of an origin and a destination airport. When there is only one flight in the segment it means that it is direct flight. When there are more than one segment in the itinerary, the additional ones are called layovers.\n\nIn the departure itinerary, the first flight's origin is the origin airport defined by `origin_location_id` or `origin_city_id` parameters. If none of them are given, as they are optional parameters, the default origin IATA will be BUE, therefore the origin airport will be EZE or AEP. The last flight's destination airport will be the one associated with the destination location, defined by the `location_ids` parameter.\n\nIn the arrival itinerary, the first flight's origin is the destination airport, and the last flight's destination is the origin aiport determined as specified above.\n\nWhen using an area IATA code, be aware of the possibility of getting itineraries that start from a airport but return to another one in the same zone, e.g., when BUE IATA is used, the departure flight can take off from EZE but the arrival itinerary can end in AEP.\n\n**IMPORTANT:** as finding flights for an specific range of dates is not always possible, a suggestions collection will be added to the response with rates that don’t exactly match the search params. This collection can be found inside `metadata`.\n",
         "operationId": "searchFlights",
         "parameters": [
           {
@@ -1321,6 +1321,9 @@
           },
           {
             "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
           },
           {
             "$ref": "#/components/parameters/sortByParam"
@@ -1351,9 +1354,6 @@
           },
           {
             "$ref": "#/components/parameters/suggestionsContract"
-          },
-          {
-            "$ref": "#/components/parameters/byCountry"
           },
           {
             "$ref": "#/components/parameters/departureLayovers"
@@ -1419,9 +1419,6 @@
           },
           {
             "$ref": "#/components/parameters/suggestionsContract"
-          },
-          {
-            "$ref": "#/components/parameters/byCountry"
           },
           {
             "$ref": "#/components/parameters/departureLayovers"
@@ -1510,6 +1507,9 @@
           },
           {
             "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
           }
         ],
         "responses": {
@@ -1634,24 +1634,89 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "description": "status of the request"
+                      "description": "Status of the request"
                     },
                     "transaction_status": {
                       "type": "string",
-                      "description": "status of the transaction"
+                      "description": "Status of the transaction"
                     },
                     "data_type": {
                       "type": "string",
-                      "description": "type of the data value"
+                      "description": "Type of the data value"
                     },
                     "metadata": {
                       "type": "object"
                     },
                     "data": {
                       "type": "array",
-                      "description": "collection of hotel rates",
+                      "description": "Collection of airlines",
                       "items": {
                         "$ref": "#/components/schemas/IdAndText"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/cabins": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a list of cabins",
+        "description": "# Gets a list of cabins with an id and its translated name.\n",
+        "operationId": "cabins",
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of cabins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error",
+                        "warning"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cabins",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightCabin"
                       }
                     }
                   }
@@ -1671,7 +1736,7 @@
           "Flights"
         ],
         "summary": "Gets a list of all the available Aero's flights",
-        "description": "# Gets a list of all the available Aero's flights\nA simplified list of locations names is returned in the metadata field. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight.\n",
+        "description": "# Gets a list of all the available Aero's flights\nA simplified list of locations names is returned in the metadata field. It is generated based on the obtained flights. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight. In other words, it is a list of the locations associated with the resulting flights, including alternative locations where the flights also can be found.\n",
         "operationId": "aeroFlights",
         "parameters": [
           {
@@ -1703,15 +1768,27 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "description": "status of the request"
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
                     },
                     "transaction_status": {
                       "type": "string",
-                      "description": "status of the transaction"
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
                     },
                     "data_type": {
                       "type": "string",
-                      "description": "type of the data value"
+                      "description": "Type of the data value",
+                      "example": "list"
                     },
                     "metadata": {
                       "type": "object",
@@ -1790,13 +1867,7 @@
         "operationId": "flightQuote",
         "parameters": [
           {
-            "in": "header",
-            "name": "X-Request-ID",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/requestIdParam"
           },
           {
             "$ref": "#/components/parameters/paxParam"
@@ -1809,13 +1880,14 @@
           },
           {
             "in": "query",
-            "name": "contract",
-            "description": "Contract where to look at",
+            "name": "source",
+            "description": "Classification where the given ID exists. The combination of `id` and `source` defines an Aero flight entirely, so it is highly recommended to provide both params.\n",
             "required": false,
             "schema": {
               "type": "string",
               "enum": [
-                "aero"
+                "aero",
+                "aero_v2"
               ],
               "default": "aero"
             }
@@ -1831,25 +1903,42 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "description": "status of the request"
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
                     },
                     "transaction_status": {
                       "type": "string",
-                      "description": "status of the transaction"
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
                     },
                     "data_type": {
                       "type": "string",
-                      "description": "type of the data value"
+                      "description": "Type of the data value",
+                      "example": "item"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
                     },
                     "data": {
-                      "type": "object",
-                      "description": "flight item",
-                      "items": {
-                        "$ref": "#/components/schemas/Flight"
-                      }
+                      "$ref": "#/components/schemas/Flight"
                     }
                   }
                 }
@@ -6279,13 +6368,7 @@
                         "example": null
                       },
                       "currency": {
-                        "type": "string",
-                        "enum": [
-                          "USD",
-                          "ARS",
-                          "EUR",
-                          "GBP"
-                        ]
+                        "$ref": "#/components/schemas/Currency"
                       }
                     }
                   }
@@ -6359,67 +6442,19 @@
       "FlexibleFlight": {
         "allOf": [
           {
+            "$ref": "#/components/schemas/Flight"
+          },
+          {
             "type": "object",
             "properties": {
-              "expires_at": {
-                "$ref": "#/components/schemas/DateTime"
-              },
-              "locations": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Location"
-                }
-              },
-              "date_in": {
-                "$ref": "#/components/schemas/Date"
-              },
-              "date_out": {
-                "$ref": "#/components/schemas/Date"
-              },
-              "kind": {
-                "type": "string",
-                "example": "flight"
-              },
-              "source": {
-                "type": "string",
-                "example": "netviax",
-                "enum": [
-                  "aero",
-                  "netviax"
-                ]
-              },
-              "currency": {
-                "type": "string",
-                "enum": [
-                  "USD",
-                  "ARS",
-                  "EUR",
-                  "GBP"
-                ],
-                "example": "USD"
-              },
-              "total": {
-                "$ref": "#/components/schemas/AllCurrencies"
-              },
               "valid": {
                 "type": "boolean",
                 "example": true,
                 "description": "This boolean is `true` when at least one flight is found with the `date_in`-`date_out` combination, whereas it is `false` when there are no flights or when `date_in` is later than `date_out`."
-              },
-              "info": {
-                "$ref": "#/components/schemas/FlexibleFlightInfo"
               }
             }
           }
         ]
-      },
-      "FlexibleFlightInfo": {
-        "type": "object",
-        "properties": {
-          "airline": {
-            "$ref": "#/components/schemas/Airline"
-          }
-        }
       },
       "FlightInfo": {
         "type": "object",
@@ -6431,29 +6466,26 @@
           "id": {
             "type": "string",
             "format": "uuid",
-            "example": "99573aff"
+            "example": "50ce2e60-d9e1-4af3-997d-ddc40fa791f1"
           },
           "name": {
             "type": "string",
+            "description": "Summary of the itinerary.",
             "example": "Cupo LA 02 Octubre"
           },
           "currency": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ],
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "nights": {
-            "type": "integer",
-            "example": 4
+            "$ref": "#/components/schemas/FlightNights"
           },
           "vacancies": {
-            "type": "integer",
-            "example": 3
+            "$ref": "#/components/schemas/FlightVacancies"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "default": false,
+            "description": "It indicates whether the flight is already reserved or not. The phrase *already reserved* means that each segment of the itinerary  is available at the moment of the search at the quoted price.\n\nAero's flights are confirmed by default, but GDS flights are not.\n"
           },
           "date_in": {
             "$ref": "#/components/schemas/Date"
@@ -6470,6 +6502,21 @@
           "destination_out": {
             "$ref": "#/components/schemas/Date"
           },
+          "passengers_baggage": {
+            "type": "object",
+            "description": "Baggage allowance for each type of passenger.\n\nIf the type of passenger was not requested, its associated field may not appear.\n",
+            "properties": {
+              "INF": {
+                "$ref": "#/components/schemas/FlightPassengerBaggage"
+              },
+              "CNN": {
+                "$ref": "#/components/schemas/FlightPassengerBaggage"
+              },
+              "ADT": {
+                "$ref": "#/components/schemas/FlightPassengerBaggage"
+              }
+            }
+          },
           "passengers_count": {
             "type": "object",
             "properties": {
@@ -6483,7 +6530,7 @@
               },
               "ADT": {
                 "type": "integer",
-                "example": 0
+                "example": 2
               }
             }
           },
@@ -6491,16 +6538,13 @@
             "type": "object",
             "properties": {
               "INF": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               },
               "CNN": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               },
               "ADT": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               }
             }
           },
@@ -6508,16 +6552,13 @@
             "type": "object",
             "properties": {
               "INF": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               },
               "CNN": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               },
               "ADT": {
-                "type": "number",
-                "example": 0
+                "$ref": "#/components/schemas/AllCurrencies"
               }
             }
           },
@@ -6526,15 +6567,14 @@
             "example": 5
           },
           "can_be_alone": {
-            "type": "boolean",
-            "default": false,
-            "example": false
+            "$ref": "#/components/schemas/FlightCanBeAlone"
           },
           "airline": {
             "$ref": "#/components/schemas/Airline"
           },
           "departure_flights": {
             "type": "object",
+            "description": "Departure flight's itinerary detailing all the included segments.\n",
             "properties": {
               "elapsed_flight_time_in_minutes": {
                 "type": "string",
@@ -6546,16 +6586,23 @@
                 "example": "155",
                 "description": "Total layover time (in minutes)"
               },
+              "baggage_included": {
+                "type": "boolean",
+                "example": true,
+                "description": "It indicates if the passengers are allowed to check in some kind of baggage (checked or carry-on) in all the segments of the departure itinerary.\n"
+              },
               "flights": {
                 "type": "array",
+                "description": "A collection of chronologically sorted flight segments.\n",
                 "items": {
-                  "$ref": "#/components/schemas/FlightLeg"
+                  "$ref": "#/components/schemas/FlightSegment"
                 }
               }
             }
           },
           "arrival_flights": {
             "type": "object",
+            "description": "Arrival flight's itinerary detailing all the included segments.\n\n*This field is omitted in one-way flights.*\n",
             "properties": {
               "elapsed_flight_time_in_minutes": {
                 "type": "string",
@@ -6567,10 +6614,16 @@
                 "example": "155",
                 "description": "Total layover time (in minutes)"
               },
+              "baggage_included": {
+                "type": "boolean",
+                "example": true,
+                "description": "It indicates if the passengers are allowed to check in some kind of baggage (checked or carry-on) in all the segments of the arrival itinerary.\n"
+              },
               "flights": {
                 "type": "array",
+                "description": "A collection of chronologically sorted flight segments.\n",
                 "items": {
-                  "$ref": "#/components/schemas/FlightLeg"
+                  "$ref": "#/components/schemas/FlightSegment"
                 }
               }
             }
@@ -6578,11 +6631,26 @@
           "origin": {
             "$ref": "#/components/schemas/FlightOrigin"
           },
-          "baggage_included": {
-            "type": "boolean",
-            "example": true
+          "last_ticketing_date": {
+            "$ref": "#/components/schemas/DateTime"
           }
         }
+      },
+      "FlightNights": {
+        "type": "integer",
+        "example": 4,
+        "description": "Number of nights spent **at the destination**. For example, consider a flight with `date_in` equal to **2020-05-02** and `date_out` equal to **2020-05-15**. If the flight arrives at destination the same day it takes off from origin, e.g., arrives the **2020-05-02**, then the number of nights will be 13, but if the flight takes enough time so it arrives the **2020-05-03** then the number of nights will be 12.\n\n*This field is omitted in one-way flights as the number of nights in destination is unknown.*\n"
+      },
+      "FlightVacancies": {
+        "type": "integer",
+        "example": 3,
+        "description": "Number of vacants available in the group when the flight is confirmed.\n\nOnly applies for Aero's confirmed flights.\n"
+      },
+      "FlightCanBeAlone": {
+        "type": "boolean",
+        "default": false,
+        "description": "Denotes when a flight requires a land service (like a hotel) to be reserved. If the API user doesn't have permission to reserve the required land services, then the items with this field set as `false` will be automatically filtered out from search results.\n",
+        "example": false
       },
       "Airline": {
         "type": "object",
@@ -6593,13 +6661,20 @@
           },
           "code": {
             "type": "string",
-            "pattern": "^[A-Z]{2}$",
+            "pattern": "^[A-Z][A-Z0-9]$",
             "example": "AA"
           }
         }
       },
-      "FlightLeg": {
+      "FlightSegment": {
         "type": "object",
+        "required": [
+          "flight_number",
+          "airline",
+          "departure",
+          "arrival",
+          "cabin"
+        ],
         "properties": {
           "flight_number": {
             "type": "string",
@@ -6609,14 +6684,75 @@
             "$ref": "#/components/schemas/Airline"
           },
           "departure": {
-            "$ref": "#/components/schemas/FlightSecuence"
+            "$ref": "#/components/schemas/FlightSegmentFlightInfo"
           },
           "arrival": {
-            "$ref": "#/components/schemas/FlightSecuence"
+            "$ref": "#/components/schemas/FlightSegmentFlightInfo"
+          },
+          "cabin": {
+            "type": "object",
+            "required": [
+              "code",
+              "name"
+            ],
+            "properties": {
+              "code": {
+                "type": "integer",
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6
+                ],
+                "default": 1
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "Económica",
+                  "Económica premium",
+                  "Ejecutiva",
+                  "Ejecutiva premium",
+                  "Primera",
+                  "Primera premium"
+                ],
+                "default": "Económica"
+              }
+            }
+          },
+          "branded_fare": {
+            "type": "object",
+            "description": "Name given by the airline to the combination cabin/fare.\n",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "nullable": true,
+                "example": "LIGHT"
+              },
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "example": "ECONÓMICA LIGHT"
+              }
+            }
+          },
+          "craft_type": {
+            "type": "string",
+            "example": "767",
+            "description": "Aircraft model"
+          },
+          "operating_airline": {
+            "$ref": "#/components/schemas/Airline"
           }
         }
       },
-      "FlightSecuence": {
+      "FlightSegmentFlightInfo": {
         "type": "object",
         "properties": {
           "date": {
@@ -6624,15 +6760,37 @@
           },
           "airport": {
             "type": "object",
+            "required": [
+              "code",
+              "name"
+            ],
             "properties": {
               "code": {
                 "type": "string",
                 "pattern": "^[A-Z]{3}$",
-                "example": "LIM"
+                "example": "LIM",
+                "description": "IATA airport code"
               },
               "name": {
                 "type": "string",
                 "example": "Aeropuerto Internacional Jorge Chavez - Lima"
+              },
+              "city_code": {
+                "type": "string",
+                "example": "LIM"
+              },
+              "city_name": {
+                "type": "string",
+                "example": "Lima"
+              },
+              "country_iso_code": {
+                "type": "string",
+                "example": "PE",
+                "description": "ISO 3166-1 alpha-2 country code"
+              },
+              "contry_name": {
+                "type": "string",
+                "example": "Perú"
               }
             }
           }
@@ -6662,7 +6820,8 @@
           },
           "country_iso_code": {
             "type": "string",
-            "example": "MX"
+            "example": "MX",
+            "description": "ISO 3166-1 alpha-2 country code"
           },
           "type": {
             "type": "string",
@@ -6670,6 +6829,70 @@
               "location",
               "city"
             ]
+          }
+        }
+      },
+      "FlightCabin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "economy",
+            "description": "This value must be used to specify the flights cabin in the search.\n"
+          },
+          "name": {
+            "type": "string",
+            "example": "Económica",
+            "description": "Translated name of the cabin"
+          }
+        }
+      },
+      "FlightPassengerBaggage": {
+        "type": "object",
+        "description": "Baggage allowance of a type of passenger for each itinerary of the flight.\n\n**A `null` field means that was not possible to determine the baggage allowance for that specific itinerary, i.e., the baggage allowance is unknown.**\n",
+        "required": [
+          "departure"
+        ],
+        "properties": {
+          "departure": {
+            "type": "array",
+            "nullable": true,
+            "description": "Baggage allowance for this type of passenger for the departure itinerary.\n\n**An empty array means that there isn't any baggage included in the price.**\n",
+            "items": {
+              "$ref": "#/components/schemas/FlightBaggage"
+            }
+          },
+          "arrival": {
+            "type": "array",
+            "nullable": true,
+            "description": "Baggage allowance for this type of passenger for the arrival itinerary.\n\n**An empty array means that there isn't any baggage included in the price.**\n\n*This field is omitted in one-way flights.*\n",
+            "items": {
+              "$ref": "#/components/schemas/FlightBaggage"
+            }
+          }
+        }
+      },
+      "FlightBaggage": {
+        "type": "object",
+        "required": [
+          "pieces",
+          "unit",
+          "weight"
+        ],
+        "properties": {
+          "pieces": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          },
+          "unit": {
+            "type": "string",
+            "example": "kg"
+          },
+          "weight": {
+            "type": "float",
+            "example": 23,
+            "minimum": 0
           }
         }
       },
@@ -8253,14 +8476,7 @@
             ]
           },
           "currency": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ],
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "total": {
             "$ref": "#/components/schemas/AllCurrencies"
@@ -8344,29 +8560,39 @@
           }
         }
       },
+      "Currency": {
+        "type": "string",
+        "enum": [
+          "USD",
+          "ARS",
+          "EUR",
+          "GBP"
+        ],
+        "example": "USD"
+      },
       "AeroFlight": {
         "type": "object",
         "required": [
           "arrival_date",
-          "coin",
+          "can_be_alone",
+          "commissionable",
           "company",
+          "company_code",
           "country_name",
+          "currency",
           "date_in",
           "date_out",
           "departure",
-          "depature",
           "departure_date",
-          "depature_date",
           "destination_name",
-          "locations",
+          "gross",
           "id",
-          "imp_rg",
-          "net_price",
+          "locations",
           "nights",
-          "semaphore",
-          "vacant",
-          "rg",
-          "total"
+          "source",
+          "taxes",
+          "to_require",
+          "vacant"
         ],
         "properties": {
           "id": {
@@ -8377,76 +8603,73 @@
             "type": "string",
             "example": "HABANA"
           },
-          "coin": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ]
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
           },
           "country_name": {
             "type": "string",
             "example": "Cuba"
           },
           "nights": {
-            "type": "integer",
-            "example": 10
+            "$ref": "#/components/schemas/FlightNights"
           },
           "company": {
             "type": "string",
             "example": "Aerolineas Argentinas"
           },
+          "company_code": {
+            "type": "string",
+            "example": "AR"
+          },
           "departure": {
             "type": "string",
             "example": "EZE"
           },
-          "depature": {
-            "deprecated": true,
-            "description": "It will be deprecated. Use `departure` instead."
+          "date_in": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "date_out": {
+            "$ref": "#/components/schemas/Date"
           },
           "departure_date": {
             "$ref": "#/components/schemas/Date"
-          },
-          "depature_date": {
-            "deprecated": true,
-            "description": "It will be deprecated. Use `departure_date` instead."
           },
           "arrival_date": {
             "$ref": "#/components/schemas/Date"
           },
           "vacant": {
-            "type": "integer",
-            "example": 4
+            "$ref": "#/components/schemas/FlightVacancies"
           },
-          "net_price": {
-            "type": "integer",
-            "example": 63
+          "gross": {
+            "$ref": "#/components/schemas/AllCurrencies"
           },
-          "semaphore": {
-            "type": "string",
-            "enum": [
-              "green",
-              "red"
-            ]
+          "taxes": {
+            "$ref": "#/components/schemas/AllCurrencies"
           },
-          "imp_rg": {
-            "type": "integer",
-            "example": 857
+          "can_be_alone": {
+            "$ref": "#/components/schemas/FlightCanBeAlone"
           },
           "commissionable": {
             "type": "boolean",
             "example": true
-          },
-          "total": {
-            "$ref": "#/components/schemas/Rate"
           },
           "locations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BasicLocation"
             }
+          },
+          "to_require": {
+            "type": "boolean",
+            "example": false
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "aero",
+              "aero_v2"
+            ],
+            "description": "Classification of the flight, must be passed as parameter, along with the id, to `GET /flights/quote` when it is necessary to generate a **reservable** flight item.\n"
           }
         }
       },
@@ -8799,11 +9022,20 @@
                 "status": {
                   "type": "string",
                   "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
                   "example": "ok"
                 },
                 "transaction_status": {
                   "type": "string",
                   "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
                   "example": "finished"
                 },
                 "data_type": {
@@ -8878,6 +9110,7 @@
                     },
                     "static": {
                       "type": "object",
+                      "description": "Metadata computed considering all items, before applying the user-specified filters, i.e, this values won't change when filters are modified.\n",
                       "properties": {
                         "airlines": {
                           "type": "array",
@@ -8891,6 +9124,30 @@
                         },
                         "max_price": {
                           "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "min_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_departure_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "min_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "max_arrival_duration": {
+                          "$ref": "#/components/schemas/HourMinuteDuration"
+                        },
+                        "min_departure_time": {
+                          "$ref": "#/components/schemas/Time"
+                        },
+                        "max_departure_time": {
+                          "$ref": "#/components/schemas/Time"
+                        },
+                        "min_arrival_time": {
+                          "$ref": "#/components/schemas/Time"
+                        },
+                        "max_arrival_time": {
+                          "$ref": "#/components/schemas/Time"
                         }
                       }
                     },
@@ -8918,6 +9175,18 @@
                     },
                     "max_arrival_duration": {
                       "$ref": "#/components/schemas/HourMinuteDuration"
+                    },
+                    "min_departure_time": {
+                      "$ref": "#/components/schemas/Time"
+                    },
+                    "max_departure_time": {
+                      "$ref": "#/components/schemas/Time"
+                    },
+                    "min_arrival_time": {
+                      "$ref": "#/components/schemas/Time"
+                    },
+                    "max_arrival_time": {
+                      "$ref": "#/components/schemas/Time"
                     },
                     "page": {
                       "type": "integer",
@@ -9162,6 +9431,16 @@
         },
         "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
       },
+      "cabinParam": {
+        "in": "query",
+        "name": "cabin",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "economy"
+        },
+        "description": "Flights' cabin. If the itinerary has layovers, at least one flight will have the specified cabin, but is not guaranteed that all flights  will have the same cabin, e.g. if first class flights are desired, this parameter's value should be `first`, and the results will contain itineraries with first class segments, but some of them can have layovers with business class flights.\n\nWhen this parameter is not given, `economy` cabin is assumed.\n\nThe full list of valid cabins can be found in the [`GET /flights/cabins`](#/Flights/cabins) endpoint.\n"
+      },
       "contract": {
         "in": "query",
         "name": "contract",
@@ -9189,16 +9468,6 @@
           "default": "aero"
         },
         "description": "**Exclusive for suggestions:** contract where to look at. Only available for suggested flights (`suggestions`) when `contract` is not defined."
-      },
-      "byCountry": {
-        "in": "query",
-        "name": "by_country",
-        "required": false,
-        "schema": {
-          "type": "boolean",
-          "default": false
-        },
-        "description": "Group flights by destination country. Only available for flights returned by Aero Service."
       },
       "departureLayovers": {
         "in": "query",
@@ -9300,7 +9569,7 @@
           "type": "boolean",
           "default": false
         },
-        "description": "Flights that have luggage included in all their legs. Only available for flights returned by Netviax Service."
+        "description": "Flights that have luggage included in all their legs. At the moment, the only flights that present luggage information valid for filtering are the ones gathered from the GDS."
       },
       "oneWay": {
         "in": "query",
@@ -9310,7 +9579,7 @@
           "type": "boolean",
           "default": false
         },
-        "description": "Whether the search should only include one way flights. Only available for flights returned by Netviax Service."
+        "description": "Whether the search should only include one way flights or not."
       }
     }
   }
