@@ -1765,15 +1765,27 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "description": "status of the request"
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
                     },
                     "transaction_status": {
                       "type": "string",
-                      "description": "status of the transaction"
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
                     },
                     "data_type": {
                       "type": "string",
-                      "description": "type of the data value"
+                      "description": "Type of the data value",
+                      "example": "list"
                     },
                     "metadata": {
                       "type": "object",
@@ -1852,13 +1864,7 @@
         "operationId": "flightQuote",
         "parameters": [
           {
-            "in": "header",
-            "name": "X-Request-ID",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/requestIdParam"
           },
           {
             "$ref": "#/components/parameters/paxParam"
@@ -1871,13 +1877,14 @@
           },
           {
             "in": "query",
-            "name": "contract",
-            "description": "Contract where to look at",
+            "name": "source",
+            "description": "Classification where the given ID exists. The combination of `id` and `source` defines an Aero flight entirely, so it is highly recommended to provide both params.\n",
             "required": false,
             "schema": {
               "type": "string",
               "enum": [
-                "aero"
+                "aero",
+                "aero_v2"
               ],
               "default": "aero"
             }
@@ -1893,25 +1900,42 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "description": "status of the request"
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
                     },
                     "transaction_status": {
                       "type": "string",
-                      "description": "status of the transaction"
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
                     },
                     "data_type": {
                       "type": "string",
-                      "description": "type of the data value"
+                      "description": "Type of the data value",
+                      "example": "item"
                     },
                     "metadata": {
-                      "type": "object"
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
                     },
                     "data": {
-                      "type": "object",
-                      "description": "flight item",
-                      "items": {
-                        "$ref": "#/components/schemas/Flight"
-                      }
+                      "$ref": "#/components/schemas/Flight"
                     }
                   }
                 }
