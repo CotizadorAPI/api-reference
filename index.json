@@ -1387,6 +1387,9 @@
           },
           {
             "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
           }
         ],
         "responses": {
@@ -9567,6 +9570,16 @@
           "default": false
         },
         "description": "Flights that have luggage included in all their legs. At the moment, the only flights that present luggage information valid for filtering are the ones gathered from the GDS."
+      },
+      "oneWay": {
+        "in": "query",
+        "name": "one_way",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": "Whether the search should only include one way flights or not."
       }
     }
   }
