@@ -1733,7 +1733,7 @@
           "Flights"
         ],
         "summary": "Gets a list of all the available Aero's flights",
-        "description": "# Gets a list of all the available Aero's flights\nA simplified list of locations names is returned in the metadata field. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight.\n",
+        "description": "# Gets a list of all the available Aero's flights\nA simplified list of locations names is returned in the metadata field. It is generated based on the obtained flights. Each location in that field is composed of a *main_location* (i.e. the destination of the flight), and *other_locations*, which is a list of locations related to the flight. In other words, it is a list of the locations associated with the resulting flights, including alternative locations where the flights also can be found.\n",
         "operationId": "aeroFlights",
         "parameters": [
           {
@@ -6341,13 +6341,7 @@
                         "example": null
                       },
                       "currency": {
-                        "type": "string",
-                        "enum": [
-                          "USD",
-                          "ARS",
-                          "EUR",
-                          "GBP"
-                        ]
+                        "$ref": "#/components/schemas/Currency"
                       }
                     }
                   }
@@ -6453,24 +6447,13 @@
             "example": "Cupo LA 02 Octubre"
           },
           "currency": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ],
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "nights": {
-            "type": "integer",
-            "example": 4,
-            "description": "Number of nights spent **at the destination**. For example, consider a flight with `date_in` equal to **2020-05-02** and `date_out` equal to **2020-05-15**. If the flight arrives at destination the same day it takes off from origin, e.g., arrives the **2020-05-02**, then the number of nights will be 13, but if the flight takes enough time so it arrives the **2020-05-03** then the number of nights will be 12.\n\n*This field is omitted in one-way flights as the number of nights in destination is unknown.*\n"
+            "$ref": "#/components/schemas/FlightNights"
           },
           "vacancies": {
-            "type": "integer",
-            "example": 3,
-            "description": "Number of vacants available in the group when the flight is confirmed.\n\nOnly applies for Aero's confirmed flights.\n"
+            "$ref": "#/components/schemas/FlightVacancies"
           },
           "confirmed": {
             "type": "boolean",
@@ -6557,10 +6540,7 @@
             "example": 5
           },
           "can_be_alone": {
-            "type": "boolean",
-            "default": false,
-            "description": "Denotes when a flight requires a land service (like a hotel) to be reserved. If the API user doesn't have permission to reserve the required land services, then the items with this field set as `false` will be automatically filtered out from search results.\n",
-            "example": false
+            "$ref": "#/components/schemas/FlightCanBeAlone"
           },
           "airline": {
             "$ref": "#/components/schemas/Airline"
@@ -6628,6 +6608,22 @@
             "$ref": "#/components/schemas/DateTime"
           }
         }
+      },
+      "FlightNights": {
+        "type": "integer",
+        "example": 4,
+        "description": "Number of nights spent **at the destination**. For example, consider a flight with `date_in` equal to **2020-05-02** and `date_out` equal to **2020-05-15**. If the flight arrives at destination the same day it takes off from origin, e.g., arrives the **2020-05-02**, then the number of nights will be 13, but if the flight takes enough time so it arrives the **2020-05-03** then the number of nights will be 12.\n\n*This field is omitted in one-way flights as the number of nights in destination is unknown.*\n"
+      },
+      "FlightVacancies": {
+        "type": "integer",
+        "example": 3,
+        "description": "Number of vacants available in the group when the flight is confirmed.\n\nOnly applies for Aero's confirmed flights.\n"
+      },
+      "FlightCanBeAlone": {
+        "type": "boolean",
+        "default": false,
+        "description": "Denotes when a flight requires a land service (like a hotel) to be reserved. If the API user doesn't have permission to reserve the required land services, then the items with this field set as `false` will be automatically filtered out from search results.\n",
+        "example": false
       },
       "Airline": {
         "type": "object",
@@ -8453,14 +8449,7 @@
             ]
           },
           "currency": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ],
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "total": {
             "$ref": "#/components/schemas/AllCurrencies"
@@ -8544,29 +8533,39 @@
           }
         }
       },
+      "Currency": {
+        "type": "string",
+        "enum": [
+          "USD",
+          "ARS",
+          "EUR",
+          "GBP"
+        ],
+        "example": "USD"
+      },
       "AeroFlight": {
         "type": "object",
         "required": [
           "arrival_date",
-          "coin",
+          "can_be_alone",
+          "commissionable",
           "company",
+          "company_code",
           "country_name",
+          "currency",
           "date_in",
           "date_out",
           "departure",
-          "depature",
           "departure_date",
-          "depature_date",
           "destination_name",
-          "locations",
+          "gross",
           "id",
-          "imp_rg",
-          "net_price",
+          "locations",
           "nights",
-          "semaphore",
-          "vacant",
-          "rg",
-          "total"
+          "source",
+          "taxes",
+          "to_require",
+          "vacant"
         ],
         "properties": {
           "id": {
@@ -8577,76 +8576,73 @@
             "type": "string",
             "example": "HABANA"
           },
-          "coin": {
-            "type": "string",
-            "enum": [
-              "USD",
-              "ARS",
-              "EUR",
-              "GBP"
-            ]
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
           },
           "country_name": {
             "type": "string",
             "example": "Cuba"
           },
           "nights": {
-            "type": "integer",
-            "example": 10
+            "$ref": "#/components/schemas/FlightNights"
           },
           "company": {
             "type": "string",
             "example": "Aerolineas Argentinas"
           },
+          "company_code": {
+            "type": "string",
+            "example": "AR"
+          },
           "departure": {
             "type": "string",
             "example": "EZE"
           },
-          "depature": {
-            "deprecated": true,
-            "description": "It will be deprecated. Use `departure` instead."
+          "date_in": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "date_out": {
+            "$ref": "#/components/schemas/Date"
           },
           "departure_date": {
             "$ref": "#/components/schemas/Date"
-          },
-          "depature_date": {
-            "deprecated": true,
-            "description": "It will be deprecated. Use `departure_date` instead."
           },
           "arrival_date": {
             "$ref": "#/components/schemas/Date"
           },
           "vacant": {
-            "type": "integer",
-            "example": 4
+            "$ref": "#/components/schemas/FlightVacancies"
           },
-          "net_price": {
-            "type": "integer",
-            "example": 63
+          "gross": {
+            "$ref": "#/components/schemas/AllCurrencies"
           },
-          "semaphore": {
-            "type": "string",
-            "enum": [
-              "green",
-              "red"
-            ]
+          "taxes": {
+            "$ref": "#/components/schemas/AllCurrencies"
           },
-          "imp_rg": {
-            "type": "integer",
-            "example": 857
+          "can_be_alone": {
+            "$ref": "#/components/schemas/FlightCanBeAlone"
           },
           "commissionable": {
             "type": "boolean",
             "example": true
-          },
-          "total": {
-            "$ref": "#/components/schemas/Rate"
           },
           "locations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BasicLocation"
             }
+          },
+          "to_require": {
+            "type": "boolean",
+            "example": false
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "aero",
+              "aero_v2"
+            ],
+            "description": "Classification of the flight, must be passed as parameter, along with the id, to `GET /flights/quote` when it is necessary to generate a **reservable** flight item.\n"
           }
         }
       },
