@@ -9229,7 +9229,8 @@
         "schema": {
           "type": "string",
           "enum": [
-            "price"
+            "price",
+            "name"
           ],
           "example": "price"
         },
