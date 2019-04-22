@@ -6571,7 +6571,7 @@
           },
           "departure_flights": {
             "type": "object",
-            "description": "Itinerary of the departure flight detailing all the included segments.\n",
+            "description": "Departure flight's itinerary detailing all the included segments.\n",
             "properties": {
               "elapsed_flight_time_in_minutes": {
                 "type": "string",
@@ -6599,7 +6599,7 @@
           },
           "arrival_flights": {
             "type": "object",
-            "description": "Itinerary of the arrival flight detailing all the included segments.\n\n*This field is omitted in one-way flights.*\n",
+            "description": "Arrival flight's itinerary detailing all the included segments.\n\n*This field is omitted in one-way flights.*\n",
             "properties": {
               "elapsed_flight_time_in_minutes": {
                 "type": "string",
@@ -9436,7 +9436,7 @@
           "type": "string",
           "default": "economy"
         },
-        "description": "Cabin of the flights. If the itinerary has layovers, at least one flight will have the specified cabin, but is not guaranteed that all flights  will have the same cabin, e.g. if first class flights are desired, this parameter's value should be `first`, and the results will contain itineraries with first class segments, but some of them can have layovers with business class flights.\n\nWhen this parameter is not given, `economy` cabin is assumed.\n\nThe full list of valid cabins can be found in the [`GET /flights/cabins`](#/Flights/cabins) endpoint.\n"
+        "description": "Flights' cabin. If the itinerary has layovers, at least one flight will have the specified cabin, but is not guaranteed that all flights  will have the same cabin, e.g. if first class flights are desired, this parameter's value should be `first`, and the results will contain itineraries with first class segments, but some of them can have layovers with business class flights.\n\nWhen this parameter is not given, `economy` cabin is assumed.\n\nThe full list of valid cabins can be found in the [`GET /flights/cabins`](#/Flights/cabins) endpoint.\n"
       },
       "contract": {
         "in": "query",
