@@ -1269,6 +1269,26 @@
               "type": "string",
               "example": "hilton"
             }
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "description": "criteria to sort by (only supports 'name')",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "name"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort_direction",
+            "description": "sort direction (asc or desc)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "asc"
+            }
           }
         ],
         "responses": {
