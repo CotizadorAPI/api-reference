@@ -13,7 +13,7 @@
     "x-logo": {
       "url": "https://sitio.aero.tur.ar/assets/logo-positive-ac9a94f014542271c698fdd81c08a30f0ae53f50c7eedfe418680a82b797b975.svg"
     },
-    "description": "Docs for using the Cotizador API.\n# Introduction\n- This document is in beta version. Modifications could be made or new\ninformation could be added.\n- You will need access credentials in order to use the API.\n- This API works by polling. You will need to send the same request to\nthe endpoint at hand until the `transaction_status` is `finished`.\n- All the API responses are on JSON format. There are four root keys on every endpoint response:\n  - `transaction_status`: It indicates if you need to keep polling. Possible values are: `continue`, `finished`.\n  - `status`: It indicates if the response was successful or if it finished with error or warnings. Possible values are: `ok`, `warning`, `error`.\n  - `data`: It includes the response data according to the request.\n  - `data_type`: It indicates `data`'s data type.\n- Responses also have a fifth element called `metadata`, which is a field destined to save metadata information such as the request ID (`request_id`) and the provided query (`query`). Several endpoints add extra information to this field.\n- We use the words **item** and **rate** interchangeably. An item/rate is a unique quote that could include:\n  - one or more hotel rooms, or\n  - a flight ticket, or\n  - a land product service (excursion, transfer, visa, etc.), or\n  - a travel assistance, or\n  - a circuit\n- All items have the same format.\n- A reservation is a set of one or more items that can be booked.\n- The passengers' distribution for an item search must be equal to this item's distribution in the spots assignment process. For example, if you are looking for a hotel with two rooms and a distribution of adults and children, you must respect this on the spots assignment process. This last operation will be explained later.\n- There is support for different currencies. The current supported currencies are:\n\n  - Argentine peso (ARS).\n  - American dollar (USD).\n  - Euro (EUR).\n  - Pound sterling (GBP).\n\n# Booking flow\n## 1. Introduction\nAs explained in the section above, the API was designed with the purpose of booking **items/rates** from different types and providers.\n\nThe booking flow starts with a search for items. Supported item types are:\n  - Hotels.\n  - Flights.\n  - Land products.\n  - Travel assistances.\n  - Circuits.\n  - Packages.\n\nThere are several endpoints to get different items according to their types. In this example we are considering a hotel booking, so the endpoint for searching hotels is `GET /hotels`.\n\nIn order to book items, you need to generate a **reservation**, add the desired items to that reservation, and also add **passengers**. The passengers must be also assigned to **spots**.\n\nA spot is a room, a seat or any generic place in which a passenger must be assigned. For example: on hotels and circuits, passengers have to be associated to rooms, whereas on flights, a passenger must be associated to a seat. This assignment process is needed because a reservation could include many items and passengers, and the API gives the possibility to customize the distribution.\n\nOnce the items and passengers (in addition to their respective distribution) are added to the reservation, the booking process is completed with two additional operations: **verification** and **confirmation**.\n\nOn the one hand, the verification is needed to ensure the items' availability, which is a mandatory process for most providers. On the other hand, and only when the verification has succeeded, the confirmation operation performs the actual booking on the provider and on our backend systems.\n\nYou have to consider that items could have different **applicable extra fees**. The most common one is the **cancellation fee**, which is an amount you must pay if you (or your clients) cancel a reservation. It is expressed using time intervals because they mostly depend on the time between the cancellation date and the reservation date-in. These fees are present on **hotels, circuits and packages**.\n\nAll the endpoints on the different stages of the booking process have their own validations and error management using a standard response format. This information can be found on each endpoint documentation.\n\n## 2. Items search\nThe first step of the booking process is the items acquisition. All the item types' endpoints have support for several filtering, sorting and pagination standard parameters.\n\nIr order to get items, it is necessary to perform a polling action, sending the same request multiple times to the API. This polling will generate items as soon as the first provider responds and it will finish when the last one does.\n\nThe search response has the same standarized format as the rest of the endpoints, each customizing it for its own purpose. For every search operation, the `data` field on the response represents a collection (array) of rates/items with a stardard format. This process also adds extra information to the `metadata` field, such as pagination data (`page`, `per_page`, `total_results` and `total_pages` values) and search information (`min_price` and `max_price`, for the current page and for the whole results, which is known as `static` information). \n\n### Item structure\nThe items' structure is standarized on all the endpoints: \n\n  - One of the most important values for the booking process is the `id`. Each item has an unique `id` value.\n\n  - The item pricing can be obtained from the `total` field. It is a dictionary which contains the value expressed on the different supported currencies. If you need pricing details, you can get them using the `rates` value, which  expresses the gross (`bruto`), net (`neto`), taxes (`taxes`) and commission (`commission`), all of them expressed with all the supported currencies.\n\n  - All the items expire, which means that they will become invalid after a certain period of time. This information is found in the `expires_at` field.\n  \n  - All the items also have their origin information: its `kind` value represents the item type (`hotel`, `flight`, `circuit`, `land_product`, `assistance`, `package`, etc), whereas its `source` value represents its provider (`aero`, `nemo`, `netviax`, etc).\n\n  - Items also have extra information related to their own nature (for example, `rooms`, `images`, `stars` and `regime` for hotels, or `departure_flights`, `arrival_flights`, `baggage_included` and `airline` for flights). This information is located on each item's `info` field (inside its `data` field), and it is documented on each endpoint. The `info` field also includes internal backend information which can be ignored.\n\n  - Items have the provided distribution of the search process included on their `query_spots` field. It is an array of spots, which are objects that describe the distribution. This information will be used to generate reservation's spots.\n  \n  - As it was explained before, items could have appliable extra fees. This information can be found on the item's `info` field under the `cancellation` key. It is constituted by two different values:   \n  \n    - `status`: It represents the fees status at the moment of the query. Possible values are:\n      - `with_fee`: The item has fees at the current date.\n      - `without_fee`: The item does not have any fees at the current date.\n      - `unknown`: The search process did not determine wheter the item has any fees or not, so you need to request fees on a different endpoint. This endpoint is `GET /:item_source/:item_id/fees` (for example, for a hotel it would be `GET /hotels/:item_id/fees`).\n    - `charges`: It is an array which represents a fees schedule. The collection is ordered by date (using the `from` attribute) and each element has the following attributes:\n      - `type`: It represents the fee type. It could be `cancellation` or `no_show`.\n      - `from`: It represents the datetime when the fee starts.\n      - `to`: It represents the datetime when the fee finishes.\n      - `prices`: It represents the fee amount. It is expressed on all the supported currencies with the same format as the item `rates`.\n\n**Search response format**\n\n```\n{\n  \"status\": \"ok\",\n  \"transaction_status\": \"finished\",\n  \"data_type\": \"list\",\n  \"data\": [\n    ...\n  ],\n  \"metadata\": {\n    ...\n  }\n}\n```\n\n**Item format** _(located inside search response's `data` field)_\n\n```\n{\n  \"id\": \"hotel_47e45b5e-b422-4349-bfea-5821a77ed8c6\",\n  \"name\": \"Hard Rock Hotel Cancún\",\n  \"expires_at\": \"2018-07-05T11:47:56+00:00\",\n  \"locations\": [\n    {\n      \"id\": 3453,\n      \"name\": \"México, Cancún\"\n    }\n  ],\n  \"date_in\": \"2018-12-02\",\n  \"date_out\": \"2018-12-15\",\n  \"kind\": \"hotel\",\n  \"source\": \"aero\",\n  \"currency\": \"USD\",\n  \"total\": {\n      \"ars_value\": 179860.04,\n      \"usd_value\": 9643.97,\n      \"eur_value\": 7719.32,\n      \"gbp_value\": 7361.81\n  },\n  \"rates\": [\n    {\n      \"type\": \"bruto\",\n      \"value\": {\n        \"ars_value\": 175473.19,\n        \"usd_value\": 9408.75,\n        \"eur_value\": 7531.04,\n        \"gbp_value\": 7182.25\n      }\n    },\n    {\n      \"type\": \"neto\",\n      \"value\": {\n        \"ars_value\": 140378.55,\n        \"usd_value\": 7527,\n        \"eur_value\": 6024.83,\n        \"gbp_value\": 5745.8\n      }\n    },\n    {\n      \"type\": \"taxes\",\n      \"value\": {\n        \"ars_value\": 4386.85,\n        \"usd_value\": 235.22,\n        \"eur_value\": 188.28,\n        \"gbp_value\": 179.56\n      }\n    }\n  ],\n  \"query_spots\": [\n    {\n      \"adults_number\": 2,\n      \"children_ages\": []\n    }\n  ],\n  ...,\n  \"info\": {\n    ...,\n    \"cancellation\": {\n      \"status\": \"without_fee\",\n      \"charges\": [\n        {\n          \"type\": \"cancellation\",\n          \"from\": \"2018-11-29T00:00:00+00:00\",\n          \"to\": \"2018-12-15T00:00:00+00:00\",\n          \"prices\": [\n            {\n              \"type\": \"bruto\",\n              \"value\": {\n                \"ars_value\": 8681.57,\n                \"usd_value\": 465.5,\n                \"eur_value\": 372.6,\n                \"gbp_value\": 355.34\n              }\n            },\n            {\n              \"type\": \"neto\",\n              \"value\": {\n                \"ars_value\": 6945.26,\n                \"usd_value\": 372.4,\n                \"eur_value\": 298.08,\n                \"gbp_value\": 284.27\n              }\n            }\n          ]\n        }\n      ]\n    }\n  }\n}\n```\n\n## 3. Reservation management\nAs explained in the introduction, a reservation is a collection of items that can be booked. The reservation process involves the following operations:\n  - Create reservation.\n  - Add items to reservation.\n  - Add passengers to reservation.\n  - Assign passengers to reservation's spots.\n  - Verify reservation.\n  - Confirm reservation.\n  \n### **A. Create reservation**\nThis process creates a reservation with a unique `id`, which is returned as part of the reservation data. This value is needed to manage the reservation as a resource on the next stages of the booking process. The endpoint is `GET /reservations/new`.\n\n### **B. Add items to reservation**\nThis process adds an item to a reservation. Both item and reservation are referenced with their identifiers. The endpoint is `POST /reservations/:reservation_id/items/:item_id`.\n\n### **C. Add passengers to reservation**\nThis process creates passengers on the reservation. You can add all the passengers with a  single request. The endpoint is `POST /reservations/:reservation_id/passengers/add`\n\n### **D. Assign passengers to reservation's spots**\nThis process distributes existing passengers among the available spots. These spots are automatically created when items are added to a reservation. In order to use this functionality, you need to know both spots and passengers identifiers. This can be obtanined asking the API for the reservation details with the endpoint `GET /reservations/:reservation_id`.\n\nFor example, if we add a flight to the reservation, then the details will be:\n\n```\n{\n  \"status\": \"ok\",\n  \"transaction_status\": \"finished\",\n  \"data_type\": \"reservation\",\n  \"data\": {\n    \"id\": \"326bbed4-d9f0-4dd0-ad4b-1306d2d67235\",\n    ...,\n    \"items\": [...],\n    \"passengers\": [\n      {\n        \"first_name\": \"Bruce\",\n        \"last_name\": \"Wayne\",\n        ...,\n        \"id\": \"c6b059dc-9c78-412a-9634-f6ee03853cf4\"\n      },\n      {\n        \"first_name\": \"Damian\",\n        \"last_name\": \"Wayne\",\n        ...,\n        \"id\": \"803eb7fe-9286-4df4-8297-ac9f43b92f48\"\n      }\n    ],\n    \"passengers_distribution\": [\n      {\n        \"item_id\": \"flight_1c4437be-3063-4cfd-8578-89c91502fdc4\",\n        \"type\": \"seat\",\n        \"spots\": [\n          {\n            \"id\": \"eb7048d1-803a-4bf2-b8f5-0693c0e4a86d\",\n            \"type\": \"ADT\",\n            \"passenger_ids\": [],\n            \"query_spot\": {\n            \"adults_number\": 1,\n            \"children_ages\": []\n            }\n          },\n          {\n            \"id\": \"491e2352-7ad2-48c8-b53b-e903347c98ef\",\n            \"type\": \"ADT\",\n            \"passenger_ids\": [],\n            \"query_spot\": {\n              \"adults_number\": 1,\n              \"children_ages\": []\n            }\n          }\n        ]\n      }\n    ],\n  }\n}\n```\n\nAs we can see, spots were automatically generated for the item (in this case, **seats** because the item is a flight) using the provided search distribution. Your job is to complete the `passenger_ids` value  of every spot.\n\nBesides that, the reservation details also contain information related to the passengers you have already added to this reservation.\n\nSo, the endpoint to assign a passenger to a particular spot on a reservation is `POST /reservations/:reservation_id/spots/:spot_id/passengers/:passenger_id`.\n\n### **E. Verify reservation**\nAs explained above, the verification is needed to ensure the items availability, which is a mandatory process for most of the providers. You must verify the reservation before its confirmation process using the endpoint `POST /reservations/:reservation_id/verify`.\n\nOnce the `transaction_status` is `finished`, the verification returns different `status` values according to the result:\n\n  - `ok`: all the items are available.\n  - `warning`: at least one item is not unavailable.\n  - `error`: all the items are unavailable or an error occurred.\n  \n  The operation's results are returned in the `summary` field, which is contained by `data`. This is helpful in order to know which items are unavailable. The `summary` value includes information about the availability status of the items. It is an array made up of a collection of elements, each one of them with the following information: \n    \n  - `element_id`: it is equal to the item's ID.\n  - `element_name`: it is equal to the item's name.\n  - `status`: it represents the result of the operation and could be:   \n      - `ok`: the item is available.\n      - `warning`: the item is available but you must consider something. You should check `type`, `subtype` and `suggested_message`. An example could be that the item has cancellation fees at the time of the request.\n      - `error`: the item is unavailable or and error occurred. You should check `type`, `subtype` and `suggested_message`.\n  \n  - `expires_at`: it represents the verification expiration time, and could be the same as the item's `expires_at` or a different one returned by the provider.\n  - `source`: it will always be `verification`, and it is needed to differentiate this summary's items from the confirmation ones.\n  - `type`: it represents the error type if `status` is `warning` or `error`.\n  - `subtype`: it represents the error subtype if `status` is `warning` or `error`.\n  - `suggested_message`: it represents an error's suggested message if `status` is `warning` or `error`.\n  \n   If all the items are available, you will be ready to proceed to the confirmation process.\n   \n  **Note 1:** This endpoint also works with polling, so you will have results when the first provider verifies its items.\n  \n  **Note 2:** The verification is mandatory before the confirmation process, but it could be done before adding passengers and assigning them to spots.\n  \n  **Note 3:** Once the `transaction_status` is `finished`, the `summary` should contain the exact same number of elements as the items you have verified, regardless of their `status`.\n\n### **F. Confirm reservation**\nThe confirmation operation performs the actual booking on the provider and on our backend systems. It books each of the reservation's items. You must confirm the reservation using the endpoint `POST /reservations`.\n\nOnce the `transaction_status` is `finished`, the confirmation returns different `status` values according to the result:\n\n- `ok`: all the items were succesfully booked.\n- `warning`: at least one item was not booked.\n- `error`: all the items were not booked or and error has occurred.\n  \nThe operation's results are returned on the `summary` value, which is contained by `data`. This is helpful in order to know which items could not be booked. The `summary` value includes information about the booking results of the items. It is an array made up of a collection of elements, each one of them with the following information:\n    \n  - `status`: it represents the result of the operation and could be:   \n      - `ok`: the item was booked.\n      - `warning`: the item was booked but you must consider something. You should check `type`, `subtype` and `suggested_message`.\n      - `error`: the item was not booked or and error has occurred. You should check `type`, `subtype` and `suggested_message`.\n  \n  - `source`: it will always be `reservation`, and it is needed to differentiate this summary's items from the verification ones.\n  - `type`: it represents the error type if `status` is `warning` or `error`.\n  - `subtype`: it represents the error subtype if `status` is `warning` or `error`.\n  - `suggested_message`: it represents an error's suggested message if `status` is `warning` or `error`.\n  \n**Note 1:** This endpoint also works with polling, so you will have results when the first provider confirms its items.\n\n**Note 2:** Once the `transaction_status` is `finished`, the `summary` should contain **at least** the same number of elements as the items you have confirmed, regardless of their `status`. It could also contain one extra element if the connection with our backend system failed.\n\n## 4. Annex\n### A. Error/warning types for verification and reservation\n\n<style>\n  th { text-transform: uppercase; } \n  td:first-child { font-weight: bold;}\n</style>\n<table>\n  <thead>\n    <tr>\n      <th>Type</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td class=\"text-bold\">availability</th>\n      <td>The item has no availability.</th>\n    </tr>\n    <tr>\n      <td>cancellation_fees</td>\n      <td>An error related to cancellation fees happened.</td>\n    </tr>\n    <tr>\n      <td>cannot_be_alone</td>\n      <td>The service requires another service in order to be booked.</td>\n    </tr>\n    <tr>\n      <td>expiration</td>\n      <td>The service has expired.</td>\n    </tr>\n    <tr>\n    <tr>\n      <td>failed_transaction</td>\n      <td>An unexpected internal error has occurred.</td>\n    </tr>\n    <tr>\n      <td>middle_office</td>\n      <td>An error related to our backend system has occurred.</td>\n    </tr>\n    <tr>\n      <td>reservation</td>\n      <td>An error related to reservation has occurred.</td>\n    </tr>\n      <td>service_timeout</td>\n      <td>The service took a long time to respond.</td>\n    </tr>\n    <tr>\n      <td>verification</td>\n      <td>An error related to verification has occurred.</td>\n    </tr>\n  </tbody>\n</table>\n\n### B. Error/warning subtypes for verification and reservation\n\n<table>\n  <thead>\n    <tr>\n      <th>Subtype</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>airport_not_found</th>\n      <td>There is no airport for the given location.</th>\n    </tr>\n    <tr>\n      <td>assistance_requires_hotel</td>\n      <td>The assistance can only be booked with a hotel. Please, add a hotel.</td>\n    </tr>\n    <tr>\n      <td>child_info_missing</td>\n      <td>Children information is missing or incomplete.</td>\n    </tr>\n    <tr>\n      <td>circuit_on_request</td>\n      <td>The circuit is unavailable. Please, contact an Aero seller to deal with the matter.</td>\n    </tr>\n    <tr>\n      <td>confirmation_express_could_not_be_reserved</td>\n      <td>An error happened while trying to book the hotel with express confirmation. Please, contact an Aero seller or try again later.</td>\n    </tr>\n    <tr>\n      <td>connection_error</td>\n      <td>An connection error has occurred.</td>\n    </tr>\n    <tr>\n      <td>connection_failed</td>\n      <td>Unable to connect with external server.</td>\n    </tr>\n    <tr>\n      <td>contract_limit_reached</td>\n      <td>The contract does not have funds enough to perform the reservation.</td>\n    </tr>\n    <tr>\n      <td>date_in_too_far</td>\n      <td>date_in must be nearer to today's date.</td>\n    </tr>\n    <tr>\n      <td>expiration</td>\n      <td>The broker informs that the service has expired.</td>\n    </tr>\n    <tr>\n      <td>external_service_timeout</td>\n      <td>The external service has taken too long to respond.</td>\n    </tr>\n    <tr>\n      <td>fees_cannot_be_checked</td>\n      <td>An error has occurred while trying to get cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>flight_requires_hotel</td>\n      <td>The flight can only be booked with a hotel. Please, add a hotel.</td>\n    </tr>\n    <tr>\n      <td>flights_missing_in_request</td>\n      <td>The sent data is not enough to regenerate the itinerary.</td>\n    </tr>\n    <tr>\n      <td>incomplete_journey</td>\n      <td>The requested itinerary could not be generated.</td>\n    </tr>\n    <tr>\n      <td>invalid_item</td>\n      <td>The rate is no longer valid.</td>\n    </tr>\n    <tr>\n      <td>invalid_request</td>\n      <td>Some of the sent parameters are invalid.</td>\n    </tr>\n    <tr>\n      <td>invalid_reservation_type</td>\n      <td>The reservation type is invalid.</td>\n    </tr>\n    <tr>\n      <td>item_not_found</td>\n      <td>The broker could not find the rate by its identifier.</td>\n    </tr>\n    <tr>\n      <td>manual_verification_needed</td>\n      <td>User manual verification is needed. The reservation might have been made but automatic cancellation might not be activated.</td>\n    </tr>\n    <tr>\n      <td>no_availability</td>\n      <td>The rate is no longer available.</td>\n    </tr>\n    <tr>\n      <td>no_flights_found</td>\n      <td>No flights have been found.</td>\n    </tr>\n    <tr>\n      <td>pax_could_not_be_added</td>\n      <td>An error happened while trying to add a passenger to the reservation.</td>\n    </tr>\n    <tr>\n      <td>proximity</td>\n      <td>The item is close to have cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>rejected_by_configuration</td>\n      <td>The reservation could not be performed because the service has cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>reservation_failed</td>\n      <td>An error happened while trying to save the reservation in our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>reservation_not_found</td>\n      <td>The reservation was not found on our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>search_expiration</td>\n      <td>Search results have expired. Please, perform a new search.</td>\n    </tr>\n    <tr>\n      <td>service_bad_request</td>\n      <td>An error happened while reading the information that has been sent to our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>service_error</td>\n      <td>An error happened while trying to create a service for the reservation.</td>\n    </tr>\n    <tr>\n      <td>unauthorized</td>\n      <td>You are not authorized to perform the requested action.</td>\n    </tr>\n    <tr>\n      <td>unknown</td>\n      <td>An unknown error has occurred.</td>\n    </tr>\n    <tr>\n      <td>unknown_agency</td>\n      <td>The agency could not be identified.</td>\n    </tr>\n    <tr>\n      <td>unknown_reservation_status</td>\n      <td>The operator must verify the reservation to check if it have succeed.</td>\n    </tr>\n    <tr>\n      <td>unknown_seller</td>\n      <td>The seller could not be identified.</td>\n    </tr>\n    <tr>\n      <td>unknown_user_role</td>\n      <td>The user role could not be identified.</td>\n    </tr>\n    <tr>\n      <td>user_cannot_reserve</td>\n      <td>The item has cancellation fees and the user does not have permission to book elements with this characteristic.</td>\n    </tr>\n    <tr>\n      <td>with_fee</td>\n      <td>The item has cancellation fees.</td>\n    </tr>\n  </tbody>\n</table>\n",
+    "description": "Docs for using the Cotizador API.\n# Introduction\n- This document is in beta version. Modifications could be made or new\ninformation could be added.\n- You will need access credentials in order to use the API.\n- This API works by polling. You will need to send the same request to\nthe endpoint at hand until the `transaction_status` is `finished`.\n- All the API responses are on JSON format. There are four root keys on every endpoint response:\n  - `transaction_status`: It indicates if you need to keep polling. Possible values are: `continue`, `finished`.\n  - `status`: It indicates if the response was successful or if it finished with error or warnings. Possible values are: `ok`, `warning`, `error`.\n  - `data`: It includes the response data according to the request.\n  - `data_type`: It indicates `data`'s data type.\n- Responses also have a fifth element called `metadata`, which is a field destined to save metadata information such as the request ID (`request_id`) and the provided query (`query`). Several endpoints add extra information to this field.\n- We use the words **item** and **rate** interchangeably. An item/rate is a unique quote that could include:\n  - one or more hotel rooms, or\n  - a flight ticket, or\n  - a land product service (excursion, transfer, visa, etc.), or\n  - a travel assistance, or\n  - a circuit\n- All items have the same format.\n- A reservation is a set of one or more items that can be booked.\n- The passengers' distribution for an item search must be equal to this item's distribution in the spots assignment process. For example, if you are looking for a hotel with two rooms and a distribution of adults and children, you must respect this on the spots assignment process. This last operation will be explained later.\n- There is support for different currencies. The current supported currencies are:\n\n  - Argentine peso (ARS).\n  - American dollar (USD).\n  - Euro (EUR).\n  - Pound sterling (GBP).\n\n# Booking flow\n## 1. Introduction\nAs explained in the section above, the API was designed with the purpose of booking **items/rates** from different types and providers.\n\nThe booking flow starts with a search for items. Supported item types are:\n  - Hotels.\n  - Flights.\n  - Land products.\n  - Travel assistances.\n  - Circuits.\n  - Packages.\n\nThere are several endpoints to get different items according to their types. In this example we are considering a hotel booking, so the endpoint for searching hotels is `GET /hotels`.\n\nIn order to book items, you need to generate a **reservation**, add the desired items to that reservation, and also add **passengers**. The passengers must be also assigned to **spots**.\n\nA spot is a room, a seat or any generic place in which a passenger must be assigned. For example: on hotels and circuits, passengers have to be associated to rooms, whereas on flights, a passenger must be associated to a seat. This assignment process is needed because a reservation could include many items and passengers, and the API gives the possibility to customize the distribution.\n\nOnce the items and passengers (in addition to their respective distribution) are added to the reservation, the booking process is completed with two additional operations: **verification** and **confirmation**.\n\nOn the one hand, the verification is needed to ensure the items' availability, which is a mandatory process for most providers. On the other hand, and only when the verification has succeeded, the confirmation operation performs the actual booking on the provider and on our backend systems.\n\nYou have to consider that items could have different **applicable extra fees**. The most common one is the **cancellation fee**, which is an amount you must pay if you (or your clients) cancel a reservation. It is expressed using time intervals because they mostly depend on the time between the cancellation date and the reservation date-in. These fees are present on **hotels, circuits and packages**.\n\nAll the endpoints on the different stages of the booking process have their own validations and error management using a standard response format. This information can be found on each endpoint documentation.\n\n## 2. Items search\nThe first step of the booking process is the items acquisition. All the item types' endpoints have support for several filtering, sorting and pagination standard parameters.\n\nIr order to get items, it is necessary to perform a polling action, sending the same request multiple times to the API. This polling will generate items as soon as the first provider responds and it will finish when the last one does.\n\nThe search response has the same standarized format as the rest of the endpoints, each customizing it for its own purpose. For every search operation, the `data` field on the response represents a collection (array) of rates/items with a stardard format. This process also adds extra information to the `metadata` field, such as pagination data (`page`, `per_page`, `total_results` and `total_pages` values) and search information (`min_price` and `max_price`, for the current page and for the whole results, which is known as `static` information).\n\n### Item structure\nThe items' structure is standarized on all the endpoints:\n\n  - One of the most important values for the booking process is the `id`. Each item has an unique `id` value.\n\n  - The item pricing can be obtained from the `total` field. It is a dictionary which contains the value expressed on the different supported currencies. If you need pricing details, you can get them using the `rates` value, which  expresses the gross (`bruto`), net (`neto`), taxes (`taxes`) and commission (`commission`), all of them expressed with all the supported currencies.\n\n  - All the items expire, which means that they will become invalid after a certain period of time. This information is found in the `expires_at` field.\n\n  - All the items also have their origin information: its `kind` value represents the item type (`hotel`, `flight`, `circuit`, `land_product`, `assistance`, `package`, etc), whereas its `source` value represents its provider (`aero`, `nemo`, `netviax`, etc).\n\n  - Items also have extra information related to their own nature (for example, `rooms`, `images`, `stars` and `regime` for hotels, or `departure_flights`, `arrival_flights`, `baggage_included` and `airline` for flights). This information is located on each item's `info` field (inside its `data` field), and it is documented on each endpoint. The `info` field also includes internal backend information which can be ignored.\n\n  - Items have the provided distribution of the search process included on their `query_spots` field. It is an array of spots, which are objects that describe the distribution. This information will be used to generate reservation's spots.\n\n  - As it was explained before, items could have appliable extra fees. This information can be found on the item's `info` field under the `cancellation` key. It is constituted by two different values:\n\n    - `status`: It represents the fees status at the moment of the query. Possible values are:\n      - `with_fee`: The item has fees at the current date.\n      - `without_fee`: The item does not have any fees at the current date.\n      - `unknown`: The search process did not determine wheter the item has any fees or not, so you need to request fees on a different endpoint. This endpoint is `GET /:item_source/:item_id/fees` (for example, for a hotel it would be `GET /hotels/:item_id/fees`).\n    - `charges`: It is an array which represents a fees schedule. The collection is ordered by date (using the `from` attribute) and each element has the following attributes:\n      - `type`: It represents the fee type. It could be `cancellation` or `no_show`.\n      - `from`: It represents the datetime when the fee starts.\n      - `to`: It represents the datetime when the fee finishes.\n      - `prices`: It represents the fee amount. It is expressed on all the supported currencies with the same format as the item `rates`.\n\n**Search response format**\n\n```\n{\n  \"status\": \"ok\",\n  \"transaction_status\": \"finished\",\n  \"data_type\": \"list\",\n  \"data\": [\n    ...\n  ],\n  \"metadata\": {\n    ...\n  }\n}\n```\n\n**Item format** _(located inside search response's `data` field)_\n\n```\n{\n  \"id\": \"hotel_47e45b5e-b422-4349-bfea-5821a77ed8c6\",\n  \"name\": \"Hard Rock Hotel Cancún\",\n  \"expires_at\": \"2018-07-05T11:47:56+00:00\",\n  \"locations\": [\n    {\n      \"id\": 3453,\n      \"name\": \"México, Cancún\"\n    }\n  ],\n  \"date_in\": \"2018-12-02\",\n  \"date_out\": \"2018-12-15\",\n  \"kind\": \"hotel\",\n  \"source\": \"aero\",\n  \"currency\": \"USD\",\n  \"total\": {\n      \"ars_value\": 179860.04,\n      \"usd_value\": 9643.97,\n      \"eur_value\": 7719.32,\n      \"gbp_value\": 7361.81\n  },\n  \"rates\": [\n    {\n      \"type\": \"bruto\",\n      \"value\": {\n        \"ars_value\": 175473.19,\n        \"usd_value\": 9408.75,\n        \"eur_value\": 7531.04,\n        \"gbp_value\": 7182.25\n      }\n    },\n    {\n      \"type\": \"neto\",\n      \"value\": {\n        \"ars_value\": 140378.55,\n        \"usd_value\": 7527,\n        \"eur_value\": 6024.83,\n        \"gbp_value\": 5745.8\n      }\n    },\n    {\n      \"type\": \"taxes\",\n      \"value\": {\n        \"ars_value\": 4386.85,\n        \"usd_value\": 235.22,\n        \"eur_value\": 188.28,\n        \"gbp_value\": 179.56\n      }\n    }\n  ],\n  \"query_spots\": [\n    {\n      \"adults_number\": 2,\n      \"children_ages\": []\n    }\n  ],\n  ...,\n  \"info\": {\n    ...,\n    \"cancellation\": {\n      \"status\": \"without_fee\",\n      \"charges\": [\n        {\n          \"type\": \"cancellation\",\n          \"from\": \"2018-11-29T00:00:00+00:00\",\n          \"to\": \"2018-12-15T00:00:00+00:00\",\n          \"prices\": [\n            {\n              \"type\": \"bruto\",\n              \"value\": {\n                \"ars_value\": 8681.57,\n                \"usd_value\": 465.5,\n                \"eur_value\": 372.6,\n                \"gbp_value\": 355.34\n              }\n            },\n            {\n              \"type\": \"neto\",\n              \"value\": {\n                \"ars_value\": 6945.26,\n                \"usd_value\": 372.4,\n                \"eur_value\": 298.08,\n                \"gbp_value\": 284.27\n              }\n            }\n          ]\n        }\n      ]\n    }\n  }\n}\n```\n\n## 3. Reservation management\nAs explained in the introduction, a reservation is a collection of items that can be booked. The reservation process involves the following operations:\n  - Create reservation.\n  - Add items to reservation.\n  - Add passengers to reservation.\n  - Assign passengers to reservation's spots.\n  - Verify reservation.\n  - Confirm reservation.\n\n### **A. Create reservation**\nThis process creates a reservation with a unique `id`, which is returned as part of the reservation data. This value is needed to manage the reservation as a resource on the next stages of the booking process. The endpoint is `GET /reservations/new`.\n\n### **B. Add items to reservation**\nThis process adds an item to a reservation. Both item and reservation are referenced with their identifiers. The endpoint is `POST /reservations/:reservation_id/items/:item_id`.\n\n### **C. Add passengers to reservation**\nThis process creates passengers on the reservation. You can add all the passengers with a  single request. The endpoint is `POST /reservations/:reservation_id/passengers/add`\n\n### **D. Assign passengers to reservation's spots**\nThis process distributes existing passengers among the available spots. These spots are automatically created when items are added to a reservation. In order to use this functionality, you need to know both spots and passengers identifiers. This can be obtanined asking the API for the reservation details with the endpoint `GET /reservations/:reservation_id`.\n\nFor example, if we add a flight to the reservation, then the details will be:\n\n```\n{\n  \"status\": \"ok\",\n  \"transaction_status\": \"finished\",\n  \"data_type\": \"reservation\",\n  \"data\": {\n    \"id\": \"326bbed4-d9f0-4dd0-ad4b-1306d2d67235\",\n    ...,\n    \"items\": [...],\n    \"passengers\": [\n      {\n        \"first_name\": \"Bruce\",\n        \"last_name\": \"Wayne\",\n        ...,\n        \"id\": \"c6b059dc-9c78-412a-9634-f6ee03853cf4\"\n      },\n      {\n        \"first_name\": \"Damian\",\n        \"last_name\": \"Wayne\",\n        ...,\n        \"id\": \"803eb7fe-9286-4df4-8297-ac9f43b92f48\"\n      }\n    ],\n    \"passengers_distribution\": [\n      {\n        \"item_id\": \"flight_1c4437be-3063-4cfd-8578-89c91502fdc4\",\n        \"type\": \"seat\",\n        \"spots\": [\n          {\n            \"id\": \"eb7048d1-803a-4bf2-b8f5-0693c0e4a86d\",\n            \"type\": \"ADT\",\n            \"passenger_ids\": [],\n            \"query_spot\": {\n            \"adults_number\": 1,\n            \"children_ages\": []\n            }\n          },\n          {\n            \"id\": \"491e2352-7ad2-48c8-b53b-e903347c98ef\",\n            \"type\": \"ADT\",\n            \"passenger_ids\": [],\n            \"query_spot\": {\n              \"adults_number\": 1,\n              \"children_ages\": []\n            }\n          }\n        ]\n      }\n    ],\n  }\n}\n```\n\nAs we can see, spots were automatically generated for the item (in this case, **seats** because the item is a flight) using the provided search distribution. Your job is to complete the `passenger_ids` value  of every spot.\n\nBesides that, the reservation details also contain information related to the passengers you have already added to this reservation.\n\nSo, the endpoint to assign a passenger to a particular spot on a reservation is `POST /reservations/:reservation_id/spots/:spot_id/passengers/:passenger_id`.\n\n### **E. Verify reservation**\nAs explained above, the verification is needed to ensure the items availability, which is a mandatory process for most of the providers. You must verify the reservation before its confirmation process using the endpoint `POST /reservations/:reservation_id/verify`.\n\nOnce the `transaction_status` is `finished`, the verification returns different `status` values according to the result:\n\n  - `ok`: all the items are available.\n  - `warning`: at least one item is not unavailable.\n  - `error`: all the items are unavailable or an error occurred.\n\n  The operation's results are returned in the `summary` field, which is contained by `data`. This is helpful in order to know which items are unavailable. The `summary` value includes information about the availability status of the items. It is an array made up of a collection of elements, each one of them with the following information:\n\n  - `element_id`: it is equal to the item's ID.\n  - `element_name`: it is equal to the item's name.\n  - `status`: it represents the result of the operation and could be:\n      - `ok`: the item is available.\n      - `warning`: the item is available but you must consider something. You should check `type`, `subtype` and `suggested_message`. An example could be that the item has cancellation fees at the time of the request.\n      - `error`: the item is unavailable or and error occurred. You should check `type`, `subtype` and `suggested_message`.\n\n  - `expires_at`: it represents the verification expiration time, and could be the same as the item's `expires_at` or a different one returned by the provider.\n  - `source`: it will always be `verification`, and it is needed to differentiate this summary's items from the confirmation ones.\n  - `type`: it represents the error type if `status` is `warning` or `error`.\n  - `subtype`: it represents the error subtype if `status` is `warning` or `error`.\n  - `suggested_message`: it represents an error's suggested message if `status` is `warning` or `error`.\n\n   If all the items are available, you will be ready to proceed to the confirmation process.\n\n  **Note 1:** This endpoint also works with polling, so you will have results when the first provider verifies its items.\n\n  **Note 2:** The verification is mandatory before the confirmation process, but it could be done before adding passengers and assigning them to spots.\n\n  **Note 3:** Once the `transaction_status` is `finished`, the `summary` should contain the exact same number of elements as the items you have verified, regardless of their `status`.\n\n### **F. Confirm reservation**\nThe confirmation operation performs the actual booking on the provider and on our backend systems. It books each of the reservation's items. You must confirm the reservation using the endpoint `POST /reservations`.\n\nOnce the `transaction_status` is `finished`, the confirmation returns different `status` values according to the result:\n\n- `ok`: all the items were succesfully booked.\n- `warning`: at least one item was not booked.\n- `error`: all the items were not booked or and error has occurred.\nThe operation's results are returned on the `summary` value, which is contained by `data`. This is helpful in order to know which items could not be booked. The `summary` value includes information about the booking results of the items. It is an array made up of a collection of elements, each one of them with the following information:\n\n  - `status`: it represents the result of the operation and could be:\n      - `ok`: the item was booked.\n      - `warning`: the item was booked but you must consider something. You should check `type`, `subtype` and `suggested_message`.\n      - `error`: the item was not booked or and error has occurred. You should check `type`, `subtype` and `suggested_message`.\n\n  - `source`: it will always be `reservation`, and it is needed to differentiate this summary's items from the verification ones.\n  - `type`: it represents the error type if `status` is `warning` or `error`.\n  - `subtype`: it represents the error subtype if `status` is `warning` or `error`.\n  - `suggested_message`: it represents an error's suggested message if `status` is `warning` or `error`.\n\n**Note 1:** This endpoint also works with polling, so you will have results when the first provider confirms its items.\n\n**Note 2:** Once the `transaction_status` is `finished`, the `summary` should contain **at least** the same number of elements as the items you have confirmed, regardless of their `status`. It could also contain one extra element if the connection with our backend system failed.\n\n## 4. Annex\n### A. Error/warning types for verification and reservation\n\n<style>\n  th { text-transform: uppercase; }\n  td:first-child { font-weight: bold;}\n</style>\n<table>\n  <thead>\n    <tr>\n      <th>Type</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td class=\"text-bold\">availability</th>\n      <td>The item has no availability.</th>\n    </tr>\n    <tr>\n      <td>cancellation_fees</td>\n      <td>An error related to cancellation fees happened.</td>\n    </tr>\n    <tr>\n      <td>cannot_be_alone</td>\n      <td>The service requires another service in order to be booked.</td>\n    </tr>\n    <tr>\n      <td>expiration</td>\n      <td>The service has expired.</td>\n    </tr>\n    <tr>\n    <tr>\n      <td>failed_transaction</td>\n      <td>An unexpected internal error has occurred.</td>\n    </tr>\n    <tr>\n      <td>middle_office</td>\n      <td>An error related to our backend system has occurred.</td>\n    </tr>\n    <tr>\n      <td>reservation</td>\n      <td>An error related to reservation has occurred.</td>\n    </tr>\n      <td>service_timeout</td>\n      <td>The service took a long time to respond.</td>\n    </tr>\n    <tr>\n      <td>verification</td>\n      <td>An error related to verification has occurred.</td>\n    </tr>\n  </tbody>\n</table>\n\n### B. Error/warning subtypes for verification and reservation\n\n<table>\n  <thead>\n    <tr>\n      <th>Subtype</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>airport_not_found</th>\n      <td>There is no airport for the given location.</th>\n    </tr>\n    <tr>\n      <td>assistance_requires_hotel</td>\n      <td>The assistance can only be booked with a hotel. Please, add a hotel.</td>\n    </tr>\n    <tr>\n      <td>child_info_missing</td>\n      <td>Children information is missing or incomplete.</td>\n    </tr>\n    <tr>\n      <td>circuit_on_request</td>\n      <td>The circuit is unavailable. Please, contact an Aero seller to deal with the matter.</td>\n    </tr>\n    <tr>\n      <td>confirmation_express_could_not_be_reserved</td>\n      <td>An error happened while trying to book the hotel with express confirmation. Please, contact an Aero seller or try again later.</td>\n    </tr>\n    <tr>\n      <td>connection_error</td>\n      <td>An connection error has occurred.</td>\n    </tr>\n    <tr>\n      <td>connection_failed</td>\n      <td>Unable to connect with external server.</td>\n    </tr>\n    <tr>\n      <td>contract_limit_reached</td>\n      <td>The contract does not have funds enough to perform the reservation.</td>\n    </tr>\n    <tr>\n      <td>date_in_too_far</td>\n      <td>date_in must be nearer to today's date.</td>\n    </tr>\n    <tr>\n      <td>expiration</td>\n      <td>The broker informs that the service has expired.</td>\n    </tr>\n    <tr>\n      <td>external_service_timeout</td>\n      <td>The external service has taken too long to respond.</td>\n    </tr>\n    <tr>\n      <td>fees_cannot_be_checked</td>\n      <td>An error has occurred while trying to get cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>flight_requires_hotel</td>\n      <td>The flight can only be booked with a hotel. Please, add a hotel.</td>\n    </tr>\n    <tr>\n      <td>flights_missing_in_request</td>\n      <td>The sent data is not enough to regenerate the itinerary.</td>\n    </tr>\n    <tr>\n      <td>incomplete_journey</td>\n      <td>The requested itinerary could not be generated.</td>\n    </tr>\n    <tr>\n      <td>invalid_item</td>\n      <td>The rate is no longer valid.</td>\n    </tr>\n    <tr>\n      <td>invalid_request</td>\n      <td>Some of the sent parameters are invalid.</td>\n    </tr>\n    <tr>\n      <td>invalid_reservation_type</td>\n      <td>The reservation type is invalid.</td>\n    </tr>\n    <tr>\n      <td>item_not_found</td>\n      <td>The broker could not find the rate by its identifier.</td>\n    </tr>\n    <tr>\n      <td>manual_verification_needed</td>\n      <td>User manual verification is needed. The reservation might have been made but automatic cancellation might not be activated.</td>\n    </tr>\n    <tr>\n      <td>no_availability</td>\n      <td>The rate is no longer available.</td>\n    </tr>\n    <tr>\n      <td>no_flights_found</td>\n      <td>No flights have been found.</td>\n    </tr>\n    <tr>\n      <td>pax_could_not_be_added</td>\n      <td>An error happened while trying to add a passenger to the reservation.</td>\n    </tr>\n    <tr>\n      <td>proximity</td>\n      <td>The item is close to have cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>rejected_by_configuration</td>\n      <td>The reservation could not be performed because the service has cancellation fees.</td>\n    </tr>\n    <tr>\n      <td>reservation_failed</td>\n      <td>An error happened while trying to save the reservation in our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>reservation_not_found</td>\n      <td>The reservation was not found on our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>search_expiration</td>\n      <td>Search results have expired. Please, perform a new search.</td>\n    </tr>\n    <tr>\n      <td>service_bad_request</td>\n      <td>An error happened while reading the information that has been sent to our backend system (MiddleOffice).</td>\n    </tr>\n    <tr>\n      <td>service_error</td>\n      <td>An error happened while trying to create a service for the reservation.</td>\n    </tr>\n    <tr>\n      <td>unauthorized</td>\n      <td>You are not authorized to perform the requested action.</td>\n    </tr>\n    <tr>\n      <td>unknown</td>\n      <td>An unknown error has occurred.</td>\n    </tr>\n    <tr>\n      <td>unknown_agency</td>\n      <td>The agency could not be identified.</td>\n    </tr>\n    <tr>\n      <td>unknown_reservation_status</td>\n      <td>The operator must verify the reservation to check if it have succeed.</td>\n    </tr>\n    <tr>\n      <td>unknown_seller</td>\n      <td>The seller could not be identified.</td>\n    </tr>\n    <tr>\n      <td>unknown_user_role</td>\n      <td>The user role could not be identified.</td>\n    </tr>\n    <tr>\n      <td>user_cannot_reserve</td>\n      <td>The item has cancellation fees and the user does not have permission to book elements with this characteristic.</td>\n    </tr>\n    <tr>\n      <td>with_fee</td>\n      <td>The item has cancellation fees.</td>\n    </tr>\n  </tbody>\n</table>\n",
     "version": "2.0",
     "contact": {
       "email": "federico.bouche@snappler.com"
@@ -2672,7 +2672,7 @@
           "Packages"
         ],
         "summary": "Removes an item/service from a single package.",
-        "description": "# Removes an item/service from a single package. An item or service is a flight, hotel, land product or assistance. Limited to certain types of items.\nIn a successful response the package is returned, including the item that was just removed.\n\nThere are several reasons for getting an error response:\n- The package itself doesn't exist (i.e. the package with ID *packageId* could not be found).\n- The item to be removed is not present in the package.\n- The item to be removed is not that of an allowed kind.        \n",
+        "description": "# Removes an item/service from a single package. An item or service is a flight, hotel, land product or assistance. Limited to certain types of items.\nIn a successful response the package is returned, including the item that was just removed.\n\nThere are several reasons for getting an error response:\n- The package itself doesn't exist (i.e. the package with ID *packageId* could not be found).\n- The item to be removed is not present in the package.\n- The item to be removed is not that of an allowed kind.\n",
         "operationId": "removeItemFromPackage",
         "parameters": [
           {
@@ -3476,7 +3476,7 @@
           "Reservations"
         ],
         "summary": "Creates a reservation in MiddleOffice after confirming all the items.",
-        "description": "# Creates a reservation in MiddleOffice after confirming all the items.\n*As a prerequisite, all items in the provisional reservation must be verified and the passengers\nmust be assigned to their respective spot, e.g. if an item was requested for two adults, then, \nbefore confirming, there must be two passengers in the reservation, and they must be assigned \nto the item spots.*  \n\n---\nIt books each item into its respective provider.\nThen, all of the successfully booked items are saved as services in MiddleOffice, \ncreating a new reservation, or updating an existing one if the `existing_reservation_id` field\nof the provisional reservation is set.\n",
+        "description": "# Creates a reservation in MiddleOffice after confirming all the items.\n*As a prerequisite, all items in the provisional reservation must be verified and the passengers\nmust be assigned to their respective spot, e.g. if an item was requested for two adults, then,\nbefore confirming, there must be two passengers in the reservation, and they must be assigned\nto the item spots.*\n\n---\nIt books each item into its respective provider.\nThen, all of the successfully booked items are saved as services in MiddleOffice,\ncreating a new reservation, or updating an existing one if the `existing_reservation_id` field\nof the provisional reservation is set.\n",
         "operationId": "createReservation",
         "parameters": [
           {
@@ -3816,12 +3816,12 @@
                   "send_email_to_agency": {
                     "type": "boolean",
                     "example": false,
-                    "description": "If this parameter is `true`, then the agency will receive the confirmation email.  \nIf this parameter's value is `false` or it is not set, then the email will not be sent to the agency. This is the default behavior."
+                    "description": "If this parameter is `true`, then the agency will receive the confirmation email.\nIf this parameter's value is `false` or it is not set, then the email will not be sent to the agency. This is the default behavior."
                   },
                   "send_email_to_seller": {
                     "type": "boolean",
                     "example": false,
-                    "description": "If this parameter is `true`, then the seller will receive the confirmation email.  \nIf this parameter's value is `false` or it is not set, then the email will not be sent to the seller. This is the default behavior."
+                    "description": "If this parameter is `true`, then the seller will receive the confirmation email.\nIf this parameter's value is `false` or it is not set, then the email will not be sent to the seller. This is the default behavior."
                   }
                 }
               }
@@ -4093,7 +4093,7 @@
                   "reservation_observation": {
                     "type": "string",
                     "example": "Observation to be appended in the MiddleOffice's reservation observation.",
-                    "description": "Observation of the item.  \nThis observation will be sent in the service sent to MiddleOffice, when this service is added to an existing reservation.  \nThis observation is not sent when a new reservation is created, it is only used for an existing reservation.  \nThis text will be appended to the general observation of the MiddleOffice's reservation.\n"
+                    "description": "Observation of the item.\nThis observation will be sent in the service sent to MiddleOffice, when this service is added to an existing reservation.\nThis observation is not sent when a new reservation is created, it is only used for an existing reservation.\nThis text will be appended to the general observation of the MiddleOffice's reservation.\n"
                   }
                 }
               }
@@ -4362,7 +4362,7 @@
           "Reservation spots"
         ],
         "summary": "Clears a spot out.",
-        "description": "# Clears a spot out.\nIt removes all passengers assigned to the spot to allow their reassignment.  \nThe involved passengers are kept in the provisional reservation.\n",
+        "description": "# Clears a spot out.\nIt removes all passengers assigned to the spot to allow their reassignment.\nThe involved passengers are kept in the provisional reservation.\n",
         "operationId": "clearReservationSpot",
         "parameters": [
           {
@@ -4438,7 +4438,7 @@
           "Reservation holder"
         ],
         "summary": "Adds holder information to the reservation. This data is used for further steps in the reservation process, e.g., to send emails after a successful confirmation.",
-        "description": "# Adds holder information to the reservation. This data is used for further steps in the reservation process, e.g., to send emails after a successful confirmation.\nIt is mandatory to call this endpoint before confirming the reservation, as the information provided here is needed after the confirmation. This restriction only applies to Flexi.  \nIf there is a holder in the reservation, calling this endpoint will throw an error. If you want to change any field of the given holder, or the holder itself, you must delete it and then add it modified.\n",
+        "description": "# Adds holder information to the reservation. This data is used for further steps in the reservation process, e.g., to send emails after a successful confirmation.\nIt is mandatory to call this endpoint before confirming the reservation, as the information provided here is needed after the confirmation. This restriction only applies to Flexi.\nIf there is a holder in the reservation, calling this endpoint will throw an error. If you want to change any field of the given holder, or the holder itself, you must delete it and then add it modified.\n",
         "operationId": "addReservationHolder",
         "parameters": [
           {
@@ -5135,7 +5135,7 @@
           "User"
         ],
         "summary": "Gets information about the current user.",
-        "description": "# Gets information about the current user.  \nThe user is defined by the token given for authentication.\n",
+        "description": "# Gets information about the current user.\nThe user is defined by the token given for authentication.\n",
         "operationId": "userInfo",
         "responses": {
           "200": {
@@ -5367,6 +5367,391 @@
           }
         }
       }
+    },
+    "/quotations": {
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Gets a list of quotations.",
+        "description": "# Gets a list of all user's quotations.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "holder",
+            "description": "Pass an optional holder to filter the quotations",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "reference",
+            "description": "Pass an optional reference to filter the quotations, which contains total o partially that reference.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from_date",
+            "description": "Pass an optional date to filter quotations created since",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until_date",
+            "description": "Pass an optional date to filter quotations created until",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of quotation's info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of quotation's info",
+                      "items": {
+                        "$ref": "#/components/schemas/ListQuotation"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundUserError"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/QuotationManagerStandardError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Create a quotation.",
+        "description": "# Create a quotation from a cart.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "holder": {
+                    "type": "string",
+                    "description": "Person responsible of the reservation",
+                    "example": "Holden Caulfield"
+                  },
+                  "reservation_id": {
+                    "type": "string",
+                    "description": "Valid reservation identifier",
+                    "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Standard response with a new quotation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "quotation"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "repository": {
+                          "type": "object",
+                          "$ref": "#/components/schemas/CreateQuotation"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundUserError"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/QuotationManagerStandardError"
+          }
+        }
+      }
+    },
+    "/quotations/{quotation_id}": {
+      "delete": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Deletes quotation.",
+        "description": "# Deletes a quotation.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "quotation_id",
+            "description": "Quotation's id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a void data and a notification message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "quotation_delete"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Void Array"
+                    },
+                    "notifications": {
+                      "type": "array",
+                      "description": "Notifications of the execution",
+                      "items": {
+                        "type": "string",
+                        "example": "La cotización ha sido borrada exitosamente"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UserPermissionsError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundCartError"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/QuotationManagerStandardError"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Shows quotation details.",
+        "description": "# Shows all quotation's information.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "quotation_id",
+            "description": "Quotation's id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a quotation's details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "quotation_details"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Quotation's details",
+                      "$ref": "#/components/schemas/DetailsQuotation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/UserPermissionsError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundCartError"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/QuotationManagerStandardError"
+          }
+        }
+      }
+    },
+    "/quotations/refresh": {
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Requotation.",
+        "description": "# Search again quotation's items.\n\n### The status of each item could be\n  - 'ok' when it was found\n  - 'warning' when was not found.\n\n\n### The status of the response could be\n  -  'ok' when all items are 'ok',\n  -  'warning' when any item is 'warning'\n  -  'error' when all items are 'warning'",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "quotation_id",
+            "description": "Quotation's id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "quotations"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of items",
+                      "items": {
+                        "$ref": "#/components/schemas/Requotation"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundCartError"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/QuotationManagerStandardError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -5384,7 +5769,7 @@
     },
     {
       "name": "Packages",
-      "description": "*A package is a **compound** item: it has one or more items of the kind hotel, \nflight or land product.  \nWhen adding a package to a reservation, each item will be added alone.\nThat said, if the package is compound by a hotel and a flight, the reservation \nwill have an item hotel and an item flight.  \nYou won’t find an item of kind package inside a reservation.*\n"
+      "description": "*A package is a **compound** item: it has one or more items of the kind hotel,\nflight or land product.\nWhen adding a package to a reservation, each item will be added alone.\nThat said, if the package is compound by a hotel and a flight, the reservation\nwill have an item hotel and an item flight.\nYou won’t find an item of kind package inside a reservation.*\n"
     },
     {
       "name": "Circuits"
@@ -5394,7 +5779,7 @@
     },
     {
       "name": "Reservation spots",
-      "description": "*When adding an item to a reservation, a spot will be also added to the reservation.\nAs you can have multiple items into one reservation, it’s important to know what \npassenger corresponds to each item. For example, when booking a hotel item with two \nrooms, you want to know what is going to be the passenger distribution (what \npassenger will sleep in each room).  \nThen, a **Spot** element lets you assign one or more passengers within an item. \nEach item will have a unique spot.*\n"
+      "description": "*When adding an item to a reservation, a spot will be also added to the reservation.\nAs you can have multiple items into one reservation, it’s important to know what\npassenger corresponds to each item. For example, when booking a hotel item with two\nrooms, you want to know what is going to be the passenger distribution (what\npassenger will sleep in each room).\nThen, a **Spot** element lets you assign one or more passengers within an item.\nEach item will have a unique spot.*\n"
     },
     {
       "name": "Reservation holder"
@@ -5410,6 +5795,9 @@
     },
     {
       "name": "Countries"
+    },
+    {
+      "name": "Quotations"
     }
   ],
   "components": {
@@ -5649,7 +6037,7 @@
             "properties": {
               "status": {
                 "type": "string",
-                "description": "Cancellation status of the hotel rate.  \nThe status `with_fee` means that the rate actually has cancellation fees, so if users reserve this rate, and immediately cancel the reservation, they will have to pay the penalty fee.  \nThe status `without_fee` means that the rate has cancellation fees, but they start to rule in the future, not at the moment the rate was generated.  \nWhen it is not possible to determine the cancellation fees, the status will be `unknown`.\n",
+                "description": "Cancellation status of the hotel rate.\nThe status `with_fee` means that the rate actually has cancellation fees, so if users reserve this rate, and immediately cancel the reservation, they will have to pay the penalty fee.\nThe status `without_fee` means that the rate has cancellation fees, but they start to rule in the future, not at the moment the rate was generated.\nWhen it is not possible to determine the cancellation fees, the status will be `unknown`.\n",
                 "enum": [
                   "without_fee",
                   "with_fee",
@@ -6485,7 +6873,7 @@
           "confirmed": {
             "type": "boolean",
             "default": false,
-            "description": "It indicates whether the flight is already reserved or not. The phrase *already reserved* means that each segment of the itinerary  is available at the moment of the search at the quoted price.\n\nAero's flights are confirmed by default, but GDS flights are not.\n"
+            "description": "It indicates whether the flight is already reserved or not. The phrase *already reserved* means that each segment of the itinerary is available at the moment of the search at the quoted price.\n\nAero's flights are confirmed by default, but GDS flights are not.\n"
           },
           "date_in": {
             "$ref": "#/components/schemas/Date"
@@ -8890,6 +9278,167 @@
         "type": "string",
         "pattern": "(?:[01][0-9]|2[0-3]):[0-5][0-9]",
         "example": "20:31"
+      },
+      "ListQuotation": {
+        "type": "object",
+        "required": [
+          "id",
+          "reference",
+          "holder",
+          "occupancy",
+          "services",
+          "date_in",
+          "date_out",
+          "quotation_date"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "reference": {
+            "type": "integer",
+            "example": 1584034576
+          },
+          "holder": {
+            "type": "string",
+            "example": "holder"
+          },
+          "occupancy": {
+            "type": "integer",
+            "example": 2
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "hotel"
+                }
+              }
+            }
+          },
+          "date_in": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "date_out": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "quotation_date": {
+            "$ref": "#/components/schemas/Date"
+          }
+        }
+      },
+      "CreateQuotation": {
+        "type": "object",
+        "required": [
+          "id",
+          "holder",
+          "reference",
+          "reservation_id"
+        ],
+        "properties": {
+          "reference": {
+            "type": "integer",
+            "example": 1584034576
+          },
+          "holder": {
+            "type": "string",
+            "example": "Holden Caufield"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "updated_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          }
+        }
+      },
+      "DetailsQuotation": {
+        "type": "object",
+        "required": [
+          "id",
+          "holder",
+          "reference",
+          "reservation",
+          "reservation_id"
+        ],
+        "properties": {
+          "reference": {
+            "type": "integer",
+            "example": 1584034576
+          },
+          "holder": {
+            "type": "string",
+            "example": "Holden Caufield"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "updated_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "reservation": {
+            "type": "object",
+            "$ref": "#/components/schemas/Reservation"
+          }
+        }
+      },
+      "Requotation": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 7070
+                },
+                "kind": {
+                  "type": "string",
+                  "example": "hotel"
+                },
+                "source": {
+                  "type": "string",
+                  "example": "hotelbeds"
+                },
+                "new_items": {
+                  "type": "array",
+                  "description": "Array of the item with the prices updates",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "responses": {
@@ -8938,6 +9487,60 @@
                             "type": "string",
                             "description": "Reason that generated the error",
                             "example": "Connection timeout"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "QuotationManagerStandardError": {
+        "description": "Standard error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 500
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "Ocurrió un error inesperado"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "StandardError"
                           },
                           "message": {
                             "type": "string",
@@ -9210,6 +9813,222 @@
             }
           }
         }
+      },
+      "NotFoundUserError": {
+        "description": "quotations manager 404 error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 703
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "No se pudieron recuperar datos del usuario"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "NotFoundUserError"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundCartError": {
+        "description": "quotations manager 404 error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 704
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "No se pudieron recuperar datos de la cotización"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "NotFoundCartError"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "quotations manager 422 error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 702
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "Hubo un error al validar los parametros"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "ValidationError"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserPermissionsError": {
+        "description": "quotations manager 403 error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 708
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "El usuario no tiene permisos para realizar la acción"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "UserPermissionsError"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -9419,7 +10238,7 @@
           "type": "integer",
           "example": 4239
         },
-        "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the location. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_city_id` parameter are defined, the default IATA code is BUE.\n"
+        "description": "If it is given, it defines the origin airport of the flights searched.\nThe airport is determined by the IATA code associated to the location.\nThe origin airport is also the destination airport of the arrival flight.\nIf neither of this parameter or `origin_city_id` parameter are defined, the default IATA code is BUE.\n"
       },
       "originCityIdParam": {
         "in": "query",
@@ -9429,7 +10248,7 @@
           "type": "integer",
           "example": 667
         },
-        "description": "If it is given, it defines the origin airport of the flights searched.  \nThe airport is determined by the IATA code associated to the city. \nThe origin airport is also the destination airport of the arrival flight.  \nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
+        "description": "If it is given, it defines the origin airport of the flights searched.\nThe airport is determined by the IATA code associated to the city.\nThe origin airport is also the destination airport of the arrival flight.\nIf neither of this parameter or `origin_location_id` parameter are defined, the default IATA code is BUE.\n"
       },
       "cabinParam": {
         "in": "query",
@@ -9496,7 +10315,7 @@
         "schema": {
           "$ref": "#/components/schemas/HourMinuteDuration"
         },
-        "description": "Minimum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n"
+        "description": "Minimum duration of the departure flights.\nThe flight duration is equal to the sum of the duration of each layover.\nIf this filter is applied, only flight items with a departure flight duration equal to or greater than the specified duration will be returned.\nThe format is HH:MM.\n"
       },
       "maxDepartureDuration": {
         "in": "query",
@@ -9505,7 +10324,7 @@
         "schema": {
           "$ref": "#/components/schemas/HourMinuteDuration"
         },
-        "description": "Maximum duration of the departure flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a departure flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n"
+        "description": "Maximum duration of the departure flights.\nThe flight duration is equal to the sum of the duration of each layover.\nIf this filter is applied, only flight items with a departure flight duration at most equal to the specified duration will be returned.\nThe format is HH:MM.\n"
       },
       "minArrivalDuration": {
         "in": "query",
@@ -9514,7 +10333,7 @@
         "schema": {
           "$ref": "#/components/schemas/HourMinuteDuration"
         },
-        "description": "Minimum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration equal to or greater than the specified duration will be returned.  \nThe format is HH:MM.\n"
+        "description": "Minimum duration of the arrival flights.\nThe flight duration is equal to the sum of the duration of each layover.\nIf this filter is applied, only flight items with a arrival flight duration equal to or greater than the specified duration will be returned.\nThe format is HH:MM.\n"
       },
       "maxArrivalDuration": {
         "in": "query",
@@ -9523,7 +10342,7 @@
         "schema": {
           "$ref": "#/components/schemas/HourMinuteDuration"
         },
-        "description": "Maximum duration of the arrival flights.  \nThe flight duration is equal to the sum of the duration of each layover.  \nIf this filter is applied, only flight items with a arrival flight duration at most equal to the specified duration will be returned.  \nThe format is HH:MM.\n"
+        "description": "Maximum duration of the arrival flights.\nThe flight duration is equal to the sum of the duration of each layover.\nIf this filter is applied, only flight items with a arrival flight duration at most equal to the specified duration will be returned.\nThe format is HH:MM.\n"
       },
       "minDepartureTime": {
         "in": "query",
@@ -9532,7 +10351,7 @@
         "schema": {
           "$ref": "#/components/schemas/Time"
         },
-        "description": "Minimum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+        "description": "Minimum departure time for the first layover in the departure flights.\nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
       },
       "maxDepartureTime": {
         "in": "query",
@@ -9541,7 +10360,7 @@
         "schema": {
           "$ref": "#/components/schemas/Time"
         },
-        "description": "Maximum departure time for the first layover in the departure flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+        "description": "Maximum departure time for the first layover in the departure flights.\nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
       },
       "minArrivalTime": {
         "in": "query",
@@ -9550,7 +10369,7 @@
         "schema": {
           "$ref": "#/components/schemas/Time"
         },
-        "description": "Minimum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+        "description": "Minimum departure time for the first layover in the arrival flights.\nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
       },
       "maxArrivalTime": {
         "in": "query",
@@ -9559,7 +10378,7 @@
         "schema": {
           "$ref": "#/components/schemas/Time"
         },
-        "description": "Maximum departure time for the first layover in the arrival flights.  \nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
+        "description": "Maximum departure time for the first layover in the arrival flights.\nIts format is HH:MM, ranging from 00:00 to 23:59.\n"
       },
       "baggageIncluded": {
         "in": "query",
