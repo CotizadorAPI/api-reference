@@ -5379,7 +5379,7 @@
           {
             "in": "query",
             "name": "holder",
-            "description": "pass an optional holder for filter the quotations",
+            "description": "Pass an optional holder to filter the quotations",
             "required": false,
             "schema": {
               "type": "string"
@@ -5388,7 +5388,16 @@
           {
             "in": "query",
             "name": "reference",
-            "description": "pass an optional reference for filter the quotations",
+            "description": "Pass an optional reference to filter the quotations, which contains total o partially that reference.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from_date",
+            "description": "Pass an optional date to filter quotations created since",
             "required": false,
             "schema": {
               "type": "string"
@@ -5396,17 +5405,8 @@
           },
           {
             "in": "query",
-            "name": "date_start",
-            "description": "pass an optional date since the quotations were created",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "date_finish",
-            "description": "pass an optional date until the quotations were created",
+            "name": "until_date",
+            "description": "Pass an optional date to filter quotations created until",
             "required": false,
             "schema": {
               "type": "string"
@@ -5477,13 +5477,13 @@
                 "properties": {
                   "holder": {
                     "type": "string",
-                    "description": "pass a cart's holder",
-                    "example": "Holder"
+                    "description": "Person responsible of the reservation",
+                    "example": "Holden Caulfield"
                   },
                   "reservation_id": {
                     "type": "string",
-                    "description": "pass a cart's reservation_id",
-                    "example": "15102006-ESAZNSOM-7070"
+                    "description": "Valid reservation identifier",
+                    "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
                   }
                 }
               }
@@ -5521,7 +5521,7 @@
                       "properties": {
                         "repository": {
                           "type": "object",
-                          "$ref": "#/components/schemas/Quotation"
+                          "$ref": "#/components/schemas/CreateQuotation"
                         }
                       }
                     }
@@ -5542,18 +5542,18 @@
         }
       }
     },
-    "/quotations/{reservation_id}": {
+    "/quotations/{quotation_id}": {
       "delete": {
         "tags": [
           "Quotations"
         ],
         "summary": "Deletes quotation.",
-        "description": "# Deletes a quotation and its reference.",
+        "description": "# Deletes a quotation.",
         "parameters": [
           {
             "in": "path",
-            "name": "reservation_id",
-            "description": "pass a quotation's reservation_id",
+            "name": "quotation_id",
+            "description": "Quotation's id",
             "required": true,
             "schema": {
               "type": "string"
@@ -5603,6 +5603,9 @@
               }
             }
           },
+          "403": {
+            "$ref": "#/components/responses/UserPermissionsError"
+          },
           "404": {
             "$ref": "#/components/responses/NotFoundCartError"
           },
@@ -5623,8 +5626,8 @@
         "parameters": [
           {
             "in": "path",
-            "name": "reservation_id",
-            "description": "pass a quotation's reservation_id",
+            "name": "quotation_id",
+            "description": "Quotation's id",
             "required": true,
             "schema": {
               "type": "string"
@@ -5633,7 +5636,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response with a void data and a notification message",
+            "description": "Standard response with a quotation's details",
             "content": {
               "application/json": {
                 "schema": {
@@ -5660,12 +5663,15 @@
                     "data": {
                       "type": "object",
                       "description": "Quotation's details",
-                      "$ref": "#/components/schemas/Quotation"
+                      "$ref": "#/components/schemas/DetailsQuotation"
                     }
                   }
                 }
               }
             }
+          },
+          "403": {
+            "$ref": "#/components/responses/UserPermissionsError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundCartError"
@@ -5685,12 +5691,12 @@
           "Quotations"
         ],
         "summary": "Requotation.",
-        "description": "# Search again quotation's items and returns which it founds.",
+        "description": "# Search again quotation's items.\n\n### The status of each item could be\n  - 'ok' when it was found\n  - 'warning' when was not found.\n\n\n### The status of the response could be\n  -  'ok' when all items are 'ok',\n  -  'warning' when any item is 'warning'\n  -  'error' when all items are 'warning'",
         "parameters": [
           {
             "in": "query",
-            "name": "reservation_id",
-            "description": "pass a quotation's reservation_id",
+            "name": "quotation_id",
+            "description": "Quotation's id",
             "required": true,
             "schema": {
               "type": "string"
@@ -9276,6 +9282,7 @@
       "ListQuotation": {
         "type": "object",
         "required": [
+          "id",
           "reference",
           "holder",
           "occupancy",
@@ -9285,9 +9292,13 @@
           "quotation_date"
         ],
         "properties": {
+          "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
           "reference": {
             "type": "integer",
-            "example": 70
+            "example": 1584034576
           },
           "holder": {
             "type": "string",
@@ -9319,42 +9330,26 @@
           }
         }
       },
-      "Quotation": {
+      "CreateQuotation": {
         "type": "object",
         "required": [
+          "id",
           "holder",
           "reference",
-          "reservation_id",
-          "user",
-          "cart",
-          "items"
+          "reservation_id"
         ],
         "properties": {
           "reference": {
             "type": "integer",
-            "example": 70
+            "example": 1584034576
           },
           "holder": {
             "type": "string",
-            "example": "Holder"
+            "example": "Holden Caufield"
           },
           "reservation_id": {
-            "type": "integer",
-            "example": "15102006-ESAZNSOM-7070"
-          },
-          "user_ids": {
-            "type": "integer",
-            "example": 70707
-          },
-          "cart": {
-            "type": "object",
-            "$ref": "#/components/schemas/Reservation"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Item"
-            }
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
           },
           "created_at": {
             "$ref": "#/components/schemas/Date"
@@ -9363,8 +9358,46 @@
             "$ref": "#/components/schemas/Date"
           },
           "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          }
+        }
+      },
+      "DetailsQuotation": {
+        "type": "object",
+        "required": [
+          "id",
+          "holder",
+          "reference",
+          "reservation",
+          "reservation_id"
+        ],
+        "properties": {
+          "reference": {
             "type": "integer",
-            "example": 7
+            "example": 1584034576
+          },
+          "holder": {
+            "type": "string",
+            "example": "Holden Caufield"
+          },
+          "reservation_id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "updated_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "id": {
+            "type": "string",
+            "example": "096ff91d-148b-4e9e-a03e-353278ad2442"
+          },
+          "reservation": {
+            "type": "object",
+            "$ref": "#/components/schemas/Reservation"
           }
         }
       },
@@ -9384,7 +9417,7 @@
             "items": {
               "properties": {
                 "id": {
-                  "type": "string",
+                  "type": "integer",
                   "example": 7070
                 },
                 "kind": {
@@ -9395,8 +9428,9 @@
                   "type": "string",
                   "example": "hotelbeds"
                 },
-                "items": {
+                "new_items": {
                   "type": "array",
+                  "description": "Array of the item with the prices updates",
                   "items": {
                     "$ref": "#/components/schemas/Item"
                   }
@@ -9491,7 +9525,7 @@
                     "message": {
                       "type": "string",
                       "description": "General error message",
-                      "example": "Ocurrio un error inesperado"
+                      "example": "Ocurrió un error inesperado"
                     },
                     "errors": {
                       "type": "array",
@@ -9927,6 +9961,60 @@
                             "type": "string",
                             "description": "Reason that generated the error",
                             "example": "ValidationError"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Specific error message. When there is only one error, this message will be the same as the general error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserPermissionsError": {
+        "description": "quotations manager 403 error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Information about one or more errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Error code",
+                      "example": 708
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "General error message",
+                      "example": "El usuario no tiene permisos para realizar la acción"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "domain": {
+                            "type": "string",
+                            "description": "Domain app that generated the error",
+                            "example": "quotationsmanager"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "Reason that generated the error",
+                            "example": "UserPermissionsError"
                           },
                           "message": {
                             "type": "string",
