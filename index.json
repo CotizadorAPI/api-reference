@@ -1387,6 +1387,9 @@
           },
           {
             "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
           }
         ],
         "responses": {
@@ -1481,9 +1484,6 @@
         "description": "# Gets a collection of the cheapest flight rates for all the combinations of ±3 days according to given `date_in` and `date_out`. Each flight represents the cheapest rate for that days combination. It generates 49 rates with all the possible combinations. The result is a grid represented as an array, reading the grid from left to right and then from top to bottom.\n",
         "operationId": "searchFlexibleFlights",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/requestIdParam"
-          },
           {
             "$ref": "#/components/parameters/originLocationIdParam"
           },
@@ -4863,6 +4863,233 @@
         }
       }
     },
+    "/agencies/v3/{Id}": {
+      "get": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Get info of an agency",
+        "description": "This is a gateway endpoint for api/v3/agencies/:id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agencyIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/agencyFieldsParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agency information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "transaction_status",
+                    "data_type",
+                    "data",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of agencies",
+                      "items": {
+                        "$ref": "#/components/schemas/AgencyByIdDefault"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "required": [
+                        "request_id",
+                        "query"
+                      ],
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "travel"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/AgencyNotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Modifies an agency",
+        "description": "This is a gateway endpoint for api/v3/agencies/:id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agencyIdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Agency"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated agency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string",
+                      "example": "Updated agency"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "example": "agency"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": {
+                        "cuit": [
+                          "Ingrese un cuit valido."
+                        ]
+                      }
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "example": "agency"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/AgencyNotFound"
+          }
+        }
+      }
+    },
+    "/agencies/v3/{Id}/contacts": {
+      "get": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Get information about agencies contacts",
+        "description": "This is a gateway endpoint for api/v3/agencies/:id/contact_informations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agencyIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "transaction_status",
+                    "data_type",
+                    "data",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of agencies",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/AgencyNotFound"
+          }
+        }
+      }
+    },
     "/countries": {
       "get": {
         "tags": [
@@ -6887,7 +7114,7 @@
             "example": "kg"
           },
           "weight": {
-            "type": "float",
+            "type": "number",
             "example": 23,
             "minimum": 0
           }
@@ -7644,6 +7871,95 @@
           }
         }
       },
+      "AgencyByIdDefault": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 3399
+          },
+          "name": {
+            "type": "string",
+            "example": "Wayne Travel"
+          },
+          "cuit": {
+            "type": "string",
+            "example": 30697197857
+          },
+          "email": {
+            "type": "string",
+            "example": "marita@yastayturismo.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "381 4303460"
+          },
+          "address": {
+            "type": "string",
+            "example": "Laprida 209"
+          },
+          "postal_code": {
+            "type": "string",
+            "example": "T4109"
+          },
+          "city": {
+            "type": "string",
+            "example": "San Miguel de Tucuman"
+          },
+          "longitude": {
+            "type": "string",
+            "example": null
+          },
+          "latitude": {
+            "type": "string",
+            "example": null
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgencyUpdate"
+            }
+          }
+        }
+      },
+      "AgencyUpdate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1979
+          },
+          "name": {
+            "type": "string",
+            "example": "ventas"
+          },
+          "email": {
+            "type": "string",
+            "example": "mail@mail.com"
+          },
+          "adress": {
+            "type": "string",
+            "example": null
+          },
+          "phone": {
+            "type": "string",
+            "example": null
+          },
+          "agenci_id": {
+            "type": "integer",
+            "example": 3399
+          },
+          "newsletter": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
       "Agency": {
         "type": "object",
         "required": [
@@ -7666,6 +7982,14 @@
           "address": {
             "type": "string",
             "example": "San Martín 498 3"
+          },
+          "province": {
+            "type": "string",
+            "example": ""
+          },
+          "cuit": {
+            "type": "string",
+            "example": 30697197857
           },
           "phone": {
             "type": "string",
@@ -9009,6 +9333,30 @@
           }
         }
       },
+      "AgencyNotFound": {
+        "description": "No agency found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "Couldn't find agency with id = 3399"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "agency"
+                },
+                "metadata": {
+                  "type": "object",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
       "Flights": {
         "description": "Standard response with a collection of flight rates",
         "content": {
@@ -9210,6 +9558,30 @@
       }
     },
     "parameters": {
+      "agencyIdParam": {
+        "in": "path",
+        "name": "Id",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "Agency Id"
+      },
+      "agencyFieldsParam": {
+        "in": "query",
+        "name": "fields",
+        "required": false,
+        "description": "**all** returns all the info <br> **voucher** returns basic agency info and custom voucher info <br> **cotizador_attributes** returns basic agency info",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "all",
+            "cotizador_attributes",
+            "voucher"
+          ],
+          "example": "all"
+        }
+      },
       "requestIdParam": {
         "in": "header",
         "name": "X-Request-ID",
@@ -9567,6 +9939,16 @@
           "default": false
         },
         "description": "Flights that have luggage included in all their legs. At the moment, the only flights that present luggage information valid for filtering are the ones gathered from the GDS."
+      },
+      "oneWay": {
+        "in": "query",
+        "name": "one_way",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": "Whether the search should only include one way flights or not."
       }
     }
   }
