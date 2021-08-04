@@ -5041,6 +5041,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Return a list of contacts",
             "content": {
               "application/json": {
                 "schema": {
@@ -5086,6 +5087,120 @@
           },
           "404": {
             "$ref": "#/components/responses/AgencyNotFound"
+          }
+        }
+      }
+    },
+    "/agencies/v3/{Id}/contacts/{cId}": {
+      "delete": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Deletes a contact",
+        "description": "This is a gateway endpoint for api/v3/agencies/:id/contacts/:id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agencyIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/agencyContactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ContactDeleted"
+          },
+          "404": {
+            "$ref": "#/components/responses/ContactNotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Create or modify contacts in an agency",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agencyIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/agencyContactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contacts": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ContactsUpdated"
+          },
+          "500": {
+            "$ref": "#/components/responses/ContactsInternalError"
+          }
+        }
+      }
+    },
+    "/agencies/v3/vouchers/{Id}": {
+      "put": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Modifies a voucher",
+        "description": "This is a gateway endpoint for api/v3/vouchers/:id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/voucherIdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Voucher"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/VoucherUpdated"
+          },
+          "403": {
+            "$ref": "#/components/responses/VoucherInternalError"
+          },
+          "404": {
+            "$ref": "#/components/responses/VoucherNotFound"
+          }
+        }
+      }
+    },
+    "/agencies/v3/contacts/types": {
+      "get": {
+        "tags": [
+          "Agencies"
+        ],
+        "summary": "Return a list of contact types",
+        "description": "This is a gateway endpoint for /api/v3/contact_informations/contact_types",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ContactTypesResponse"
           }
         }
       }
@@ -5638,6 +5753,152 @@
   ],
   "components": {
     "schemas": {
+      "salesValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "sales"
+          },
+          "value": {
+            "type": "string",
+            "example": "Ventas"
+          }
+        }
+      },
+      "commercialValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "commercial"
+          },
+          "value": {
+            "type": "string",
+            "example": "Comercial"
+          }
+        }
+      },
+      "voucherValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "voucher"
+          },
+          "value": {
+            "type": "string",
+            "example": "Voucher"
+          }
+        }
+      },
+      "otherValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "other"
+          },
+          "value": {
+            "type": "string",
+            "example": "Otro"
+          }
+        }
+      },
+      "recordContactValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "record_contact"
+          },
+          "value": {
+            "type": "string",
+            "example": "Contacto de registro"
+          }
+        }
+      },
+      "currentAccountValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "current_account"
+          },
+          "value": {
+            "type": "string",
+            "example": "Cuenta Corriente"
+          }
+        }
+      },
+      "administrativeValue": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "administrative"
+          },
+          "value": {
+            "type": "string",
+            "example": "Administrativo"
+          }
+        }
+      },
+      "VoucherError": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "example": "Must be boolean"
+        }
+      },
+      "Voucher": {
+        "type": "object",
+        "properties": {
+          "custom": {
+            "type": "boolean",
+            "example": true
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://randomurl.com"
+          },
+          "email": {
+            "type": "boolean",
+            "example": true
+          },
+          "phone": {
+            "type": "boolean",
+            "example": false
+          },
+          "address": {
+            "type": "boolean",
+            "example": false
+          },
+          "website": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "ContactsItems": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "The type of contact is required"
+            }
+          },
+          "email": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Invalid email format"
+            }
+          }
+        }
+      },
       "Hotel": {
         "allOf": [
           {
@@ -7919,11 +8180,29 @@
       "Contact": {
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AgencyUpdate"
-            }
+          "id": {
+            "type": "string",
+            "example": "1979"
+          },
+          "name": {
+            "type": "string",
+            "example": "ventas"
+          },
+          "email": {
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "type": {
+            "type": "string",
+            "example": "other"
+          },
+          "newsletter": {
+            "type": "boolean",
+            "example": true
+          },
+          "agency_id": {
+            "type": "integer",
+            "example": 3399
           }
         }
       },
@@ -9333,6 +9612,173 @@
           }
         }
       },
+      "ContactTypesResponse": {
+        "description": "Contact types",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/administrativeValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/currentAccountValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/salesValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/commercialValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/voucherValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/otherValue"
+                      },
+                      {
+                        "$ref": "#/components/schemas/recordContactValue"
+                      }
+                    ]
+                  }
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "contact_type"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "VoucherUpdated": {
+        "description": "Updated voucher information",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "Voucher have been updated"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "vouchers"
+                },
+                "metadata": {
+                  "type": "object",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "VoucherNotFound": {
+        "description": "Voucher not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "Couldn't find voucher with id = 33998"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "voucher"
+                },
+                "metadata": {
+                  "type": "object",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "VoucherInternalError": {
+        "description": "Invalid voucher information",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "$ref": "#/components/schemas/VoucherError"
+                },
+                "phone": {
+                  "$ref": "#/components/schemas/VoucherError"
+                },
+                "address": {
+                  "$ref": "#/components/schemas/VoucherError"
+                },
+                "custom": {
+                  "$ref": "#/components/schemas/VoucherError"
+                },
+                "website": {
+                  "$ref": "#/components/schemas/VoucherError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactsInternalError": {
+        "description": "invalid contact information",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/ContactsItems"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "contacts"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactsUpdated": {
+        "description": "Updated or Modified a contact",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "Contacts have been updated"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "contacts"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
       "AgencyNotFound": {
         "description": "No agency found",
         "content": {
@@ -9343,6 +9789,54 @@
                 "data": {
                   "type": "string",
                   "example": "Couldn't find agency with id = 3399"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "agency"
+                },
+                "metadata": {
+                  "type": "object",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactDeleted": {
+        "description": "Contact deleted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "The contact was deleted"
+                },
+                "data_type": {
+                  "type": "string",
+                  "example": "agency"
+                },
+                "metadata": {
+                  "type": "object",
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactNotFound": {
+        "description": "No contact found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "Couldn't find contact with id = 3399"
                 },
                 "data_type": {
                   "type": "string",
@@ -9558,6 +10052,24 @@
       }
     },
     "parameters": {
+      "agencyContactId": {
+        "in": "path",
+        "name": "cId",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "contact id"
+      },
+      "voucherIdParam": {
+        "in": "path",
+        "name": "Id",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "Voucher Id"
+      },
       "agencyIdParam": {
         "in": "path",
         "name": "Id",
