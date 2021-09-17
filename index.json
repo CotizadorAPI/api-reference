@@ -1494,9 +1494,6 @@
             "$ref": "#/components/parameters/originCityIdParam"
           },
           {
-            "$ref": "#/components/parameters/requestIdParam"
-          },
-          {
             "$ref": "#/components/parameters/locationIdsParam"
           },
           {
@@ -2783,6 +2780,9 @@
           },
           {
             "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/circuitTypeParam"
           },
           {
             "in": "query",
@@ -6890,7 +6890,7 @@
             "example": "kg"
           },
           "weight": {
-            "type": "float",
+            "type": "number",
             "example": 23,
             "minimum": 0
           }
@@ -9580,6 +9580,16 @@
           "default": false
         },
         "description": "Whether the search should only include one way flights or not."
+      },
+      "circuitTypeParam": {
+        "in": "query",
+        "name": "circuit_type",
+        "description": "Type of circuit requested. Values accepted are 'generic' and 'cruise'",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "cruise"
+        }
       }
     }
   }
