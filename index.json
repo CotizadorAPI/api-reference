@@ -2868,14 +2868,31 @@
           {
             "in": "query",
             "name": "start_locations",
-            "description": "Names of the start locations to filter by. The circuits that will be matched are the ones with its starting location equal to any of the given names.",
+            "description": "Names of the start locations to filter by. The circuits that will be matched are the ones with its starting location equal to any of the given names. Case insensitive. Comma separated strings",
             "required": false,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "example": "Madrid"
-              }
+              "type": "string",
+              "example": "Madrid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ship_operator_ids",
+            "description": "(Only valid when circuit_type == cruise) Ids of the ship operators to filter by. The ids are not numbers, they are initials as returned in the metadata. Comma separated strings",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "MSC,Costa"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ship_names",
+            "description": "(Only valid when circuit_type == cruise) Names of the ships to filter by. As returned in the metadata. Comma separated strings",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "MSC Fantasia,SS Example"
             }
           }
         ],
