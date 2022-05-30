@@ -5436,6 +5436,433 @@
           }
         }
       }
+    },
+    "/cars": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Gets a list of cars.",
+        "description": "# Gets a collection of cars. You can choose searchs by id for pickup and dropoff of location or airport. Also # you can search by office code.\n",
+        "operationId": "searchCars",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Flights"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/info": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Gets information of the car item.",
+        "description": "# Gets info of a car.\n",
+        "operationId": "infoFromCarItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Flights"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/add_equipment/GPS": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Add an equipment for a car item.",
+        "description": "# Add an equipment for a car item.\n",
+        "operationId": "addCarEquipment",
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of airlines",
+                      "items": {
+                        "$ref": "#/components/schemas/IdAndText"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/remove_equipment/GPS": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Remove an equipment for a car item.",
+        "description": "# Remove an equipment for a car item.\n",
+        "operationId": "removeCarEquipment",
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error",
+                        "warning"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cabins",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightCabin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/fees": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "gets information about cancellation fees for a car item.",
+        "description": "# Gets information about cancellation fees for a car item.\n",
+        "operationId": "getCancellationFees",
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error",
+                        "warning"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cabins",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightCabin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/rates": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "gets information about cancellation fees for a car item.",
+        "description": "# Gets information about cancellation fees for a car item.\n",
+        "operationId": "getOtherRates",
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error",
+                        "warning"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cabins",
+                      "items": {
+                        "$ref": "#/components/schemas/FlightCabin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
     }
   },
   "tags": [
