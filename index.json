@@ -5507,7 +5507,7 @@
         "tags": [
           "Cars"
         ],
-        "summary": "Gets information of the car item.",
+        "summary": "Gets information of equipment of the car item.",
         "description": "# Gets info of a car.\n",
         "operationId": "infoFromCarItem",
         "parameters": [
@@ -5525,7 +5525,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/Flights"
+            "$ref": "#/components/responses/CarInfo"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -5565,38 +5565,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "description": "Status of the request"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "description": "Status of the transaction"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value"
-                    },
-                    "metadata": {
-                      "type": "object"
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of airlines",
-                      "items": {
-                        "$ref": "#/components/schemas/IdAndText"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Car"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -5636,54 +5605,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "ok",
-                        "error",
-                        "warning"
-                      ],
-                      "description": "Status of the request"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "enum": [
-                        "finished",
-                        "continue"
-                      ],
-                      "description": "Status of the transaction"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "914129b1-f285-470a-8143-e0e795add50b"
-                        }
-                      }
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of cabins",
-                      "items": {
-                        "$ref": "#/components/schemas/FlightCabin"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Car"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -5751,6 +5673,14 @@
                       "description": "Type of the data value",
                       "example": "list"
                     },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cars",
+                      "items": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    },
                     "metadata": {
                       "type": "object",
                       "properties": {
@@ -5758,13 +5688,6 @@
                           "type": "string",
                           "example": "914129b1-f285-470a-8143-e0e795add50b"
                         }
-                      }
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of cabins",
-                      "items": {
-                        "$ref": "#/components/schemas/FlightCabin"
                       }
                     }
                   }
@@ -5810,54 +5733,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "ok",
-                        "error",
-                        "warning"
-                      ],
-                      "description": "Status of the request"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "enum": [
-                        "finished",
-                        "continue"
-                      ],
-                      "description": "Status of the transaction"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "914129b1-f285-470a-8143-e0e795add50b"
-                        }
-                      }
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of cabins",
-                      "items": {
-                        "$ref": "#/components/schemas/FlightCabin"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/Cars"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -10110,6 +9986,64 @@
           }
         }
       },
+      "Car": {
+        "description": "Standard response with a car",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Car"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "item_id": {
+                          "type": "string",
+                          "example": "car_75b1bcb7-b172-4432-a536-e87d63ed0235"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "Cars": {
         "description": "Standard response with a collection of cars",
         "content": {
@@ -10424,6 +10358,98 @@
                     "total_pages": {
                       "type": "integer",
                       "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CarInfo": {
+        "description": "Standard response with information of car",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "car"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": {
+                      "type": "string",
+                      "example": "car_3c5219a6-69f9-470d-b9e6-2a1b0079e0f3"
+                    },
+                    "equipment": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "BST"
+                          },
+                          "period": {
+                            "type": "string",
+                            "example": "Por alquiler"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 70
+                          },
+                          "currency": {
+                            "type": "string",
+                            "example": "usd"
+                          },
+                          "description_text": {
+                            "type": "string",
+                            "example": "Asiento elevador para niños"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "item_id": {
+                          "type": "string",
+                          "example": "car_3c5219a6-69f9-470d-b9e6-2a1b0079e0f3"
+                        }
+                      }
                     }
                   }
                 }
