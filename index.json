@@ -3246,43 +3246,10 @@
         "tags": [
           "Assistances"
         ],
-        "summary": "Gets a list of travel assistances.",
-        "description": "# Gets a collection of travel assistance rates within item format.\n",
-        "operationId": "searchAssistances",
+        "summary": "Gets a list of fees for the assistance item.",
+        "description": "# Gets a collection of fees for the assistance within item format.\n",
+        "operationId": "searchAssistancesFees",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/requestIdParam"
-          },
-          {
-            "$ref": "#/components/parameters/locationIdsParam"
-          },
-          {
-            "$ref": "#/components/parameters/paxParam"
-          },
-          {
-            "$ref": "#/components/parameters/dateInParam"
-          },
-          {
-            "$ref": "#/components/parameters/dateOutParam"
-          },
-          {
-            "$ref": "#/components/parameters/sortByParam"
-          },
-          {
-            "$ref": "#/components/parameters/sortDirectionParam"
-          },
-          {
-            "$ref": "#/components/parameters/perPageParam"
-          },
-          {
-            "$ref": "#/components/parameters/pageParam"
-          },
-          {
-            "$ref": "#/components/parameters/currencyParam"
-          },
-          {
-            "$ref": "#/components/parameters/minPriceParam"
-          },
           {
             "$ref": "#/components/parameters/maxPriceParam"
           },
@@ -3435,6 +3402,37 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/assistance/{ItemId}/fees": {
+      "get": {
+        "tags": [
+          "Assistances"
+        ],
+        "summary": "Gets a list of travel assistances.",
+        "description": "# Gets a collection of travel assistance rates within item format.\n",
+        "operationId": "searchAssistances",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ItemId",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "ID of the assistance to see the fees.",
+            "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssistancesFees"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -5483,6 +5481,55 @@
   ],
   "components": {
     "schemas": {
+      "AssistancesFees": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uuid",
+            "example": "cancellation"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "bruto"
+                },
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "ars_value": {
+                      "type": "number",
+                      "example": 23424
+                    },
+                    "usd_value": {
+                      "type": "number",
+                      "example": 2344
+                    },
+                    "eur_value": {
+                      "type": "number",
+                      "example": 2324
+                    },
+                    "gbp_value": {
+                      "type": "number",
+                      "example": 2424
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "from": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "to": {
+            "$ref": "#/components/schemas/Date"
+          }
+        }
+      },
       "Hotel": {
         "allOf": [
           {
@@ -9299,6 +9346,67 @@
                     "total_pages": {
                       "type": "integer",
                       "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AssistancesFees": {
+        "description": "Standard response with a collection of assistances fees",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "type": "array",
+                  "description": "Collection of assiatances fees",
+                  "items": {
+                    "$ref": "#/components/schemas/AssistancesFees"
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "properties": {
+                        "item_id": {
+                          "type": "string",
+                          "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
+                        }
+                      }
                     }
                   }
                 }
