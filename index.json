@@ -4700,10 +4700,53 @@
           },
           {
             "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          },
+          {
+            "in": "query",
+            "name": "criterion_date",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "departure_date",
+                "expiration_date"
+              ],
+              "example": "departure_date"
+            },
+            "description": "Criteria of dates"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "description": "Order of reservation list"
+          },
+          {
+            "in": "query",
             "name": "status",
             "description": "Existing reservation status to filter by",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "open",
+                "close",
+                "without_liquidations",
+                "without_vouchers",
+                "all"
+              ],
+              "default": "open"
             }
           },
           {
@@ -4712,6 +4755,26 @@
             "description": "Id of the agency to filter by",
             "schema": {
               "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "services"
+              ],
+              "example": "services"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "description": "Criteria and order for searchs. The criterias are separated by a \",\" and each one are separated from their order by a \":\" The options for oder are asc or desc (the default value is asc)",
+            "schema": {
+              "type": "string",
+              "example": "date_in:desc,date_out:asc"
             }
           },
           {
@@ -4726,6 +4789,14 @@
             "in": "query",
             "name": "date_out",
             "description": "Date out as yyyy-mm-dd.",
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "created_at",
+            "description": "Created date as yyyy-mm-dd.",
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
