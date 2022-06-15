@@ -5436,6 +5436,310 @@
           }
         }
       }
+    },
+    "/cars": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Gets a list of cars.",
+        "description": "# Gets a collection of cars. You can choose searchs by id for pickup and dropoff of location or airport. Also you can search by office code.\n",
+        "operationId": "searchCars",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pickup_location_id"
+          },
+          {
+            "$ref": "#/components/parameters/dropoff_location_id"
+          },
+          {
+            "$ref": "#/components/parameters/pickup_location"
+          },
+          {
+            "$ref": "#/components/parameters/dropoff_location"
+          },
+          {
+            "$ref": "#/components/parameters/pickup_airport_id"
+          },
+          {
+            "$ref": "#/components/parameters/dropoff_airport_id"
+          },
+          {
+            "$ref": "#/components/parameters/pickup_time"
+          },
+          {
+            "$ref": "#/components/parameters/dropoff_time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Cars"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/info": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Gets additional information about a car item.",
+        "description": "# Gets additional information about a car item. Notably, all available equipment, information on charges, etc.\n",
+        "operationId": "infoFromCarItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "car_c50e5e41-0657-4418-9397-29fef759afb6"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CarInfo"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/add_equipment/GPS": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Add equipment for a car item.",
+        "description": "# Add equipment for a car item. NOTE: the ID returned in this endpoint is effectively the ID of the newly generated item (i.e with the desired equipment added), which means the old item with ID itemId does not in fact have the added equipment. This means all subsequent operations have to be performed with this new ID (including adding more equipment, removing equipment, adding to cart)\n",
+        "operationId": "addCarEquipment",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "car_c50e5e41-0657-4418-9397-29fef759afb6"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Car"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/remove_equipment/GPS": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Remove equipment for a car item.",
+        "description": "# Remove equipment from a car item. NOTE: the ID returned in this endpoint is effectively the ID of the newly generated item (i.e with the desired equipment removed), which means the old item with ID itemId does not in fact have the removed equipment. This means all subsequent operations have to be performed with this new ID (including adding more equipment, removing equipment, adding to cart)\n",
+        "operationId": "removeCarEquipment",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Car"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/fees": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "gets information about cancellation fees for a car item.",
+        "description": "# Gets information about cancellation fees for a car item.\n",
+        "operationId": "getCancellationFees",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error",
+                        "warning"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of cars",
+                      "items": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/rates": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "gets information about other rates for a car item.",
+        "description": "# Gets information about other rates for a car item.\n",
+        "operationId": "getOtherRates",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Cars"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -5483,6 +5787,380 @@
   ],
   "components": {
     "schemas": {
+      "Car": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Kia Soul"
+              },
+              "kind": {
+                "type": "string",
+                "example": "car"
+              },
+              "source": {
+                "type": "string",
+                "example": "avis"
+              },
+              "info": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "avis_CCAR"
+                  },
+                  "code": {
+                    "type": "string",
+                    "example": "CCAR"
+                  },
+                  "group_code": {
+                    "type": "string",
+                    "example": "B"
+                  },
+                  "class_name": {
+                    "type": "string",
+                    "example": "Compacto"
+                  },
+                  "pickup_time": {
+                    "type": "string",
+                    "example": "10:00"
+                  },
+                  "dropoff_time": {
+                    "type": "string",
+                    "example": "10:00"
+                  },
+                  "charges": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "currency": {
+                          "type": "string",
+                          "example": "USD"
+                        },
+                        "amount": {
+                          "type": "number",
+                          "example": 543
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Minimun 1 day MAximun 59 days"
+                        },
+                        "included_in_rate": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  },
+                  "cancellation": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "example": "unknow"
+                      },
+                      "charges": {
+                        "type": "array",
+                        "items": {}
+                      }
+                    }
+                  },
+                  "company_info": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "example": "ZI"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "AVIS"
+                      },
+                      "pickup_location": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "object",
+                            "properties": {
+                              "city": {
+                                "type": "string",
+                                "example": "Miami"
+                              },
+                              "zip_code": {
+                                "type": "number",
+                                "example": 45645
+                              },
+                              "state_code": {
+                                "type": "string",
+                                "example": "FL"
+                              },
+                              "country_code": {
+                                "type": "string",
+                                "example": "US"
+                              },
+                              "address": {
+                                "type": "string",
+                                "example": "2323 Miami"
+                              }
+                            }
+                          },
+                          "opening_hours": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "day_of_week": {
+                                  "type": "string",
+                                  "example": "Lunes"
+                                },
+                                "opens_at": {
+                                  "type": "string",
+                                  "example": "10:00"
+                                },
+                                "closes_at": {
+                                  "type": "string",
+                                  "example": "12:00"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dropoff_location": {
+                        "type": "object",
+                        "properties": {
+                          "location": {
+                            "type": "object",
+                            "properties": {
+                              "city": {
+                                "type": "string",
+                                "example": "Miami"
+                              },
+                              "zip_code": {
+                                "type": "number",
+                                "example": 45645
+                              },
+                              "state_code": {
+                                "type": "string",
+                                "example": "FL"
+                              },
+                              "country_code": {
+                                "type": "string",
+                                "example": "US"
+                              },
+                              "address": {
+                                "type": "string",
+                                "example": "2323 Miami"
+                              }
+                            }
+                          },
+                          "opening_hours": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "day_of_week": {
+                                  "type": "string",
+                                  "example": "Lunes"
+                                },
+                                "opens_at": {
+                                  "type": "string",
+                                  "example": "10:00"
+                                },
+                                "closes_at": {
+                                  "type": "string",
+                                  "example": "12:00"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "rate_availability": {
+                    "type": "string",
+                    "example": "available"
+                  },
+                  "rate_inclutions": {
+                    "type": "object",
+                    "properties": {
+                      "rate_code": {
+                        "type": "string",
+                        "example": "H8"
+                      },
+                      "rate_name": {
+                        "type": "string",
+                        "example": "Inclusive Light"
+                      },
+                      "inclutions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": "Millaje Libre"
+                        }
+                      }
+                    }
+                  },
+                  "air_conditioner": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "transmission_type": {
+                    "type": "string",
+                    "example": "auto"
+                  },
+                  "fuel_type": {
+                    "type": "string",
+                    "example": "Unspecified"
+                  },
+                  "drive": {
+                    "type": "string",
+                    "example": "Unspecified"
+                  },
+                  "type": {
+                    "type": "string",
+                    "example": "2/4 Door"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Compacto"
+                  },
+                  "passenger_quantity": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "example": 5
+                    }
+                  },
+                  "doors": {
+                    "type": "string",
+                    "example": "2-4"
+                  },
+                  "free_mileage": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "internals": {
+                    "type": "object",
+                    "properties": {
+                      "special_equipment": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "equipment_id": {
+                              "type": "number",
+                              "example": 9
+                            },
+                            "equipment_GDS_code": {
+                              "type": "string",
+                              "example": "BST"
+                            },
+                            "equipment_description": {
+                              "type": "string",
+                              "example": "Asiento elevador"
+                            },
+                            "amoun": {
+                              "type": "number",
+                              "example": 70
+                            },
+                            "currency": {
+                              "type": "string",
+                              "example": "USD"
+                            },
+                            "included_in_rate": {
+                              "type": "boolean",
+                              "example": true
+                            }
+                          }
+                        }
+                      },
+                      "locations": {
+                        "type": "object",
+                        "properties": {
+                          "pickup_location_code": {
+                            "type": "string",
+                            "example": "MIAT01"
+                          },
+                          "dropoff_location_code": {
+                            "type": "string",
+                            "example": "ATL01"
+                          }
+                        }
+                      },
+                      "base_total": {
+                        "type": "object",
+                        "properties": {
+                          "currency": {
+                            "type": "string",
+                            "example": "usd"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 56546
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "total_includes_pais_tax": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "applies_pais_tax": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "exchange": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "string",
+                        "example": "USD"
+                      },
+                      "to": {
+                        "type": "string",
+                        "example": "ARS"
+                      },
+                      "rate": {
+                        "type": "number",
+                        "example": 63
+                      }
+                    }
+                  },
+                  "other_rates": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "image": {
+                          "type": "string",
+                          "example": "htpps://sgsgsg.com/foto.png"
+                        },
+                        "thumbnail": {
+                          "type": "string",
+                          "example": "htpps://sgsgsg.com/foto.png"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
       "Hotel": {
         "allOf": [
           {
@@ -8526,7 +9204,8 @@
               "land_product",
               "assistance",
               "circuit",
-              "package"
+              "package",
+              "Car"
             ],
             "example": "hotel"
           },
@@ -9306,6 +9985,478 @@
             }
           }
         }
+      },
+      "Car": {
+        "description": "Standard response with a car",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Car"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "item_id": {
+                          "type": "string",
+                          "example": "car_75b1bcb7-b172-4432-a536-e87d63ed0235"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Cars": {
+        "description": "Standard response with a collection of cars",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "list"
+                },
+                "data": {
+                  "type": "array",
+                  "description": "Collection of cars",
+                  "items": {
+                    "$ref": "#/components/schemas/Car"
+                  }
+                },
+                "notifications": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "date_in": {
+                          "$ref": "#/components/schemas/Date"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/schemas/Date"
+                        },
+                        "pickup_time": {
+                          "$ref": "#/components/schemas/Time"
+                        },
+                        "dropoff_time": {
+                          "$ref": "#/components/schemas/Time"
+                        },
+                        "pickup_location_id": {
+                          "type": "integer",
+                          "example": 4239
+                        },
+                        "dropoff_location_id": {
+                          "type": "integer",
+                          "example": 3596
+                        },
+                        "sort_by": {
+                          "type": "string",
+                          "example": "price"
+                        },
+                        "sort_direction": {
+                          "type": "string",
+                          "example": "asc"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "rooms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "adults_number": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "children_ages": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "example": 5
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "static": {
+                      "type": "object",
+                      "description": "Metadata computed considering all items, before applying the user-specified filters, i.e, this values won't change when filters are modified.\n",
+                      "properties": {
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "classification_codes": {
+                          "type": "object",
+                          "properties": {
+                            "category": {
+                              "type": "object",
+                              "properties": {
+                                "E": {
+                                  "type": "string",
+                                  "example": "Economico"
+                                },
+                                "C": {
+                                  "type": "string",
+                                  "example": "Compacto"
+                                },
+                                "I": {
+                                  "type": "string",
+                                  "example": "Intermedio"
+                                },
+                                "S": {
+                                  "type": "string",
+                                  "example": "Estandar"
+                                }
+                              }
+                            },
+                            "type": {
+                              "type": "object",
+                              "properties": {
+                                "C": {
+                                  "type": "string",
+                                  "example": "2/4 Puertas"
+                                },
+                                "F": {
+                                  "type": "string",
+                                  "example": "SUV"
+                                },
+                                "V": {
+                                  "type": "string",
+                                  "example": "Furgoneta de pasajeros"
+                                }
+                              }
+                            },
+                            "transmission/drive": {
+                              "type": "object",
+                              "properties": {
+                                "A": {
+                                  "type": "string",
+                                  "example": "Automatico - Sin especificar"
+                                }
+                              }
+                            },
+                            "fuel/ac": {
+                              "type": "object",
+                              "properties": {
+                                "R": {
+                                  "type": "string",
+                                  "example": "Sin especificar - Con Aire"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "companies": {
+                          "type": "object",
+                          "properties": {
+                            "ZI": {
+                              "type": "string",
+                              "example": "AVIS"
+                            }
+                          }
+                        },
+                        "transmission_types": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "auto"
+                          }
+                        },
+                        "fuel_types": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "Unspecified"
+                          }
+                        }
+                      }
+                    },
+                    "min_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "max_price": {
+                      "$ref": "#/components/schemas/AllCurrencies"
+                    },
+                    "classification_codes": {
+                      "type": "object",
+                      "properties": {
+                        "category": {
+                          "type": "object",
+                          "properties": {
+                            "E": {
+                              "type": "string",
+                              "example": "Economico"
+                            },
+                            "C": {
+                              "type": "string",
+                              "example": "Compacto"
+                            },
+                            "I": {
+                              "type": "string",
+                              "example": "Intermedio"
+                            },
+                            "S": {
+                              "type": "string",
+                              "example": "Estandar"
+                            }
+                          }
+                        },
+                        "type": {
+                          "type": "object",
+                          "properties": {
+                            "C": {
+                              "type": "string",
+                              "example": "2/4 Puertas"
+                            },
+                            "F": {
+                              "type": "string",
+                              "example": "SUV"
+                            },
+                            "V": {
+                              "type": "string",
+                              "example": "Furgoneta de pasajeros"
+                            }
+                          }
+                        },
+                        "transmission/drive": {
+                          "type": "object",
+                          "properties": {
+                            "A": {
+                              "type": "string",
+                              "example": "Automatico - Sin especificar"
+                            }
+                          }
+                        },
+                        "fuel/ac": {
+                          "type": "object",
+                          "properties": {
+                            "R": {
+                              "type": "string",
+                              "example": "Sin especificar - Con Aire"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "companies": {
+                      "type": "object",
+                      "properties": {
+                        "ZI": {
+                          "type": "string",
+                          "example": "AVIS"
+                        }
+                      }
+                    },
+                    "transmission_types": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "auto"
+                      }
+                    },
+                    "fuel_types": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Unspecified"
+                      }
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "per_page": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "total_results": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CarInfo": {
+        "description": "Standard response with information of car",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "enum": [
+                    "ok",
+                    "error",
+                    "warning"
+                  ],
+                  "example": "ok"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "Status of the transaction",
+                  "enum": [
+                    "continue",
+                    "finished"
+                  ],
+                  "example": "finished"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "Type of the data value",
+                  "example": "car"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": {
+                      "type": "string",
+                      "example": "car_3c5219a6-69f9-470d-b9e6-2a1b0079e0f3"
+                    },
+                    "equipment": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "BST"
+                          },
+                          "period": {
+                            "type": "string",
+                            "example": "Por alquiler"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 70
+                          },
+                          "currency": {
+                            "type": "string",
+                            "example": "usd"
+                          },
+                          "description_text": {
+                            "type": "string",
+                            "example": "Asiento elevador para niños"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                    },
+                    "query": {
+                      "type": "object",
+                      "description": "Contains all valid query input params sent by the user.\nIf a param is outside of the expected params, it must be filtered and not be shown in `query`.\n",
+                      "properties": {
+                        "item_id": {
+                          "type": "string",
+                          "example": "car_3c5219a6-69f9-470d-b9e6-2a1b0079e0f3"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -9686,6 +10837,84 @@
           "type": "string",
           "example": "cruise"
         }
+      },
+      "pickup_location_id": {
+        "in": "query",
+        "name": "pickup_location_id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "example": 4239
+        },
+        "description": "ID (number) of the pickup location. If you choose to search by location id you must not use location or airport id\n"
+      },
+      "dropoff_location_id": {
+        "in": "query",
+        "name": "dropoff_location_id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "example": 3596
+        },
+        "description": "ID (number) of the dropoff location. If you choose to search by location id you must not use location or airport id \n"
+      },
+      "pickup_location": {
+        "in": "query",
+        "name": "pickup_location",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "MIA"
+        },
+        "description": "Iata code of the office for pickup location. If you choose to search by location you must not use location id or airport id\n"
+      },
+      "dropoff_location": {
+        "in": "query",
+        "name": "dropoff_location",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "MIA"
+        },
+        "description": "Iata code of the office for dropoff location. If you choose to search by location you must not use location id or airport id\n"
+      },
+      "pickup_airport_id": {
+        "in": "query",
+        "name": "pickup_airport_id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "example": 2
+        },
+        "description": "ID (number) of the pickup airport. If you choose to search by airport id you must not use location id or location\n"
+      },
+      "dropoff_airport_id": {
+        "in": "query",
+        "name": "dropoff_airport_id",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "example": 7056
+        },
+        "description": "ID (number) of the dropoff airport. If you choose to search by airport id you must not use location id or location\n"
+      },
+      "pickup_time": {
+        "in": "query",
+        "name": "pickup_time",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Time of the pickup of the cars\n"
+      },
+      "dropoff_time": {
+        "in": "query",
+        "name": "dropoff_time",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Time"
+        },
+        "description": "Time of the dropoff of the cars\n"
       }
     }
   }
