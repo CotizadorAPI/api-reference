@@ -5507,8 +5507,8 @@
         "tags": [
           "Cars"
         ],
-        "summary": "Gets information of equipment of the car item.",
-        "description": "# Gets info of a car.\n",
+        "summary": "Gets additional information about a car item.",
+        "description": "# Gets additional information about a car item. Notably, all available equipment, information on charges, etc.\n",
         "operationId": "infoFromCarItem",
         "parameters": [
           {
@@ -5538,8 +5538,8 @@
         "tags": [
           "Cars"
         ],
-        "summary": "Add an equipment for a car item.",
-        "description": "# Add an equipment for a car item.\n",
+        "summary": "Add equipment for a car item.",
+        "description": "# Add equipment for a car item. NOTE: the ID returned in this endpoint is effectively the ID of the newly generated item (i.e with the desired equipment added), which means the old item with ID itemId does not in fact have the added equipment. This means all subsequent operations have to be performed with this new ID (including adding more equipment, removing equipment, adding to cart)\n",
         "operationId": "addCarEquipment",
         "parameters": [
           {
@@ -5578,8 +5578,8 @@
         "tags": [
           "Cars"
         ],
-        "summary": "Remove an equipment for a car item.",
-        "description": "# Remove an equipment for a car item.\n",
+        "summary": "Remove equipment for a car item.",
+        "description": "# Remove equipment from a car item. NOTE: the ID returned in this endpoint is effectively the ID of the newly generated item (i.e with the desired equipment removed), which means the old item with ID itemId does not in fact have the removed equipment. This means all subsequent operations have to be performed with this new ID (including adding more equipment, removing equipment, adding to cart)\n",
         "operationId": "removeCarEquipment",
         "parameters": [
           {
@@ -5706,8 +5706,8 @@
         "tags": [
           "Cars"
         ],
-        "summary": "gets information about cancellation fees for a car item.",
-        "description": "# Gets information about cancellation fees for a car item.\n",
+        "summary": "gets information about other rates for a car item.",
+        "description": "# Gets information about other rates for a car item.\n",
         "operationId": "getOtherRates",
         "parameters": [
           {
