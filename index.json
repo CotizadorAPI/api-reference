@@ -4908,6 +4908,136 @@
         }
       }
     },
+    "/existing_reservations/{Id}/remove_reservation": {
+      "post": {
+        "tags": [
+          "Existing Reservations"
+        ],
+        "summary": "Remove an existing reservation",
+        "operationId": "RemoveExistingReservation",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "Id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the existing reservation. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "The reason of why you cancel the reservation, otherwise the response will tell you 'invalid reason'",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "No especifica el motivo",
+                "No viaja",
+                "Tarifa más cara",
+                "Cambio destino",
+                "Mejor condicion en competencia",
+                "Demora en recibir la liquidación",
+                "Sin disponibilidad",
+                "Otros"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "description",
+            "description": "A detail description about this decision",
+            "schema": {
+              "type": "string",
+              "example": "el pasajero se accidento y no podrá viajar"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RemoveItemResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/existing_reservations/{Id}/remove_service": {
+      "post": {
+        "tags": [
+          "Existing Reservations"
+        ],
+        "summary": "Remove an existing service",
+        "operationId": "RemoveExistingService",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "Id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the existing reservation. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "The reason of why you cancel the service, otherwise the response will tell you 'invalid reason'",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "No especifica el motivo",
+                "No viaja",
+                "Tarifa más cara",
+                "Cambio destino",
+                "Mejor condicion en competencia",
+                "Demora en recibir la liquidación",
+                "Sin disponibilidad",
+                "Otros"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "description",
+            "description": "A detail description about this decision",
+            "schema": {
+              "type": "string",
+              "example": "el pasajero se accidento y no podrá viajar"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RemoveItemResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/agencies": {
       "get": {
         "tags": [
@@ -9060,6 +9190,66 @@
       }
     },
     "responses": {
+      "RemoveItemResponse": {
+        "description": "Standard response with a existing reservation details as data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "status of the request"
+                },
+                "transaction_status": {
+                  "type": "string",
+                  "description": "status of the transaction"
+                },
+                "data_type": {
+                  "type": "string",
+                  "description": "type of the data value",
+                  "example": "existing_reservation"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    }
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "example": "57fafasf4asf373737adf"
+                    },
+                    "query": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 21324
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "Cambio destino"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Se lesiono y no podra viajar"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "StandardError": {
         "description": "Standard error response",
         "content": {
