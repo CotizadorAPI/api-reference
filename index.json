@@ -3197,27 +3197,27 @@
           "Circuits"
         ],
         "summary": "Gets a list of names of circuits.",
-        "description": "# Gets a list of names of circuits. You can also specify a string so the results only are those who have it\n",
+        "description": "# Gets a list of names of circuits for a given request ID. You can also specify a string to filter\n",
         "operationId": "circuitNames",
         "parameters": [
           {
             "in": "query",
             "name": "id",
-            "description": "Id of the circuit rate.",
+            "description": "Request ID from a previous search operation.",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "circuit_050a5ac6-78b9-4ca5-9629-9a0a494cd40b"
+              "example": "5f0d6f36-f614-4244-882a-af465f1299b6"
             }
           },
           {
             "in": "query",
             "name": "q",
-            "description": "String to limit the circuit's name results.",
+            "description": "String to filter results.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "Casa"
+              "example": "casa"
             }
           }
         ],
