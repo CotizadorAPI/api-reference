@@ -5058,7 +5058,7 @@
             "name": "created_at",
             "description": "Created date as yyyy-mm-dd.",
             "schema": {
-              "$ref": "#/components/schemas/Date" 
+              "$ref": "#/components/schemas/Date"
             }
           },
           {
@@ -5225,6 +5225,7 @@
           {
             "in": "query",
             "name": "description",
+            "required": true,
             "description": "A detail description about this decision",
             "schema": {
               "type": "string",
@@ -5234,7 +5235,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/RemoveItemResponse"
+            "$ref": "#/components/responses/CancelItemResponse"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -5294,6 +5295,7 @@
             "in": "query",
             "name": "description",
             "description": "A detail description about this decision",
+            "required": true,
             "schema": {
               "type": "string",
               "example": "el pasajero se accidento y no podrá viajar"
@@ -5302,7 +5304,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/RemoveItemResponse"
+            "$ref": "#/components/responses/CancelItemResponse"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -10192,7 +10194,7 @@
       }
     },
     "responses": {
-      "RemoveItemResponse": {
+      "CancelItemResponse": {
         "description": "Standard response with a existing reservation details as data",
         "content": {
           "application/json": {
