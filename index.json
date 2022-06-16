@@ -4733,7 +4733,7 @@
           {
             "in": "query",
             "name": "close_to_expire",
-            "description": "option to filter and recieve only reservations close to expire (next 15 days)",
+            "description": "option to filter and receive only reservations close to expiration (next 15 days)",
             "schema": {
               "type": "boolean",
               "example": true
