@@ -3107,6 +3107,187 @@
         }
       }
     },
+    "/circuits/{itemId}/fees": {
+      "get": {
+        "tags": [
+          "Circuits"
+        ],
+        "summary": "Gets a list of fees of a circuit.",
+        "description": "# Gets a list of fees of a circuit.\n",
+        "operationId": "circuitFees",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the circuit rate.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "circuit_050a5ac6-78b9-4ca5-9629-9a0a494cd40b"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with circuit rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FeesCircuit"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "item_id": {
+                              "type": "string",
+                              "description": "Id of the circuit which information was requested.",
+                              "example": "circuit_050a5ac6-78b9-4ca5-9629-9a0a494cd40b"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/circuits/names": {
+      "get": {
+        "tags": [
+          "Circuits"
+        ],
+        "summary": "Gets a list of names of circuits.",
+        "description": "# Gets a list of names of circuits for a given request ID. You can also specify a string to filter\n",
+        "operationId": "circuitNames",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Request ID from a previous search operation.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "5f0d6f36-f614-4244-882a-af465f1299b6"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "String to filter results.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "casa"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with circuit rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Edificio de la casa real"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Id of the circuit which information was requested.",
+                              "example": "circuit_050a5ac6-78b9-4ca5-9629-9a0a494cd40b"
+                            },
+                            "q": {
+                              "type": "string",
+                              "description": "OPtional string for limit results",
+                              "example": "Casa"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/circuits/{itemId}/rates": {
       "get": {
         "tags": [
@@ -8327,6 +8508,54 @@
             }
           }
         ]
+      },
+      "FeesCircuit": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "cancellation"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "bruto"
+                },
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "ars_value": {
+                      "type": "number",
+                      "example": 34354
+                    },
+                    "usd_value": {
+                      "type": "number",
+                      "example": 34354
+                    },
+                    "eur_value": {
+                      "type": "number",
+                      "example": 34354
+                    },
+                    "gbp_value": {
+                      "type": "number",
+                      "example": 34354
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "from": {
+            "$ref": "#/components/schemas/DateTime"
+          },
+          "to": {
+            "$ref": "#/components/schemas/DateTime"
+          }
+        }
       },
       "CardRule": {
         "type": "object",
