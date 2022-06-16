@@ -3438,6 +3438,9 @@
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
           }
         }
       }
@@ -4908,7 +4911,7 @@
         }
       }
     },
-    "/existing_reservations/{Id}/remove_reservation": {
+    "/existing_reservations/{Id}/cancel_reservation": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -4969,11 +4972,14 @@
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
           }
         }
       }
     },
-    "/existing_reservations/{Id}/remove_service": {
+    "/existing_reservations/{Id}/cancel_service": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -5033,6 +5039,9 @@
             "$ref": "#/components/responses/RemoveItemResponse"
           },
           "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
             "$ref": "#/components/responses/StandardError"
           }
         }
