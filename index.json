@@ -3246,9 +3246,9 @@
         "tags": [
           "Assistances"
         ],
-        "summary": "Gets a list of fees for the assistance item.",
-        "description": "# Gets a collection of fees for the assistance within item format.\n",
-        "operationId": "searchAssistancesFees",
+        "summary": "Gets a list of travel assistances.",
+        "description": "# Gets a collection of travel assistance rates within item format.\n",
+        "operationId": "searchAssistances",
         "parameters": [
           {
             "$ref": "#/components/parameters/maxPriceParam"
@@ -3414,9 +3414,9 @@
         "tags": [
           "Assistances"
         ],
-        "summary": "Gets a list of travel assistances.",
-        "description": "# Gets a collection of travel assistance rates within item format.\n",
-        "operationId": "searchAssistances",
+        "summary": "Gets a list of fees for the assistance item.",
+        "description": "# Gets a collection of fees for the assistance within item format.\n",
+        "operationId": "searchAssistancesFees",
         "parameters": [
           {
             "in": "path",
