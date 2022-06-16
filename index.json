@@ -5182,8 +5182,8 @@
         "tags": [
           "Existing Reservations"
         ],
-        "summary": "Remove an existing reservation",
-        "operationId": "RemoveExistingReservation",
+        "summary": "Cancel an existing reservation",
+        "operationId": "CancelExistingReservation",
         "parameters": [
           {
             "in": "header",
@@ -5251,8 +5251,8 @@
         "tags": [
           "Existing Reservations"
         ],
-        "summary": "Remove an existing service",
-        "operationId": "RemoveExistingService",
+        "summary": "Cancel an existing service",
+        "operationId": "CancelExistingService",
         "parameters": [
           {
             "in": "header",
