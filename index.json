@@ -4220,6 +4220,82 @@
         }
       }
     },
+    "/reservations/{reservationId}/items/{itemId}": {
+      "delete": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Clears an item out.",
+        "description": "# Clears an item out.\nIt removes an item out assigned to the reservation\n",
+        "operationId": "clearReservationItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "path",
+            "name": "reservationId",
+            "description": "Id of the provisional reservation.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "01daeb90-6e6d-43b7-89a4-d98dbd107c57"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the item to clear out.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "f88fbffd-5702-46e3-ab73-232df454d093"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a reservation as data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok"
+                      ]
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished"
+                      ]
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "reservation"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Reservation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/reservations/{reservationId}/passengers/add": {
       "post": {
         "tags": [
