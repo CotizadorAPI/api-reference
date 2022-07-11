@@ -5244,7 +5244,7 @@
         }
       }
     },
-    "/existing_reservations/{Id}/cancel_service": {
+    "/existing_reservations/cancel_service/{Id_service}": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -5263,12 +5263,12 @@
           },
           {
             "in": "path",
-            "name": "Id",
+            "name": "Id_service",
             "schema": {
               "type": "integer"
             },
             "required": true,
-            "description": "Numeric ID of the existing reservation. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
+            "description": "Numeric ID of the existing service. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
           },
           {
             "in": "query",
@@ -6219,7 +6219,6 @@
     }
   },
   "tags": [
-    
     {
       "name": "Hotels"
     },
