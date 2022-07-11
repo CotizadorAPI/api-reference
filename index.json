@@ -5175,7 +5175,7 @@
         }
       }
     },
-    "/existing_reservations/{Id}/cancel_reservation": {
+    "/existing_reservations/{Id_reservation}/cancel_reservation": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -5194,7 +5194,7 @@
           },
           {
             "in": "path",
-            "name": "Id",
+            "name": "Id_reservation",
             "schema": {
               "type": "integer"
             },
