@@ -5175,7 +5175,7 @@
         }
       }
     },
-    "/existing_reservations/{Id}/cancel_reservation": {
+    "/existing_reservations/{reservation_id}/cancel_reservation": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -5194,7 +5194,7 @@
           },
           {
             "in": "path",
-            "name": "Id",
+            "name": "reservation_id",
             "schema": {
               "type": "integer"
             },
@@ -5244,7 +5244,7 @@
         }
       }
     },
-    "/existing_reservations/{Id}/cancel_service": {
+    "/existing_reservations/cancel_service/{service_id}": {
       "post": {
         "tags": [
           "Existing Reservations"
@@ -5263,12 +5263,12 @@
           },
           {
             "in": "path",
-            "name": "Id",
+            "name": "service_id",
             "schema": {
               "type": "integer"
             },
             "required": true,
-            "description": "Numeric ID of the existing reservation. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
+            "description": "Numeric ID of the existing service. It's important to notice that the id is the Middle Office Id and not the aptour_reserve_id"
           },
           {
             "in": "query",
