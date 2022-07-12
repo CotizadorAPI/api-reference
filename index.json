@@ -6217,7 +6217,7 @@
         }
       }
     },
-    "/airlines_information": {
+    "/airlines_informations": {
       "get": {
         "tags": [
           "Airlines_information"
@@ -6264,7 +6264,7 @@
         }
       }
     },
-    "/airlines_information/{itemId}": {
+    "/airlines_informations/{itemId}": {
       "get": {
         "tags": [
           "Airlines_information"
