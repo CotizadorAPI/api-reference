@@ -1292,6 +1292,712 @@
         }
       }
     },
+    "/hotels/destinations": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of destinations hotels",
+        "description": "# Gets a list of destinations hotels\n",
+        "operationId": "hotelDestinations",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DestinationHotel"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotels/destinations/{source}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of destinations hotels based of a source",
+        "description": "# Gets a list of destinations hotels based of a source\n",
+        "operationId": "hotelDestinationsSource",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source",
+            "description": "Source of destinations",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DestinationHotel"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotels/{Id}/supplements": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Gets a list of supplements of an hotel",
+        "description": "# Gets a list of supplements of an hotel\n",
+        "operationId": "hotelSupplements",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id",
+            "description": "Id of hotel for supplements",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": 1234
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SupplementsHotel"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotels/{IdHotel}/supplements": {
+      "put": {
+        "tags": [
+          "Hotels"
+        ],
+        "summary": "Update supplements of an hotel",
+        "description": "# Update supplements of an hotel\n",
+        "operationId": "hotelSupplement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "IdHotel",
+            "description": "Id of hotel for supplements",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": 1234
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SupplementHotel"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotel_information": {
+      "get": {
+        "tags": [
+          "Hotels Informations"
+        ],
+        "summary": "Gets a list of hotels informations.",
+        "description": "# Gets a collection of hotel rates within item format.\n",
+        "operationId": "searchHotelsInformations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Name of the hotel to order",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Cancun"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "description": "Source of the hotel to filter",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Nemo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "order of results.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "desc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "updated",
+            "description": "Filter results by updated field",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "recommendable",
+            "description": "Filter results by recommendable field",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "operator_code",
+            "description": "Filter results by recommendable field",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of hotel rates",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "hotel_id": {
+                            "type": "string",
+                            "example": "VE0-221EP-N9I"
+                          },
+                          "source": {
+                            "type": "string",
+                            "example": "nemo"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Hotel Prueba"
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotel_information/names": {
+      "get": {
+        "tags": [
+          "Hotels Informations"
+        ],
+        "summary": "Gets a list of hotels informations names.",
+        "description": "# Gets a collection of hotel informations names within item format.\n",
+        "operationId": "searchNamesHotelsInformations",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Name of the hotel to order",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Cancun"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "description": "source of the hotel to filter",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Nemo"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "in": "query",
+            "name": "destination_codes",
+            "description": "destination code of the hotel to filter if source param was sent",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Cancun"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of hotel rates",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "hotel_id": {
+                            "type": "string",
+                            "example": "VE0-221EP-N9I"
+                          },
+                          "source": {
+                            "type": "string",
+                            "example": "nemo"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Hotel Prueba"
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotel_information/providers": {
+      "get": {
+        "tags": [
+          "Hotels Informations"
+        ],
+        "summary": "Gets a list of hotels providers.",
+        "description": "# Gets a collection of hotel providers within item format.\n",
+        "operationId": "providersHotelsInformations",
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "providers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Nemo"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotel_information/{Id}": {
+      "get": {
+        "tags": [
+          "Hotels Informations"
+        ],
+        "summary": "Gets a particular hotel information within item format",
+        "description": "# Gets a particular hotel information within item format.\n",
+        "operationId": "showHotelsInformations",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id",
+            "description": "Id of the hotel",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": 76849
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "description": "Source of the hotel",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Nemo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with information about the hotel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hotel": {
+                      "$ref": "#/components/schemas/HotelAdditionalInformation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/hotel_information/{IdHotel}": {
+      "put": {
+        "tags": [
+          "Hotels Informations"
+        ],
+        "summary": "Gets a particular hotel information within item format",
+        "description": "# Gets a particular hotel information within item format.\n",
+        "operationId": "updateHotelsInformations",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "IdHotel",
+            "description": "Id of the hotel",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": 76849
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "description": "Source of the hotel",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Nemo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "recommendable",
+            "description": "Filter results by recommendable field",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "operator_id",
+            "description": "Operator id of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 1234
+            }
+          },
+          {
+            "in": "query",
+            "name": "provider_id",
+            "description": "Provider id of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 1234
+            }
+          },
+          {
+            "in": "query",
+            "name": "observations",
+            "description": "Observations of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Name of the hotel",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "address",
+            "description": "Address of the hotel",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "stars",
+            "description": "Stars of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 5
+            }
+          },
+          {
+            "in": "query",
+            "name": "latitude",
+            "description": "latitude of the hotel",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "-23.95959"
+            }
+          },
+          {
+            "in": "query",
+            "name": "longitude",
+            "description": "longitude of the hotel",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "-23.95959"
+            }
+          },
+          {
+            "in": "query",
+            "name": "destination_code",
+            "description": "Destination code of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 5
+            }
+          },
+          {
+            "in": "query",
+            "name": "fax_number",
+            "description": "Fax number of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 55456355
+            }
+          },
+          {
+            "in": "query",
+            "name": "postal_code",
+            "description": "Postal code of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 1900
+            }
+          },
+          {
+            "in": "query",
+            "name": "operator_code",
+            "description": "Operator code of the hotel",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 1900
+            }
+          },
+          {
+            "in": "query",
+            "name": "rooms",
+            "description": "Rooms of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "phones",
+            "description": "Phones of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "descriptions",
+            "description": "Descriptions of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "amenities",
+            "description": "Amenities of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "extra",
+            "description": "Extras of the hotel",
+            "required": false,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "images",
+            "description": "Observations of the hotel",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with information about the hotel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Standard response with information about the hotel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hotel_id": {
+                      "type": "number",
+                      "example": 2342424
+                    },
+                    "source": {
+                      "type": "string",
+                      "example": "nemo"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/flights": {
       "get": {
         "tags": [
@@ -1936,6 +2642,789 @@
                     },
                     "data": {
                       "$ref": "#/components/schemas/Flight"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/grouped": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights grouped within item format.",
+        "description": "# Gets a collection of Flights grouped within item format.\n",
+        "operationId": "flightGrouped",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "in": "query",
+            "name": "arrival_date",
+            "description": "Date of arrival of flights\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object"
+                        },
+                        "static": {
+                          "type": "object"
+                        },
+                        "airlines": {
+                          "type": "object"
+                        },
+                        "suggestions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "suggestions_metadata": {
+                          "type": "object"
+                        },
+                        "min_departure_duration": {
+                          "type": "string"
+                        },
+                        "max_departure_duration": {
+                          "type": "string"
+                        },
+                        "min_arrival_duration": {
+                          "type": "string"
+                        },
+                        "max_arrival_duration": {
+                          "type": "string"
+                        },
+                        "min_departure_time": {
+                          "type": "string"
+                        },
+                        "max_departure_time": {
+                          "type": "string"
+                        },
+                        "min_arrival_time": {
+                          "type": "string"
+                        },
+                        "max_arrival_time": {
+                          "type": "string"
+                        },
+                        "min_price": {
+                          "type": "number"
+                        },
+                        "max_price": {
+                          "type": "number"
+                        },
+                        "min_price_with_pais_tax": {
+                          "type": "number"
+                        },
+                        "max_price_with_pais_tax": {
+                          "type": "number"
+                        },
+                        "page": {
+                          "type": "number"
+                        },
+                        "per_page": {
+                          "type": "number"
+                        },
+                        "total_results": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/grouped/item": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a Flight within item format.",
+        "description": "# Gets a Flight within item format.\n",
+        "operationId": "flightItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
+          },
+          {
+            "in": "query",
+            "name": "agency_id",
+            "description": "Agency id of flight.\n",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "departure",
+            "description": "Departure of flight.\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "USD"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Flight"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/grouped/{itemId}/search": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights base of a Flight within item format.",
+        "description": "# Gets a collection of Flights base of a Flight within item format.\n",
+        "operationId": "flightsSearchFromFlight",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "id of flight to base the search.\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "flight_5363636"
+            }
+          },
+          {
+            "in": "query",
+            "name": "arrival_date",
+            "description": "Date of arrival of flights\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/multiple_destinations": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights base of Multiples Destination within item format.",
+        "description": "# Gets a collection of Flights base of Multiples Destination within item format.\n",
+        "operationId": "flightsMultipleDestinationsSearch",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "in": "query",
+            "name": "layovers",
+            "description": "\"It defines the maximum layovers number of each leg of the flights searched.\"\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1, 2"
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_durations",
+            "description": "Minimum duration of each leg of the flights searched.\\n\\nE.g. If you send **04:00, 06:00** you will recive filghts whose first leg duration is longer or equal to **04:00** and second leg duration is longer or equal to **06:00**.\\n \\nThe format of each duration is HH:MM.\\n\n",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_durations",
+            "description": "Maximum duration of each leg of the flights searched.\\n\\nE.g. If you send **12:00, 13:00** you will recive filghts whose first leg duration is shorter or equal to '12:00' and second leg duration is shorter or equal to **13:00**.\\n\\nThe format of each duration is HH:MM.\\n\n",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_price",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_price",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dates",
+            "description": "Dates of each departure date of each leg of the flights searched.\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "([12]\\\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01])), ([12]\\\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]))",
+              "example": "2019-05-10, 2019-05-17"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
                     }
                   }
                 }
@@ -10382,14 +11871,404 @@
           "ship_operators": {
             "type": "array",
             "items": {
+              "$ref": ""
+            }
+          }
+        }
+      },
+      "DestinationHotel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "integer",
+            "example": 3453
+          },
+          "name": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "country_code": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "country": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "example": "Costa"
+                },
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Costa"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Destino con playa"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SupplementsHotel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "integer",
+            "example": 3453
+          },
+          "name": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "type": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "kind": {
+            "type": "string",
+            "example": "disney"
+          },
+          "description": {
+            "type": "string",
+            "example": "viaje a disney"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "markup": {
+            "type": "number",
+            "example": 12
+          },
+          "price": {
+            "type": "number",
+            "example": 12345.2
+          },
+          "rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rate"
+            }
+          },
+          "promotion": {
+            "type": "boolean",
+            "example": true
+          },
+          "selected": {
+            "type": "boolean",
+            "example": true
+          },
+          "service_duration": {
+            "type": "number",
+            "example": 12453
+          },
+          "first_day": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "SupplementHotel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "hotel_79407079-b5b4-4b07-8edd-609b4a0bf14b"
+          },
+          "name": {
+            "type": "string",
+            "example": "Disney All Star Sports Resort."
+          },
+          "expires_at": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "operator": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 77
+              },
+              "name": {
+                "type": "string",
+                "example": "ACTION TRAVEL"
+              },
+              "initials": {
+                "type": "string",
+                "example": "ACTION TRAVEL"
+              }
+            }
+          },
+          "provider_id": {
+            "type": "number",
+            "example": 691
+          },
+          "date_in": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "date_out": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "kind": {
+            "type": "string",
+            "example": "hotel"
+          },
+          "source": {
+            "type": "string",
+            "example": "action_travel"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rate"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 12
+          },
+          "info": {
+            "$ref": "#/components/schemas/SupplementHotelInfo"
+          }
+        }
+      },
+      "SupplementHotelInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "B6rHNiOjDBMawqVaU8H347cZP6NPDChTjnuSg55OYUYAv6A03"
+          },
+          "sequence_number": {
+            "type": "string",
+            "example": "mydY2/NRLIFovowCYTzcgFUF2SduxGntuUo0akhTdi4="
+          },
+          "kind": {
+            "type": "string",
+            "example": "hotel"
+          },
+          "name": {
+            "type": "string",
+            "example": "Cancún"
+          },
+          "hotel_id": {
+            "type": "string",
+            "example": "HBE|11975"
+          },
+          "provider_id": {
+            "type": "number",
+            "example": 691
+          },
+          "address": {
+            "type": "string",
+            "example": "123 calle falsa"
+          },
+          "stars": {
+            "type": "number",
+            "example": 5
+          },
+          "longitude": {
+            "type": "number",
+            "example": -40.456464
+          },
+          "latitude": {
+            "type": "number",
+            "example": 90.468839
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "promotions": {
+            "type": "array",
+            "items": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
-                  "description": "Ship operator name",
-                  "example": "Costa"
+                  "example": "Promocion"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Esta es la promo 1"
                 }
               }
+            }
+          },
+          "supplements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 15848490
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Description"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Less Restricted Rates"
+                }
+              }
+            }
+          },
+          "default_supplements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 15848490
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Description"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Less Restricted Rates"
+                }
+              }
+            }
+          },
+          "regime": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "example": "SA"
+                },
+                "id": {
+                  "type": "number",
+                  "example": 9
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Room Only Disney"
+                },
+                "provider_id": {
+                  "type": "number",
+                  "example": 103
+                }
+              }
+            }
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "details": {
+                  "type": "string",
+                  "example": "Standard (SA) (1/4A+0/3n). Standard (SA)"
+                },
+                "occupancy": {
+                  "type": "string",
+                  "example": "1/0/0"
+                },
+                "original_type": {
+                  "type": "number",
+                  "example": 1424
+                },
+                "type": {
+                  "type": "string",
+                  "example": "Room Disney 2011................... (1/4A+0/3N)"
+                }
+              }
+            }
+          },
+          "cancellation": {
+            "type": "object",
+            "properties": {
+              "charges": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "$ref": "#/components/schemas/Date"
+                    },
+                    "prices": {
+                      "$ref": "#/components/schemas/Rate"
+                    },
+                    "to": {
+                      "$ref": "#/components/schemas/Date"
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "no-show"
+                    }
+                  }
+                }
+              },
+              "status": {
+                "type": "string",
+                "example": "without_fee"
+              }
+            }
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "total_after_tax": {
+            "type": "number",
+            "example": 9495
+          },
+          "can_sell": {
+            "type": "boolean",
+            "example": true
+          },
+          "can_change_supplements": {
+            "type": "boolean",
+            "example": true
+          },
+          "includes_ticket": {
+            "type": "boolean",
+            "example": true
+          },
+          "express_confirmation": {
+            "type": "boolean",
+            "example": true
+          },
+          "base_item_id": {
+            "type": "string",
+            "example": "hotel_79407079-b5b4-4b07-8edd-609b4a0bf14b"
+          },
+          "comments": {
+            "type": "string",
+            "example": "Promocion. Esta es la promo 1"
+          },
+          "hotel_rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rate"
             }
           }
         }
@@ -11419,6 +13298,87 @@
             }
           }
         }
+      },
+      "DestinationHotel": {
+        "description": "Standard response with a collection of destinations for hotel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "example": "ok"
+                },
+                "data": {
+                  "type": "object",
+                  "description": "Collection of hotels and destinations",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "destinations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DestinationHotel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SupplementsHotel": {
+        "description": "Standard response with a collection of supplements for hotel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "example": "ok"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupplementsHotel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SupplementHotel": {
+        "description": "Standard response with a supplement for a hotel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status of the request",
+                  "example": "ok"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupplementHotel"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -11877,6 +13837,36 @@
           "$ref": "#/components/schemas/Time"
         },
         "description": "Time of the dropoff of the cars\n"
+      },
+      "agency_id": {
+        "in": "query",
+        "name": "agency_id",
+        "description": "Id of the agency for Flight\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 34
+        }
+      },
+      "max_price_with_pais_tax": {
+        "in": "query",
+        "name": "max_price_with_pais_tax",
+        "description": "The max price of flights, pais tax included\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 5000
+        }
+      },
+      "min_price_with_pais_tax": {
+        "in": "query",
+        "name": "min_price_with_pais_tax",
+        "description": "The min price of flights, pais tax included\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 450
+        }
       }
     }
   }
