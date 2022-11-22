@@ -5985,6 +5985,92 @@
         }
       }
     },
+    "/cities/iata/{code}": {
+      "get": {
+        "tags": [
+          "Cities"
+        ],
+        "summary": "Gets a city base of a iata code",
+        "description": "Gets a city base of a iata code\n",
+        "operationId": "citiyByIata",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "description": "Iata code to search",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "MIA"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "transaction_status",
+                    "data_type",
+                    "data",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "city"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CityByIata"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "required": [
+                        "request_id",
+                        "query"
+                      ],
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "criteria": {
+                              "type": "string",
+                              "example": "buenos"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/cars": {
       "get": {
         "tags": [
@@ -10709,6 +10795,76 @@
           "agencies_can_add_reservations": {
             "type": "boolean",
             "example": true
+          }
+        }
+      },
+      "CityByIata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Id of the city",
+            "example": 5
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the city",
+            "example": "Miami"
+          },
+          "iata_code": {
+            "type": "string",
+            "description": "IATA code of the city",
+            "example": "MIA"
+          },
+          "country": {
+            "type": "object",
+            "description": "Country of the city",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Estados Unidos"
+              },
+              "iata_code": {
+                "type": "string",
+                "example": "US"
+              }
+            }
+          },
+          "location": {
+            "type": "object",
+            "description": "Location of the city",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 4239
+              },
+              "name": {
+                "type": "string",
+                "example": "Estados Unidos, Miami"
+              }
+            }
+          },
+          "locations": {
+            "type": "array",
+            "description": "Name of the city with its IATA code prefixed",
+            "items": {
+              "type": "object",
+              "description": "Location of the city",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 4239
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Estados Unidos, Miami"
+                }
+              }
+            }
           }
         }
       }
