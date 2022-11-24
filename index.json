@@ -3834,6 +3834,208 @@
         }
       }
     },
+    "/assistances": {
+      "get": {
+        "tags": [
+          "Assistances"
+        ],
+        "summary": "Gets a list of travel assistances.",
+        "description": "# Gets a collection of travel assistance rates within item format.\n",
+        "operationId": "searchAssistances",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Name of the assistance to match with.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asistencia al viajero Master Mayores"
+            }
+          },
+          {
+            "in": "query",
+            "name": "contract",
+            "description": "Source of the results where to look.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aero",
+                "universal"
+              ],
+              "example": "aero"
+            }
+          },
+          {
+            "in": "query",
+            "name": "default",
+            "description": "When it is set, only the assistances that are marked as default are shown.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of travel assistance rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of travel assistance rates",
+                      "items": {
+                        "$ref": "#/components/schemas/Assistance"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "date_in": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "date_out": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "location_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "example": 3453
+                              }
+                            },
+                            "pax": {
+                              "type": "string",
+                              "example": "1"
+                            },
+                            "sort_by": {
+                              "type": "string",
+                              "example": "price"
+                            },
+                            "sort_direction": {
+                              "type": "string",
+                              "example": "asc"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "example": 10
+                            }
+                          }
+                        },
+                        "static": {
+                          "type": "object",
+                          "properties": {
+                            "min_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            },
+                            "max_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            }
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total_results": {
+                          "type": "integer",
+                          "example": 12
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/assistance/{ItemId}/fees": {
+      "get": {
+        "tags": [
+          "Assistances"
+        ],
+        "summary": "Gets a list of fees for the assistance item.",
+        "description": "# Gets a collection of fees for the assistance within item format.\n",
+        "operationId": "searchAssistancesFees",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ItemId",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "ID of the assistance to see the fees.",
+            "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssistancesFees"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/packages": {
       "get": {
         "tags": [
@@ -4997,208 +5199,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/assistances": {
-      "get": {
-        "tags": [
-          "Assistances"
-        ],
-        "summary": "Gets a list of travel assistances.",
-        "description": "# Gets a collection of travel assistance rates within item format.\n",
-        "operationId": "searchAssistances",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/maxPriceParam"
-          },
-          {
-            "in": "query",
-            "name": "name",
-            "description": "Name of the assistance to match with.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "Asistencia al viajero Master Mayores"
-            }
-          },
-          {
-            "in": "query",
-            "name": "contract",
-            "description": "Source of the results where to look.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "aero",
-                "universal"
-              ],
-              "example": "aero"
-            }
-          },
-          {
-            "in": "query",
-            "name": "default",
-            "description": "When it is set, only the assistances that are marked as default are shown.",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "example": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Standard response with a collection of travel assistance rates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "description": "Status of the request",
-                      "example": "ok"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "description": "Status of the transaction",
-                      "example": "finished"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of travel assistance rates",
-                      "items": {
-                        "$ref": "#/components/schemas/Assistance"
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
-                        },
-                        "query": {
-                          "type": "object",
-                          "properties": {
-                            "date_in": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "date_out": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "location_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "example": 3453
-                              }
-                            },
-                            "pax": {
-                              "type": "string",
-                              "example": "1"
-                            },
-                            "sort_by": {
-                              "type": "string",
-                              "example": "price"
-                            },
-                            "sort_direction": {
-                              "type": "string",
-                              "example": "asc"
-                            },
-                            "page": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "per_page": {
-                              "type": "integer",
-                              "example": 10
-                            }
-                          }
-                        },
-                        "static": {
-                          "type": "object",
-                          "properties": {
-                            "min_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            },
-                            "max_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            }
-                          }
-                        },
-                        "min_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "max_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "per_page": {
-                          "type": "integer",
-                          "example": 10
-                        },
-                        "total_results": {
-                          "type": "integer",
-                          "example": 12
-                        },
-                        "total_pages": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          },
-          "404": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/assistance/{ItemId}/fees": {
-      "get": {
-        "tags": [
-          "Assistances"
-        ],
-        "summary": "Gets a list of fees for the assistance item.",
-        "description": "# Gets a collection of fees for the assistance within item format.\n",
-        "operationId": "searchAssistancesFees",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "ItemId",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "description": "ID of the assistance to see the fees.",
-            "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/AssistancesFees"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
