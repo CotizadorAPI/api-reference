@@ -8087,6 +8087,13 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "status",
+                    "transaction_status",
+                    "data_type",
+                    "data",
+                    "metadata"
+                  ],
                   "properties": {
                     "status": {
                       "type": "string",
@@ -8112,6 +8119,7 @@
                     },
                     "data": {
                       "type": "array",
+                      "description": "Collection of cities",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -8140,13 +8148,23 @@
                     },
                     "metadata": {
                       "type": "object",
+                      "required": [
+                        "request_id",
+                        "query"
+                      ],
                       "properties": {
                         "request_id": {
                           "type": "string",
                           "example": "914129b1-f285-470a-8143-e0e795add50b"
                         },
                         "query": {
-                          "type": "object"
+                          "type": "object",
+                          "properties": {
+                            "criteria": {
+                              "type": "string",
+                              "example": "buenos"
+                            }
+                          }
                         }
                       }
                     }
@@ -8197,190 +8215,7 @@
                     "data_type": {
                       "type": "string",
                       "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Sellers"
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "914129b1-f285-470a-8143-e0e795add50b"
-                        },
-                        "query": {
-                          "type": "object"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    }    "/sellers": {
-      "get": {
-        "tags": [
-          "Sellers"
-        ],
-        "summary": "gets information about sellers.",
-        "description": "# gets information about sellers.\n",
-        "operationId": "Sellers",
-        "responses": {
-          "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Sellers"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/sellers/tickets": {
-      "get": {
-        "tags": [
-          "Sellers"
-        ],
-        "summary": "Gets information about sellers tickets.",
-        "description": "# Gets information about sellers tickets.\n",
-        "operationId": "SellersTickets",
-        "responses": {
-          "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "ok",
-                        "error",
-                        "warning"
-                      ],
-                      "description": "Status of the request"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "enum": [
-                        "finished",
-                        "continue"
-                      ],
-                      "description": "Status of the transaction"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "number",
-                            "example": 4
-                          },
-                          "name": {
-                            "type": "string",
-                            "example": "Administrador pepe"
-                          },
-                          "email": {
-                            "type": "string",
-                            "example": "prueba@gmail.com"
-                          },
-                          "login": {
-                            "type": "string",
-                            "example": "admin@prueba.com"
-                          },
-                          "agencies_can_add_reservations": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "914129b1-f285-470a-8143-e0e795add50b"
-                        },
-                        "query": {
-                          "type": "object"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/sellers/tours": {
-      "get": {
-        "tags": [
-          "Sellers"
-        ],
-        "summary": "Gets information about sellers tours.",
-        "description": "# Gets information about sellers tours.\n",
-        "operationId": "sellersTours",
-        "responses": {
-          "200": {
-            "description": "Standard response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "ok",
-                        "error",
-                        "warning"
-                      ],
-                      "description": "Status of the request"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "enum": [
-                        "finished",
-                        "continue"
-                      ],
-                      "description": "Status of the transaction"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
+                      "example": "city"
                     },
                     "data": {
                       "type": "array",
@@ -12388,13 +12223,44 @@
         "type": "object",
         "description": "Id of the provisional reservation.",
         "required": [
-          "reservation_id"
+          "type",
+          "value"
         ],
         "properties": {
-          "reservation_id": {
+          "type": {
             "type": "string",
-            "format": "uuid",
-            "example": "e53092ae-5cbf-463a-9ae1-19f1e4ae4afd"
+            "enum": [
+              "gross",
+              "net",
+              "taxes",
+              "commission"
+            ],
+            "example": "gross"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "ars_value": {
+                "type": "number",
+                "format": "float",
+                "example": 100
+              },
+              "usd_value": {
+                "type": "number",
+                "format": "float",
+                "example": 100
+              },
+              "eur_value": {
+                "type": "number",
+                "format": "float",
+                "example": 100
+              },
+              "gbp_value": {
+                "type": "number",
+                "format": "float",
+                "example": 100
+              }
+            }
           }
         }
       },
