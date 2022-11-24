@@ -8087,13 +8087,6 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "transaction_status",
-                    "data_type",
-                    "data",
-                    "metadata"
-                  ],
                   "properties": {
                     "status": {
                       "type": "string",
@@ -8119,7 +8112,6 @@
                     },
                     "data": {
                       "type": "array",
-                      "description": "Collection of cities",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -8148,23 +8140,13 @@
                     },
                     "metadata": {
                       "type": "object",
-                      "required": [
-                        "request_id",
-                        "query"
-                      ],
                       "properties": {
                         "request_id": {
                           "type": "string",
                           "example": "914129b1-f285-470a-8143-e0e795add50b"
                         },
                         "query": {
-                          "type": "object",
-                          "properties": {
-                            "criteria": {
-                              "type": "string",
-                              "example": "buenos"
-                            }
-                          }
+                          "type": "object"
                         }
                       }
                     }
@@ -8215,7 +8197,7 @@
                     "data_type": {
                       "type": "string",
                       "description": "Type of the data value",
-                      "example": "city"
+                      "example": "list"
                     },
                     "data": {
                       "type": "array",
@@ -12223,44 +12205,13 @@
         "type": "object",
         "description": "Id of the provisional reservation.",
         "required": [
-          "type",
-          "value"
+          "reservation_id"
         ],
         "properties": {
-          "type": {
+          "reservation_id": {
             "type": "string",
-            "enum": [
-              "gross",
-              "net",
-              "taxes",
-              "commission"
-            ],
-            "example": "gross"
-          },
-          "value": {
-            "type": "object",
-            "properties": {
-              "ars_value": {
-                "type": "number",
-                "format": "float",
-                "example": 100
-              },
-              "usd_value": {
-                "type": "number",
-                "format": "float",
-                "example": 100
-              },
-              "eur_value": {
-                "type": "number",
-                "format": "float",
-                "example": 100
-              },
-              "gbp_value": {
-                "type": "number",
-                "format": "float",
-                "example": 100
-              }
-            }
+            "format": "uuid",
+            "example": "e53092ae-5cbf-463a-9ae1-19f1e4ae4afd"
           }
         }
       },
