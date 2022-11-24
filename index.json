@@ -2654,6 +2654,789 @@
         }
       }
     },
+    "/flights/grouped": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights grouped within item format.",
+        "description": "# Gets a collection of Flights grouped within item format.\n",
+        "operationId": "flightGrouped",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "in": "query",
+            "name": "arrival_date",
+            "description": "Date of arrival of flights\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object"
+                        },
+                        "static": {
+                          "type": "object"
+                        },
+                        "airlines": {
+                          "type": "object"
+                        },
+                        "suggestions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "suggestions_metadata": {
+                          "type": "object"
+                        },
+                        "min_departure_duration": {
+                          "type": "string"
+                        },
+                        "max_departure_duration": {
+                          "type": "string"
+                        },
+                        "min_arrival_duration": {
+                          "type": "string"
+                        },
+                        "max_arrival_duration": {
+                          "type": "string"
+                        },
+                        "min_departure_time": {
+                          "type": "string"
+                        },
+                        "max_departure_time": {
+                          "type": "string"
+                        },
+                        "min_arrival_time": {
+                          "type": "string"
+                        },
+                        "max_arrival_time": {
+                          "type": "string"
+                        },
+                        "min_price": {
+                          "type": "number"
+                        },
+                        "max_price": {
+                          "type": "number"
+                        },
+                        "min_price_with_pais_tax": {
+                          "type": "number"
+                        },
+                        "max_price_with_pais_tax": {
+                          "type": "number"
+                        },
+                        "page": {
+                          "type": "number"
+                        },
+                        "per_page": {
+                          "type": "number"
+                        },
+                        "total_results": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/grouped/item": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a Flight within item format.",
+        "description": "# Gets a Flight within item format.\n",
+        "operationId": "flightItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateInParam"
+          },
+          {
+            "$ref": "#/components/parameters/dateOutParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/oneWay"
+          },
+          {
+            "in": "query",
+            "name": "agency_id",
+            "description": "Agency id of flight.\n",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "departure",
+            "description": "Departure of flight.\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "USD"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Flight"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/grouped/{itemId}/search": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights base of a Flight within item format.",
+        "description": "# Gets a collection of Flights base of a Flight within item format.\n",
+        "operationId": "flightsSearchFromFlight",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/minPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/contract"
+          },
+          {
+            "$ref": "#/components/parameters/suggestionsContract"
+          },
+          {
+            "$ref": "#/components/parameters/departureLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/arrivalLayovers"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalDuration"
+          },
+          {
+            "$ref": "#/components/parameters/minDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxDepartureTime"
+          },
+          {
+            "$ref": "#/components/parameters/minArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/maxArrivalTime"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "id of flight to base the search.\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "flight_5363636"
+            }
+          },
+          {
+            "in": "query",
+            "name": "arrival_date",
+            "description": "Date of arrival of flights\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/flights/multiple_destinations": {
+      "get": {
+        "tags": [
+          "Flights"
+        ],
+        "summary": "Gets a collection of Flights base of Multiples Destination within item format.",
+        "description": "# Gets a collection of Flights base of Multiples Destination within item format.\n",
+        "operationId": "flightsMultipleDestinationsSearch",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/originLocationIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/originCityIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/locationIdsParam"
+          },
+          {
+            "$ref": "#/components/parameters/paxParam"
+          },
+          {
+            "$ref": "#/components/parameters/cabinParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortByParam"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/currencyParam"
+          },
+          {
+            "$ref": "#/components/parameters/airlinesParam"
+          },
+          {
+            "$ref": "#/components/parameters/baggageIncluded"
+          },
+          {
+            "$ref": "#/components/parameters/agency_id"
+          },
+          {
+            "$ref": "#/components/parameters/min_price_with_pais_tax"
+          },
+          {
+            "$ref": "#/components/parameters/max_price_with_pais_tax"
+          },
+          {
+            "in": "query",
+            "name": "layovers",
+            "description": "\"It defines the maximum layovers number of each leg of the flights searched.\"\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1, 2"
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_durations",
+            "description": "Minimum duration of each leg of the flights searched.\\n\\nE.g. If you send **04:00, 06:00** you will recive filghts whose first leg duration is longer or equal to **04:00** and second leg duration is longer or equal to **06:00**.\\n \\nThe format of each duration is HH:MM.\\n\n",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_durations",
+            "description": "Maximum duration of each leg of the flights searched.\\n\\nE.g. If you send **12:00, 13:00** you will recive filghts whose first leg duration is shorter or equal to '12:00' and second leg duration is shorter or equal to **13:00**.\\n\\nThe format of each duration is HH:MM.\\n\n",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "min_price",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_price",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dates",
+            "description": "Dates of each departure date of each leg of the flights searched.\n",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "([12]\\\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01])), ([12]\\\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\\\d|3[01]))",
+              "example": "2019-05-10, 2019-05-17"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a flight rate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "enum": [
+                        "ok",
+                        "warning",
+                        "error"
+                      ],
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "enum": [
+                        "finished",
+                        "continue"
+                      ],
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "item"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Flight"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "requestIdParam": {
+                          "$ref": "#/components/parameters/requestIdParam"
+                        },
+                        "origin_location_id": {
+                          "$ref": "#/components/parameters/originLocationIdParam"
+                        },
+                        "origin_city_id": {
+                          "$ref": "#/components/parameters/originCityIdParam"
+                        },
+                        "location_ids": {
+                          "$ref": "#/components/parameters/locationIdsParam"
+                        },
+                        "pax": {
+                          "$ref": "#/components/parameters/paxParam"
+                        },
+                        "date_in": {
+                          "$ref": "#/components/parameters/dateInParam"
+                        },
+                        "date_out": {
+                          "$ref": "#/components/parameters/dateOutParam"
+                        },
+                        "cabin": {
+                          "$ref": "#/components/parameters/cabinParam"
+                        },
+                        "one_way": {
+                          "$ref": "#/components/parameters/oneWay"
+                        },
+                        "agency_id": {
+                          "type": "number",
+                          "example": 50
+                        },
+                        "departure": {
+                          "type": "string",
+                          "example": "USD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/land_products": {
       "get": {
         "tags": [
@@ -2951,6 +3734,208 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/assistances": {
+      "get": {
+        "tags": [
+          "Assistances"
+        ],
+        "summary": "Gets a list of travel assistances.",
+        "description": "# Gets a collection of travel assistance rates within item format.\n",
+        "operationId": "searchAssistances",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/maxPriceParam"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Name of the assistance to match with.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asistencia al viajero Master Mayores"
+            }
+          },
+          {
+            "in": "query",
+            "name": "contract",
+            "description": "Source of the results where to look.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aero",
+                "universal"
+              ],
+              "example": "aero"
+            }
+          },
+          {
+            "in": "query",
+            "name": "default",
+            "description": "When it is set, only the assistances that are marked as default are shown.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of travel assistance rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of travel assistance rates",
+                      "items": {
+                        "$ref": "#/components/schemas/Assistance"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "date_in": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "date_out": {
+                              "$ref": "#/components/schemas/Date"
+                            },
+                            "location_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "example": 3453
+                              }
+                            },
+                            "pax": {
+                              "type": "string",
+                              "example": "1"
+                            },
+                            "sort_by": {
+                              "type": "string",
+                              "example": "price"
+                            },
+                            "sort_direction": {
+                              "type": "string",
+                              "example": "asc"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "example": 10
+                            }
+                          }
+                        },
+                        "static": {
+                          "type": "object",
+                          "properties": {
+                            "min_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            },
+                            "max_price": {
+                              "$ref": "#/components/schemas/AllCurrencies"
+                            }
+                          }
+                        },
+                        "min_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "max_price": {
+                          "$ref": "#/components/schemas/AllCurrencies"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total_results": {
+                          "type": "integer",
+                          "example": 12
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/assistance/{ItemId}/fees": {
+      "get": {
+        "tags": [
+          "Assistances"
+        ],
+        "summary": "Gets a list of fees for the assistance item.",
+        "description": "# Gets a collection of fees for the assistance within item format.\n",
+        "operationId": "searchAssistancesFees",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ItemId",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "ID of the assistance to see the fees.",
+            "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssistancesFees"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -4121,208 +5106,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/assistances": {
-      "get": {
-        "tags": [
-          "Assistances"
-        ],
-        "summary": "Gets a list of travel assistances.",
-        "description": "# Gets a collection of travel assistance rates within item format.\n",
-        "operationId": "searchAssistances",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/maxPriceParam"
-          },
-          {
-            "in": "query",
-            "name": "name",
-            "description": "Name of the assistance to match with.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "Asistencia al viajero Master Mayores"
-            }
-          },
-          {
-            "in": "query",
-            "name": "contract",
-            "description": "Source of the results where to look.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "aero",
-                "universal"
-              ],
-              "example": "aero"
-            }
-          },
-          {
-            "in": "query",
-            "name": "default",
-            "description": "When it is set, only the assistances that are marked as default are shown.",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "example": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Standard response with a collection of travel assistance rates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "description": "Status of the request",
-                      "example": "ok"
-                    },
-                    "transaction_status": {
-                      "type": "string",
-                      "description": "Status of the transaction",
-                      "example": "finished"
-                    },
-                    "data_type": {
-                      "type": "string",
-                      "description": "Type of the data value",
-                      "example": "list"
-                    },
-                    "data": {
-                      "type": "array",
-                      "description": "Collection of travel assistance rates",
-                      "items": {
-                        "$ref": "#/components/schemas/Assistance"
-                      }
-                    },
-                    "metadata": {
-                      "type": "object",
-                      "properties": {
-                        "request_id": {
-                          "type": "string",
-                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
-                        },
-                        "query": {
-                          "type": "object",
-                          "properties": {
-                            "date_in": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "date_out": {
-                              "$ref": "#/components/schemas/Date"
-                            },
-                            "location_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "example": 3453
-                              }
-                            },
-                            "pax": {
-                              "type": "string",
-                              "example": "1"
-                            },
-                            "sort_by": {
-                              "type": "string",
-                              "example": "price"
-                            },
-                            "sort_direction": {
-                              "type": "string",
-                              "example": "asc"
-                            },
-                            "page": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "per_page": {
-                              "type": "integer",
-                              "example": 10
-                            }
-                          }
-                        },
-                        "static": {
-                          "type": "object",
-                          "properties": {
-                            "min_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            },
-                            "max_price": {
-                              "$ref": "#/components/schemas/AllCurrencies"
-                            }
-                          }
-                        },
-                        "min_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "max_price": {
-                          "$ref": "#/components/schemas/AllCurrencies"
-                        },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "per_page": {
-                          "type": "integer",
-                          "example": 10
-                        },
-                        "total_results": {
-                          "type": "integer",
-                          "example": 12
-                        },
-                        "total_pages": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/StandardError"
-          },
-          "404": {
-            "$ref": "#/components/responses/StandardError"
-          }
-        }
-      }
-    },
-    "/assistance/{ItemId}/fees": {
-      "get": {
-        "tags": [
-          "Assistances"
-        ],
-        "summary": "Gets a list of fees for the assistance item.",
-        "description": "# Gets a collection of fees for the assistance within item format.\n",
-        "operationId": "searchAssistancesFees",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "ItemId",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "description": "ID of the assistance to see the fees.",
-            "example": "assistance_e1c1a024-1ec9-45ec-bf90-f635ba798661"
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/AssistancesFees"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -13639,6 +14422,36 @@
           "$ref": "#/components/schemas/Time"
         },
         "description": "Time of the dropoff of the cars\n"
+      },
+      "agency_id": {
+        "in": "query",
+        "name": "agency_id",
+        "description": "Id of the agency for Flight\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 34
+        }
+      },
+      "max_price_with_pais_tax": {
+        "in": "query",
+        "name": "max_price_with_pais_tax",
+        "description": "The max price of flights, pais tax included\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 5000
+        }
+      },
+      "min_price_with_pais_tax": {
+        "in": "query",
+        "name": "min_price_with_pais_tax",
+        "description": "The min price of flights, pais tax included\n",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 450
+        }
       }
     }
   }
