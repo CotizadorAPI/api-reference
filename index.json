@@ -11355,6 +11355,10 @@
           "holder": {
             "type": "object"
           },
+          "existing_reservation_status": {
+            "type": "string",
+            "example": "close"
+          },
           "expires_at": {
             "$ref": "#/components/schemas/DateTime"
           }
@@ -11626,7 +11630,8 @@
           "date_out",
           "aptour_reserve_id",
           "has_liquidation",
-          "has_voucher"
+          "has_voucher",
+          "status"
         ],
         "properties": {
           "id": {
@@ -11669,6 +11674,10 @@
             "type": "integer",
             "description": "Pax amount of the reservation",
             "example": 2
+          },
+          "status": {
+            "type": "string",
+            "example": "close"
           },
           "aptour_reserve_id": {
             "type": "integer",
