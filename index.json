@@ -12227,6 +12227,10 @@
               "aero_v2"
             ],
             "description": "Classification of the flight, must be passed as parameter, along with the id, to `GET /flights/quote` when it is necessary to generate a **reservable** flight item.\n"
+          },
+          "observations": {
+            "type": "string",
+            "example": "esta es una observacion"
           }
         }
       },
