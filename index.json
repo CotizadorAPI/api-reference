@@ -6679,6 +6679,78 @@
         }
       }
     },
+    "/reservations/cancel_booked_services": {
+      "delete": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Marks for cancellation a list of provided items (which map to their corresponding booking services).",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "booked_item_ids",
+            "description": "List of item IDs to be marked for cancellation.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "hotel_13de1a24-1062-42ad-b772-6d2130ac4d67, hotel_23d31ad4-1062-424c-b777-6d2130ac4d5a"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services_trip_names"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of trip names",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "Viaje al caribe (Carlos Gardel)",
+                          "Viaje al caribe (Carlos Gardel)"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/existing_reservations": {
       "get": {
         "tags": [
