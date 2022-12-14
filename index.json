@@ -6831,7 +6831,7 @@
                       "properties": {
                         "message": {
                           "type": "string",
-                          "example": "Items no encontrados: hotel_13de1a24-1062-42ad-b772-6d2130ac4d67,         hotel_23d31ad4-1062-424c-b777-6d2130ac4d5a. Intente obtener los servicios del usuario nuevamente"
+                          "example": "Items no encontrados: hotel_13de1a24-1062-42ad-b772-6d2130ac4d67, hotel_23d31ad4-1062-424c-b777-6d2130ac4d5a. Intente obtener los servicios del usuario nuevamente"
                         }
                       }
                     }
@@ -6848,7 +6848,7 @@
         "tags": [
           "Book for later"
         ],
-        "summary": "Marks a booking services as cancelled. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint.",
+        "summary": "Marks a booking service as cancelled. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint.",
         "parameters": [
           {
             "in": "header",
