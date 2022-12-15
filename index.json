@@ -5321,7 +5321,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReservationId"
+                "$ref": "#/components/schemas/ConfirmReservationBody"
               }
             }
           }
@@ -6508,6 +6508,443 @@
           },
           "400": {
             "$ref": "#/components/responses/ReservationNotFoundError"
+          }
+        }
+      }
+    },
+    "/reservations/booking_services": {
+      "get": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Returns a list of items representing booked services for a user (identified by the auth token being sent). These are the services that where booked by a user using the 'book_for_later' and 'trip_name' params during booking confirmation. It has the same format as returned in any seach operation, with the same data, so as to provide items that can be added to a cart seamlessly.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "date_in"
+              ],
+              "example": "2022-09-11"
+            },
+            "description": "Sort criteria to use. (date_in) format yyyy-mm-dd"
+          },
+          {
+            "$ref": "#/components/parameters/sortDirectionParam"
+          },
+          {
+            "in": "query",
+            "name": "trip_name_query",
+            "description": "Basic filter by substring. Booking services that contain said substring in their trip_name field are returned.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "miami"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_in_from",
+            "description": "To be used in tandem with date_in_to. Returns those services which its date_in field is between the two parameters. Format yyyy-mm-dd ",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_in_to",
+            "description": "To be used in tandem with date_in_from. Returns those services which its date_in field is between the two parameters. Format yyyy-mm-dd ",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of booking services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services"
+                    },
+                    "metadata": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of booking services",
+                      "items": {
+                        "$ref": "#/components/schemas/Hotel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/booking_services_trip_names": {
+      "get": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Returns a list of trip names that have been used by the user identified by the auth token.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services_trip_names"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of trip names",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "Viaje al caribe (Carlos Gardel)",
+                          "Viaje al sur (Carlos Martel)"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/non_sent_services": {
+      "get": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Returns a list of services that have failed to be sent to MO (when they should have). These items have a numeric \"id\" field, which is the value to be sent when using the /reservations/remove_booking_service endpoint.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "non_sent_services"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of booking services",
+                      "items": {
+                        "$ref": "#/components/schemas/Hotel"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/cancel_booked_services": {
+      "delete": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Marks for cancellation a list of provided items (which map to their corresponding booking services).",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "booked_item_ids",
+            "description": "List of item IDs to be marked for cancellation.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "hotel_13de1a24-1062-42ad-b772-6d2130ac4d67, hotel_23d31ad4-1062-424c-b777-6d2130ac4d5a"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response when items could be marked for cancellation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Servicios marcados para su cancelación: FAKE_123458"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response when items could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "warning"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Items no encontrados: hotel_13de1a24-1062-42ad-b772-6d2130ac4d67, hotel_23d31ad4-1062-424c-b777-6d2130ac4d5a. Intente obtener los servicios del usuario nuevamente"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/remove_booking_service": {
+      "delete": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Marks a booking service as cancelled. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "booking_service_id",
+            "description": "ID of the booking service to be marked as cancelled.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 123456
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response when the item could be marked as cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Servicios marcados para su cancelación: FAKE_123458"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response when the item could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "error"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "booking_services"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Servicio no encontrado"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -8363,6 +8800,10 @@
     },
     {
       "name": "Countries"
+    },
+    {
+      "name": "Book for later",
+      "description": "Booking for later means making a reservation with a provider (i.e locking down a quote, generally a hotel tariff) but not sending it to MiddleOffice. So this means we have a booking code, with an actual reservation, which can then be used or discarded by an agent. This process involves sending extra params during the confirmation process, and it also offers a set of endpoints to visualize those booked services so they can be added to a new cart, cancelled, discarded, etc.\n"
     }
   ],
   "components": {
@@ -12318,6 +12759,30 @@
             "type": "string",
             "format": "uuid",
             "example": "e53092ae-5cbf-463a-9ae1-19f1e4ae4afd"
+          }
+        }
+      },
+      "ConfirmReservationBody": {
+        "type": "object",
+        "required": [
+          "reservation_id"
+        ],
+        "properties": {
+          "reservation_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e53092ae-5cbf-463a-9ae1-19f1e4ae4afd",
+            "description": "Id of the provisional reservation."
+          },
+          "book_for_later": {
+            "type": "boolean",
+            "example": false,
+            "description": "Wheter the reservation should be saved for later (i.e not sent to Middle Office). Optional, false by default."
+          },
+          "trip_name": {
+            "type": "string",
+            "example": "Viaje al caribe",
+            "description": "Only required when book_for_later = true"
           }
         }
       },
