@@ -6574,6 +6574,33 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter by service status. Valid values to be sent are: 'confirmed', 'cancelled', 'in_auto_cancellation_proximity'. 'confirmed' includes those that are 'active; 'cancelled' those that are either 'cancelled' or 'auto_cancelled'; and 'in_auto_cancellation_proximity' includes those that are either 'marked_for_cancellation' or its auto cancellation date is less than 7 days away.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "booking_date_from",
+            "description": "To be used in tandem with booking_date_to. Returns those services which its booking_date field is between the two parameters. Format yyyy-mm-dd",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "booking_date_to",
+            "description": "To be used in tandem with booking_date_from. Returns those services which its booking_date field is between the two parameters. Format yyyy-mm-dd",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
