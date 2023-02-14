@@ -12171,6 +12171,15 @@
               0,
               1
             ]
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Buenos Aires"
+              }
+            }
           }
         }
       },
