@@ -7915,6 +7915,19 @@
         "summary": "Gets information about the aero users.",
         "description": "# Gets information about aero users.\n",
         "operationId": "aeroUsersInfo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Id of the user if you want specific information about a user.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "1213"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Basic response with users info.",
@@ -7927,19 +7940,17 @@
             }
           }
         }
-      }
-    },
-    "/info_aero_user/{id}": {
-      "get": {
+      },
+      "patch": {
         "tags": [
           "User"
         ],
-        "summary": "Gets information about the aero user.",
-        "description": "# Gets information about aero user.\n",
-        "operationId": "aeroUserInfo",
+        "summary": "Updates information about the aero user.",
+        "description": "# Update information about aero user.\n",
+        "operationId": "aeroUserInfoUpdate",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "id",
             "description": "Id of the airline.",
             "required": true,
@@ -8960,6 +8971,31 @@
           "user_id": {
             "type": "number",
             "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "guido@aero.tur.ar"
+          },
+          "name_and_surname": {
+            "type": "string",
+            "example": "Adminsitrador Fernandez"
+          },
+          "code_seller_aptour": {
+            "type": "string",
+            "example": "Au"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://prueba.amazon.com"
+              }
+            }
+          },
+          "agency_name": {
+            "type": "string",
+            "example": "Aero La Plata"
           },
           "phone_number": {
             "type": "string",
