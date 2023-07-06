@@ -8069,6 +8069,113 @@
         }
       }
     },
+    "/info_aero_users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Gets information about the aero users.",
+        "description": "# Gets information about aero users.\n",
+        "operationId": "aeroUsersInfo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Id of the user if you want specific information about a user.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "1213"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Basic response with users info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AeroUsersInfo"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Updates information about the aero user.",
+        "description": "# Update information about aero user.\n",
+        "operationId": "aeroUserInfoUpdate",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Id of the airline.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Basic response with user info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "example": "info_aero_users_url"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AeroUserInfo"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "required": [
+                        "request_id",
+                        "query"
+                      ],
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "user_token": {
+                              "type": "string",
+                              "example": "test_token"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cards": {
       "get": {
         "tags": [
@@ -8997,6 +9104,79 @@
   ],
   "components": {
     "schemas": {
+      "AeroUsersInfo": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "transaction_status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "data_type": {
+            "type": "string",
+            "example": "ok"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AeroUserInfo"
+            }
+          }
+        }
+      },
+      "AeroUserInfo": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "guido@aero.tur.ar"
+          },
+          "name_and_surname": {
+            "type": "string",
+            "example": "Adminsitrador Fernandez"
+          },
+          "code_seller_aptour": {
+            "type": "string",
+            "example": "Au"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://prueba.amazon.com"
+              }
+            }
+          },
+          "agency_name": {
+            "type": "string",
+            "example": "Aero La Plata"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "24242"
+          },
+          "internal_number": {
+            "type": "string",
+            "example": "24242"
+          },
+          "area": {
+            "type": "string",
+            "example": "admin"
+          },
+          "position": {
+            "type": "string",
+            "example": "admin"
+          }
+        }
+      },
       "Car": {
         "allOf": [
           {
