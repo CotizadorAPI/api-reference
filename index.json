@@ -6843,6 +6843,20 @@
                             "total_pages": {
                               "type": "integer",
                               "example": 200
+                            },
+                            "kinds": {
+                              "example": [
+                                "hotel",
+                                "flight",
+                                "assistance"
+                              ]
+                            },
+                            "sources": {
+                              "example": [
+                                "nemo",
+                                "hotelbeds",
+                                "aero"
+                              ]
                             }
                           }
                         }
