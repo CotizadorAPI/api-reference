@@ -3834,6 +3834,200 @@
         }
       }
     },
+    "/land_products/add_required_info/{id}": {
+      "post": {
+        "tags": [
+          "Land Products"
+        ],
+        "summary": "Adds the required information for a booking",
+        "description": "# Adds the required info for a Otium or Hotelbeds land product\n",
+        "operationId": "addRequiredInfoLandProducts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the land product",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": "land_product_2ca55949-945b-4671-a7e1-be0188b5acd6"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of land product rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "item_id": {
+                              "type": "string",
+                              "example": "land_product_fcfd9fdd-e7ab-489e-94f4-2b45dd46e52d"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/LandProduct"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/land_products/destinations/{name}": {
+      "get": {
+        "tags": [
+          "Land Products"
+        ],
+        "summary": "Gets a list of destinations of land products.",
+        "description": "# Gets a list of destinations of land products within item format.\n",
+        "operationId": "destinationsLandProducts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "description": "name of the provider",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "otium"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of land product destinations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of land product names",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "destinations": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "example": "ZPUJ"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "punta cana"
+                                },
+                                "country": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "country_code": {
+                                  "type": "string",
+                                  "example": "COD"
+                                },
+                                "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "type": "string",
+                              "example": "otium:land_product"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/assistances": {
       "get": {
         "tags": [
@@ -11300,6 +11494,313 @@
           },
           "daily": {
             "type": "boolean"
+          },
+          "request": {
+            "type": "object",
+            "properties": {
+              "usuario_id": {
+                "type": "integer",
+                "example": 5629
+              },
+              "fecha_desde": {
+                "type": "string",
+                "example": "2023-10-17T00:00:00.000Z"
+              },
+              "fecha_hasta": {
+                "type": "string",
+                "example": "2023-10-20T00:00:00.000Z"
+              },
+              "origen": {
+                "type": "integer",
+                "example": 0
+              },
+              "destino": {
+                "type": "string",
+                "example": "ZPUJ"
+              },
+              "adulto": {
+                "type": "integer",
+                "example": 1
+              },
+              "nino": {
+                "type": "integer",
+                "example": 1
+              },
+              "infante": {
+                "type": "integer",
+                "example": 1
+              },
+              "silla_nino": {
+                "type": "integer",
+                "example": 1
+              },
+              "silla_infante": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          },
+          "type_transfer": {
+            "type": "integer",
+            "example": 1
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "example": "https://www.sadgjsogjsg"
+                },
+                "thumbnail": {
+                  "type": "string",
+                  "example": "https://www.sadgjsogjsg"
+                },
+                "width": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "order": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          },
+          "type_item": {
+            "type": "integer",
+            "example": 1
+          },
+          "origin_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "destination_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "original_price": {
+            "type": "integer",
+            "example": 8
+          },
+          "type_service": {
+            "type": "string",
+            "example": "Regular"
+          },
+          "id_moneda": {
+            "type": "string",
+            "example": "1"
+          },
+          "selections": {
+            "type": "object",
+            "properties": {
+              "country_id": {
+                "type": "integer",
+                "example": 12313
+              },
+              "flights_id": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "hotel_id": {
+                "type": "integer",
+                "example": 12
+              },
+              "from": {
+                "type": "string",
+                "example": "2023-10-14"
+              },
+              "to": {
+                "type": "string",
+                "example": "2023-10-15"
+              },
+              "rate_key": {
+                "type": "string",
+                "example": "sghshshderuhjderhjdhj"
+              },
+              "questions": {
+                "type": "object"
+              },
+              "answers": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "free_cancellation": {
+            "type": "boolean"
+          },
+          "other_details": {
+            "type": "object",
+            "properties": {
+              "adults_number": {
+                "type": "integer",
+                "example": 12313
+              },
+              "adult_total": {
+                "type": "integer",
+                "example": 12
+              },
+              "children_number": {
+                "type": "integer",
+                "example": 12
+              },
+              "child_total": {
+                "type": "integer",
+                "example": 8
+              },
+              "pax_rates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "age_from": {
+                      "type": "integer",
+                      "example": 3
+                    },
+                    "age_to": {
+                      "type": "integer",
+                      "example": 9
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "example": 37
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "applies_pais_tax": {
+            "type": "boolean"
+          },
+          "total_includes_pais_tax": {
+            "type": "boolean"
+          },
+          "source_application": {
+            "type": "string",
+            "example": "flexi"
+          },
+          "kind_name": {
+            "type": "string",
+            "example": "TICKET"
+          },
+          "contract": {
+            "type": "object",
+            "properties": {
+              "incomingOffice": {
+                "type": "integer",
+                "example": 66
+              },
+              "code": {
+                "type": "integer",
+                "example": 3186
+              },
+              "name": {
+                "type": "string",
+                "example": "COM-PUJ-TR2SAF0"
+              }
+            }
+          },
+          "identifier": {
+            "type": "string",
+            "example": "1916929594"
+          },
+          "opening_schedule": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "openingTime": {
+                  "type": "string",
+                  "example": "09:15"
+                },
+                "closeTime": {
+                  "type": "string",
+                  "example": "13:00"
+                },
+                "weekDays": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "activity_code": {
+            "type": "string",
+            "example": "E-RD1-A0DLNO0007"
+          },
+          "code": {
+            "type": "string",
+            "example": "E-RD1-A0DLNO0007"
+          },
+          "modality_code": {
+            "type": "string",
+            "example": "1916929594#GENERAL"
+          },
+          "combinations": {
+            "type": "object",
+            "properties": {
+              "2023-10-17_2023-10-17": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "time": {
+                      "type": "string"
+                    },
+                    "language": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 44
+                    },
+                    "fees": {
+                      "type": "object",
+                      "properties": {
+                        "dateFrom": {
+                          "type": "string",
+                          "example": "2023-10-16T00:00:00.000Z"
+                        },
+                        "amount": {
+                          "type": "integer",
+                          "example": 434
+                        }
+                      }
+                    },
+                    "rate_key": {
+                      "type": "string",
+                      "example": "kog4rcj8eod8p7g15dqi45rplo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "adult_age": {
+            "type": "object",
+            "properties": {
+              "min_age": {
+                "type": "integer",
+                "example": 10
+              },
+              "max_age": {
+                "type": "integer",
+                "example": 999
+              }
+            }
           }
         }
       },
