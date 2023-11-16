@@ -3839,7 +3839,7 @@
         "tags": [
           "Land Products"
         ],
-        "summary": "Adds the required information for a booking",
+        "summary": "Adds the required information for a booking. The required fields depends of which item is.",
         "description": "# Adds the required info for a Otium or Hotelbeds land product\n",
         "operationId": "addRequiredInfoLandProducts",
         "parameters": [
@@ -3851,6 +3851,113 @@
             "schema": {
               "type": "number",
               "example": "land_product_2ca55949-945b-4671-a7e1-be0188b5acd6"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "description": "from date of activity for hotelbeds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2023-11-10"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "description": "from date of activity for hotelbeds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2023-11-21"
+            }
+          },
+          {
+            "in": "query",
+            "name": "answers",
+            "description": "array of answers for every question the activity from hotelbeds need",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "code of answer",
+                    "example": "EMAIL"
+                  },
+                  "answer": {
+                    "type": "string",
+                    "description": "value of answer",
+                    "example": "prueba@gmail.com"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "rate_key",
+            "description": "rate key of activity for hotelbeds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "prerg2cbllprertjluere7iev3"
+            }
+          },
+          {
+            "in": "query",
+            "name": "hotel_id",
+            "description": "hotel_id of transfer for otium",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 12
+            }
+          },
+          {
+            "in": "query",
+            "name": "country_id",
+            "description": "country_id of transfer for otium",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "13,3"
+            }
+          },
+          {
+            "in": "query",
+            "name": "flights_id",
+            "description": "flights_id of transfer for otium",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "example": 1856251
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "description": "code of transfer for hotelbeds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "IB2580"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "description": "type of transfer for hotelbeds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "FLIGHT"
             }
           }
         ],
@@ -3992,6 +4099,107 @@
                                   "items": {
                                     "type": "string"
                                   }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "831aa426-bf1d-42b7-be75-ebb24056e5f7"
+                        },
+                        "query": {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "type": "string",
+                              "example": "otium:land_product"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/land_products/hotels": {
+      "get": {
+        "tags": [
+          "Land Products"
+        ],
+        "summary": "Gets a list of destinations of land products.",
+        "description": "# Gets a list of hotels of land products within item format.\n",
+        "operationId": "hotelsLandProducts",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "source",
+            "description": "name of the provider",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "otium"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of land product hoteles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection o hotels for land products. Depends of what source is, the response is different",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "ok"
+                          },
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "example": 1
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Portblue Le Sivory Punta Cana"
                                 }
                               }
                             }
