@@ -6711,7 +6711,171 @@
         "tags": [
           "Book for later"
         ],
-        "summary": "Returns a list of services that have failed to be sent to MO (when they should have). These items have a numeric \"id\" field, which is the value to be sent when using the /reservations/remove_booking_service endpoint.",
+        "summary": "Returns a list of services that have failed to be sent to MO (when they should have). These items have a numeric \"id\" field (found in [:info][:booking_service_id]), which is the value to be sent when using the /reservations/remove_booking_service endpoint.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Token token=\"token\""
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "non_cancelled",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": true
+            },
+            "description": "If set to true, filters out booking services that haven't been cancelled."
+          },
+          {
+            "in": "query",
+            "name": "booking_date_from",
+            "description": "To be used in tandem with booking_date_to. Returns those services which its booking_date field is between the two parameters. Format yyyy-mm-dd",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "booking_date_to",
+            "description": "To be used in tandem with booking_date_from. Returns those services which its booking_date field is between the two parameters. Format yyyy-mm-dd",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "hotel"
+            },
+            "description": "Filters by booking service kind (e.g. hotel, flight, land_product, etc)"
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "hotel"
+            },
+            "description": "Filters by booking service source (e.g. nemo, hotelbeds, aero, etc)"
+          },
+          {
+            "in": "query",
+            "name": "ignore_no_confirmation_code",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": true
+            },
+            "description": "If set to true, filters out booking services that do not have a booking code."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of hotel rates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "non_sent_services"
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Collection of booking services",
+                      "items": {
+                        "$ref": "#/components/schemas/Hotel"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total_results": {
+                          "type": "integer",
+                          "example": 200
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 20
+                        },
+                        "static": {
+                          "type": "object",
+                          "properties": {
+                            "total_results": {
+                              "type": "integer",
+                              "example": 2000
+                            },
+                            "total_pages": {
+                              "type": "integer",
+                              "example": 200
+                            },
+                            "kinds": {
+                              "example": [
+                                "hotel",
+                                "flight",
+                                "assistance"
+                              ]
+                            },
+                            "sources": {
+                              "example": [
+                                "nemo",
+                                "hotelbeds",
+                                "aero"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations/user_non_sent_services": {
+      "get": {
+        "tags": [
+          "Book for later"
+        ],
+        "summary": "Same endpoint as /reservations/non_sent_services, to be used by sales people, in which results are filtered by user token instead of returning all. All of the other filters apply as well. It also works like /reservations/booking_services, in that the outermost ID represents the ID of the item to be added to a cart.",
         "parameters": [
           {
             "in": "header",
@@ -6981,7 +7145,7 @@
         "tags": [
           "Book for later"
         ],
-        "summary": "Marks a booking service as cancelled. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint.",
+        "summary": "Marks a booking service as cancelled. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint (found in [:info][:booking_service_id]).",
         "parameters": [
           {
             "in": "header",
@@ -7087,7 +7251,7 @@
         "tags": [
           "Book for later"
         ],
-        "summary": "Marks a booking service as sent to Middle Office. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint.",
+        "summary": "Marks a booking service as sent to Middle Office. Only non sent services can be marked as such. These can be obtained from /reservations/non_sent_services, which returns the IDs that can be sent in this endpoint (found in [:info][:booking_service_id]).",
         "parameters": [
           {
             "in": "header",
