@@ -9633,6 +9633,335 @@
           }
         }
       }
+    },
+    "/passengers": {
+      "get": {
+        "tags": [
+          "Passengers"
+        ],
+        "summary": "Gets information about passengers.",
+        "description": "# Gets information about passengers from Passenger Manager.\n",
+        "operationId": "passengersList",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Could be document of passenger, first_name/last_name or email"
+          },
+          {
+            "in": "query",
+            "name": "agency_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "agency id of the passenger"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "search_passenger"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Passengers"
+                          }
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Passengers"
+        ],
+        "summary": "Create passengers.",
+        "description": "# Create passengers to Passenger Manager.\n",
+        "operationId": "passengersCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassengerBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "create_passenger"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "$ref": "#/components/schemas/Passengers"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passengers/{uuid}": {
+      "patch": {
+        "tags": [
+          "Passengers"
+        ],
+        "summary": "Edit information about passengers.",
+        "description": "# Update passengers to Passenger Manager.\n",
+        "operationId": "passengersUpdate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "description": "uuid of the passenger.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassengerBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "update_passenger"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "$ref": "#/components/schemas/Passengers"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Passengers"
+        ],
+        "summary": "Delete passengers.",
+        "description": "# Delete passengers to Passenger Manager.\n",
+        "operationId": "passengersDelete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "description": "uuid of the passenger.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Standard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "error"
+                      ],
+                      "description": "Status of the request"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "enum": [
+                        "finished"
+                      ],
+                      "description": "Status of the transaction"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "delete_passenger"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Eliminacion exitosa"
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "example": "914129b1-f285-470a-8143-e0e795add50b"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -14042,6 +14371,119 @@
           }
         }
       },
+      "PassengerBody": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "example": "sdgsdgsdg"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "juliana"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Perez"
+          },
+          "cuil": {
+            "type": "string",
+            "example": "346346346346"
+          },
+          "document_number": {
+            "type": "string",
+            "example": "5675747475"
+          },
+          "document_type": {
+            "type": "string",
+            "example": "passport"
+          },
+          "address": {
+            "type": "string",
+            "example": "callefalsa123"
+          },
+          "birthdate": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "age_type": {
+            "type": "string",
+            "example": "adult"
+          },
+          "observations": {
+            "type": "string",
+            "example": "this is a passenger"
+          },
+          "agency_id": {
+            "type": "number",
+            "example": 34535
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "phone": {
+            "type": "string",
+            "example": "46464646"
+          },
+          "email": {
+            "type": "string",
+            "example": "prueba@gmail.com"
+          },
+          "id_expiration_date": {
+            "type": "string",
+            "example": "3535"
+          },
+          "gender": {
+            "type": "string",
+            "example": "m"
+          },
+          "foreigner": {
+            "type": "boolean",
+            "example": false
+          },
+          "deleted_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "visa_number": {
+            "type": "string",
+            "example": "4646464646"
+          },
+          "passport_number": {
+            "type": "string",
+            "example": "3453563636"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "Argentinian"
+          },
+          "visa_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "passport_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "document_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "second_passport_number": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "second_passport_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          }
+        }
+      },
       "Metadata": {
         "type": "object",
         "required": [
@@ -14612,6 +15054,127 @@
           "agencies_can_add_reservations": {
             "type": "boolean",
             "example": true
+          }
+        }
+      },
+      "Passengers": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 4
+          },
+          "uuid": {
+            "type": "string",
+            "example": "1_3611"
+          },
+          "source": {
+            "type": "string",
+            "example": "sdgsdgsdg"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "juliana"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Perez"
+          },
+          "cuil": {
+            "type": "string",
+            "example": "346346346346"
+          },
+          "document_number": {
+            "type": "string",
+            "example": "5675747475"
+          },
+          "document_type": {
+            "type": "string",
+            "example": "passport"
+          },
+          "address": {
+            "type": "string",
+            "example": "callefalsa123"
+          },
+          "birthdate": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "age_type": {
+            "type": "string",
+            "example": "adult"
+          },
+          "observations": {
+            "type": "string",
+            "example": "this is a passenger"
+          },
+          "agency_id": {
+            "type": "number",
+            "example": 34535
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "phone": {
+            "type": "string",
+            "example": "46464646"
+          },
+          "email": {
+            "type": "string",
+            "example": "prueba@gmail.com"
+          },
+          "id_expiration_date": {
+            "type": "string",
+            "example": "3535"
+          },
+          "gender": {
+            "type": "string",
+            "example": "m"
+          },
+          "foreigner": {
+            "type": "boolean",
+            "example": false
+          },
+          "deleted_at": {
+            "type": "string",
+            "example": "2024-04-03T12:12:07.447-03:00"
+          },
+          "visa_number": {
+            "type": "string",
+            "example": "4646464646"
+          },
+          "passport_number": {
+            "type": "string",
+            "example": "3453563636"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "Argentinian"
+          },
+          "visa_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "passport_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "document_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "second_passport_number": {
+            "type": "string",
+            "example": "2024-05-21"
+          },
+          "second_passport_expiration_date": {
+            "type": "string",
+            "example": "2024-05-21"
           }
         }
       },
