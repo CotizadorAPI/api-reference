@@ -9127,7 +9127,7 @@
           "Cars"
         ],
         "summary": "Gets additional information about a car item.",
-        "description": "# Gets additional information about a car item. Notably, all available equipment, information on charges, etc.\n",
+        "description": "# Gets additional information about a car item. Notably, all available equipment, information on charges, offices, etc.\n",
         "operationId": "infoFromCarItem",
         "parameters": [
           {
@@ -9325,7 +9325,7 @@
         "tags": [
           "Cars"
         ],
-        "summary": "gets information about other rates for a car item.",
+        "summary": "gets information about other rates for a car item .",
         "description": "# Gets information about other rates for a car item.\n",
         "operationId": "getOtherRates",
         "parameters": [
@@ -9353,6 +9353,60 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/Cars"
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/cars/{itemId}/requote": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "summary": "Requote car using new pickup and dropoff offices locations.",
+        "description": "# Create a quote using new pickup and dropoff locations, using a specific Office code.\n",
+        "operationId": "postRequoteRates",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Id of the car.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "aaabc212-asdasd"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/requestIdParam"
+          },
+          {
+            "in": "query",
+            "name": "pickup_location_office",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "MIAC01"
+            },
+            "description": "Office code of the pickup location\n"
+          },
+          {
+            "in": "query",
+            "name": "dropoff_location_office",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "MIAC02"
+            },
+            "description": "Office code of the dropoff location\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Car"
           },
           "400": {
             "$ref": "#/components/responses/StandardError"
@@ -9828,6 +9882,10 @@
                       }
                     }
                   },
+                  "baggage": {
+                    "type": "integer",
+                    "example": 0
+                  },
                   "cancellation": {
                     "type": "object",
                     "properties": {
@@ -9858,25 +9916,61 @@
                           "location": {
                             "type": "object",
                             "properties": {
+                              "name": {
+                                "type": "string",
+                                "example": "The Falls Miami"
+                              },
+                              "address": {
+                                "type": "string",
+                                "example": "fake street"
+                              },
                               "city": {
                                 "type": "string",
                                 "example": "Miami"
                               },
                               "zip_code": {
-                                "type": "number",
-                                "example": 45645
+                                "type": "string",
+                                "example": "33176"
                               },
                               "state_code": {
                                 "type": "string",
                                 "example": "FL"
                               },
+                              "state_name": {
+                                "type": "string",
+                                "example": "Florida"
+                              },
                               "country_code": {
                                 "type": "string",
                                 "example": "US"
                               },
-                              "address": {
+                              "country_name": {
                                 "type": "string",
-                                "example": "2323 Miami"
+                                "example": "Estados Unidos"
+                              },
+                              "phone_number": {
+                                "type": "string",
+                                "example": "786-713-4502"
+                              },
+                              "city_code": {
+                                "type": "string",
+                                "example": "BG1TF"
+                              },
+                              "code": {
+                                "type": "string",
+                                "example": "MIAC01"
+                              },
+                              "latitude": {
+                                "type": "number",
+                                "example": 25.645716
+                              },
+                              "longitude": {
+                                "type": "number",
+                                "example": -85.645716
+                              },
+                              "is_at_airport": {
+                                "type": "boolean",
+                                "example": true
                               }
                             }
                           },
@@ -10075,6 +10169,51 @@
                           "amount": {
                             "type": "number",
                             "example": 56546
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "equipment": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "ADD"
+                        },
+                        "desription_text": {
+                          "type": "string",
+                          "example": "ADDITIONAL DRIVER"
+                        },
+                        "period": {
+                          "type": "string",
+                          "example": "por alquiler"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "EUR"
+                        },
+                        "value": {
+                          "type": "object",
+                          "properties": {
+                            "ars_value": {
+                              "type": "number",
+                              "example": 1313
+                            },
+                            "usd_value": {
+                              "type": "number",
+                              "example": 1313
+                            },
+                            "eur_value": {
+                              "type": "number",
+                              "example": 1313
+                            },
+                            "gbp_value": {
+                              "type": "number",
+                              "example": 1313
+                            }
                           }
                         }
                       }
@@ -15094,7 +15233,7 @@
                 "data_type": {
                   "type": "string",
                   "description": "Type of the data value",
-                  "example": "list"
+                  "example": "car"
                 },
                 "data": {
                   "$ref": "#/components/schemas/Car"
