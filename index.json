@@ -8880,6 +8880,127 @@
         }
       }
     },
+    "/airports": {
+      "get": {
+        "tags": [
+          "Airports"
+        ],
+        "summary": "Gets a list of airports",
+        "description": "# Gets a list of airports\n",
+        "operationId": "aiports",
+        "responses": {
+          "200": {
+            "description": "Standard response with a collection of airports",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "airports"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AirportList"
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
+    "/airports/:id": {
+      "get": {
+        "tags": [
+          "Airport"
+        ],
+        "summary": "Gets details for the airport ID",
+        "description": "# Gets details for the airport ID\n",
+        "operationId": "aiport",
+        "responses": {
+          "200": {
+            "description": "Standard response with details for the aiport ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the request",
+                      "example": "ok"
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "description": "Status of the transaction",
+                      "example": "finished"
+                    },
+                    "data_type": {
+                      "type": "string",
+                      "description": "Type of the data value",
+                      "example": "airport"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Airport"
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "RequestId received in the request.",
+                          "example": "e9f95047-fcc6-4b95-bad6-55587be545d0"
+                        },
+                        "query": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
+    },
     "/cities": {
       "get": {
         "tags": [
@@ -12914,6 +13035,66 @@
           "name": {
             "type": "string",
             "example": "Santander Rio"
+          }
+        }
+      },
+      "AirportList": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Cancún International"
+          },
+          "name_with_iata": {
+            "type": "string",
+            "example": "CUN - Cancún International"
+          },
+          "iata_code": {
+            "type": "string",
+            "example": "CUN"
+          }
+        }
+      },
+      "Airport": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "iata_code": {
+            "type": "string",
+            "example": "CUN"
+          },
+          "country_name": {
+            "type": "string",
+            "example": "México"
+          },
+          "area_name": {
+            "type": "string",
+            "example": "Cancun"
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            }
+          },
+          "location": {
+            "type": "integer",
+            "example": 1
           }
         }
       },
